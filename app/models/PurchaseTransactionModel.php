@@ -84,6 +84,7 @@ class PurchaseTransactionModel extends \DB\Cortex {
         $result['status'] = $status;
         return $result;
     }
+    //FV3RHG4TH
 
     public function getPurchase($id): array {
         $this->fields(['purchase_id.id']);
