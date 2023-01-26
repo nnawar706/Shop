@@ -16,7 +16,7 @@ class UserProfileController extends MainController {
         $files = Web::instance()->receive(function($file,$formFieldName){
             return true;
         }, false, function($fileBaseName, $formFieldName){
-            if($formFieldName === 'image_url'){
+            if($formFieldName === 'profile_photo_url'){
                 $file_data = pathinfo($fileBaseName);
                 $this->profile_photo_url = "user_" . time() . rand(100,999) . "." . $file_data['extension'];
                 return $this->profile_photo_url;
@@ -26,7 +26,7 @@ class UserProfileController extends MainController {
         $files = Web::instance()->receive(function($file,$formFieldName){
             return true;
         }, false, function($fileBaseName, $formFieldName){
-            if($formFieldName === 'nid_url'){
+            if($formFieldName === 'nid_photo_url'){
                 $file_data = pathinfo($fileBaseName);
                 $this->nid_photo_url = "nid_" . time() . rand(100,999) . "." . $file_data['extension'];
                 return $this->nid_photo_url;
@@ -46,11 +46,11 @@ class UserProfileController extends MainController {
                     $this->uploadImage();
                     if($this->profile_photo_url!=''){
                         $user->addProfileImage($result['data']['id'], 'https://nafisa.selopian.us/ui/images/users/'.$this->profile_photo_url);
-                        $result['data']['profile_image_url']= 'https://nafisa.selopian.us/ui/images/users/'.$this->profile_photo_url;
+                        $result['data']['profile_photo_url']= 'https://nafisa.selopian.us/ui/images/users/'.$this->profile_photo_url;
                     }
                     if($this->nid_photo_url!=''){
                         $user->addNidPhotoImage($result['data']['id'], 'https://nafisa.selopian.us/ui/images/users/'.$this->nid_photo_url);
-                        $result['data']['nid_image_url']= 'https://nafisa.selopian.us/ui/images/nids/'.$this->nid_photo_url;
+                        $result['data']['nid_photo_url']= 'https://nafisa.selopian.us/ui/images/nids/'.$this->nid_photo_url;
                     }
                 } catch(PDOException $e) {
                     $user->deleteProfile($result['data']['id']);

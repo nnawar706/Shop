@@ -10,9 +10,9 @@ class SalesKpiModel extends \DB\Cortex {
             'type' => \DB\SQL\Schema::DT_TINYINT,
             'validate' => 'required',
         ],
-        'sales_volume' => [
+        'target_sales_volume' => [
             'type' => \DB\SQL\Schema::DT_INT,
-            'validate' => 'required|||numeric'
+            'validate' => 'required|||max_len,11'
         ]
     ];
 
@@ -31,8 +31,8 @@ class SalesKpiModel extends \DB\Cortex {
     public function createSalesKpi($data): array {
         $info = [];
         $this->user_id = $data['user_id'] ?? '';
-        $this->sales_volume = $data['sales_volume'] ?? '';
-        $this->last_modified = date('y-m-d h:i:s');
+        $this->target_target_sales_volume = $data['target_sales_volume'] ?? '';
+        $this->last_modified_at = date('y-m-d h:i:s');
 
         if($this->validate()) {
             try {
@@ -54,17 +54,13 @@ class SalesKpiModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $data = $this->find([], []);
-        $i = 0;
+        $this->fields(['user_id.id','user_id.profile_user_id']);
+        $this->fields(['user_id.profile_user_id.nid','user_id.profile_user_id.nid_photo_url','user_id.profile_user_id.profile_photo_url',
+            'user_id.profile_user_id.designation_id','user_id.profile_user_id.salary','user_id.profile_user_id.department_id',
+            'user_id.profile_user_id.shop_id','user_id.profile_user_id.nid_no','user_id.profile_user_id.ref_comment'], true);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 2);
         if ($data) {
-            foreach ($data as $item) {
-                $info[$i]['user_id'] = $item->user_id->id;
-                $info[$i]['name'] = $item->user_id->profile_user_id->name;
-                $info[$i]['sales_volume'] = $item->sales_volume;
-                $info[$i]['last_modified'] = $item->last_modified;
-                $i = $i + 1;
-            }
-            $result['data'] = $info;
+            $result['data'] = $data;
             $status['code'] = 1;
             $status['message'] = 'All Salesman Successfully Fetched.';
         } else {
@@ -76,14 +72,13 @@ class SalesKpiModel extends \DB\Cortex {
     }
 
     public function getSalesKpi($id): array {
+        $this->fields(['user_id.id','user_id.profile_user_id']);
+        $this->fields(['user_id.profile_user_id.nid','user_id.profile_user_id.nid_photo_url','user_id.profile_user_id.profile_photo_url',
+            'user_id.profile_user_id.designation_id','user_id.profile_user_id.salary','user_id.profile_user_id.department_id',
+            'user_id.profile_user_id.shop_id','user_id.profile_user_id.nid_no','user_id.profile_user_id.ref_comment'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
-            $data['id'] = $this->id;
-            $data['user_id'] = $this->user_id->id;
-            $data['name'] = $this->user_id->profile_user_id->name;
-            $data['sales_volume'] = $this->sales_volume;
-            $data['last_modified'] = $this->last_modified;
-            $result['data'] = $data;
+            $result['data'] = $this->cast(NULL, 2);
             $status['code'] = 1;
             $status['message'] = 'Sales KPI Successfully Fetched.';
         } else {
@@ -95,14 +90,13 @@ class SalesKpiModel extends \DB\Cortex {
     }
 
     public function getUserKpi($id): array {
+        $this->fields(['user_id.id','user_id.profile_user_id']);
+        $this->fields(['user_id.profile_user_id.nid','user_id.profile_user_id.nid_photo_url','user_id.profile_user_id.profile_photo_url',
+            'user_id.profile_user_id.designation_id','user_id.profile_user_id.salary','user_id.profile_user_id.department_id',
+            'user_id.profile_user_id.shop_id','user_id.profile_user_id.nid_no','user_id.profile_user_id.ref_comment'], true);
         $this->load(['user_id=?', $id]);
         if($this->id) {
-            $data['id'] = $this->id;
-            $data['user_id'] = $this->user_id->id;
-            $data['name'] = $this->user_id->profile_user_id->name;
-            $data['sales_volume'] = $this->sales_volume;
-            $data['last_modified'] = $this->last_modified;
-            $result['data'] = $data;
+            $result['data'] = $this->cast(NULL, 2);
             $status['code'] = 1;
             $status['message'] = 'User Sales KPI Successfully Fetched.';
         } else {
@@ -120,8 +114,8 @@ class SalesKpiModel extends \DB\Cortex {
         $info = [];
         $this->load(['id=?', $id]);
         if($this->id) {
-            $this->sales_volume = $data['sales_volume'] ?? '';
-            $this->last_modified = date('y-m-d h:i:s');
+            $this->target_sales_volume = $data['target_sales_volume'] ?? '';
+            $this->last_modified_at = date('y-m-d h:i:s');
             if($this->validate()) {
                 try {
                     $this->save();

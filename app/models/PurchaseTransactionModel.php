@@ -72,10 +72,10 @@ class PurchaseTransactionModel extends \DB\Cortex {
     public function getAll(): array {
         $this->fields(['purchase_id.id']);
         $this->fields(['transaction_type_id.purchase_transaction_transaction_type','payment_status_id.purchase_transaction_payment_status_id'], true);
-        $data = $this->afind([], ['order'=>'id DESC'], 0, 1);  // comment 23
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $status['code'] = 1;
-            $status['message'] = 'All Purchase transaction successfully fetched.'; // comment 2
+            $status['message'] = 'All Purchase transaction successfully fetched.';
         } else {
             $status['code'] = 0;
             $status['message'] = 'No Purchase transaction found.';
@@ -84,7 +84,6 @@ class PurchaseTransactionModel extends \DB\Cortex {
         $result['status'] = $status;
         return $result;
     }
-    //FV3RHG4TH
 
     public function getPurchase($id): array {
         $this->fields(['purchase_id.id']);
