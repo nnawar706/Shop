@@ -6,7 +6,7 @@ class LogTypeModel extends \DB\Cortex {
 
     protected $fieldConf = [
         'log_log_type' => [
-            'has-many' => ['\LogModel','log_type'],
+            'has-many' => ['\LogModel','log_type_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT,
         ],
         'name' => [

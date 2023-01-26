@@ -5,7 +5,7 @@ class ProductRawMaterialModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
-        'product_unit_id' => [
+        'unit_id' => [
             'belongs-to-one' => '\ProductUnitModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
             'validate' => 'required'
@@ -38,7 +38,7 @@ class ProductRawMaterialModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['product_unit_id.product_unit_type','product_unit_id.product_raw_material_product_unit_id'], true);
+        $this->fields(['unit_id.product_unit_type','unit_id.product_raw_material_unit_id','unit_id.product_unit_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $status['code'] = 1;
@@ -53,7 +53,7 @@ class ProductRawMaterialModel extends \DB\Cortex {
     }
 
     public function getMaterial($id): array {
-        $this->fields(['product_unit_id.product_unit_type','product_unit_id.product_raw_material_product_unit_id'], true);
+        $this->fields(['unit_id.product_unit_type','unit_id.product_raw_material_unit_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 1);

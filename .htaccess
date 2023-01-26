@@ -10,3 +10,9 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule .* index.php [L,QSA]
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
 Options -Indexes
+
+
+Header add Access-Control-Allow-Origin "*"
+Header add Access-Control-Allow-Methods "GET, PUT, POST, DELETE, OPTIONS"
+Header add Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+Header add Access-Control-Allow-Credentials: true"

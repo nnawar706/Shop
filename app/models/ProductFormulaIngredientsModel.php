@@ -5,10 +5,10 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
-        'product_formula_id' => [
+        'formula_id' => [
             'belongs-to-one' => '\ProductFormulaModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
-            'validate' => 'required'
+            'validate' => 'required|||max_len,4'
         ],
         'percentage' => [
             'type' => \DB\SQL\Schema::DT_TINYINT,
@@ -54,7 +54,7 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['product_formula_id.category_id.category_parent_id', 'product_formula_id.category_id.product_category_id','product_formula_id.category_id.product_formula_category_id','product_formula_id.category_id.featured','product_formula_id.category_id.parent_id'], true);
+        $this->fields(['formula_id.category_id.category_parent_id', 'formula_id.category_id.product_category_id','formula_id.category_id.product_formula_category_id','formula_id.category_id.featured','formula_id.category_id.parent_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 2);
         if($data) {
             $status['code'] = 1;
@@ -69,7 +69,7 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
     }
 
     public function getFormula($id): array {
-        $this->fields(['product_formula_id.category_id.category_parent_id', 'product_formula_id.category_id.product_category_id','product_formula_id.category_id.product_formula_category_id','product_formula_id.category_id.featured','product_formula_id.category_id.parent_id'], true);
+        $this->fields(['formula_id.category_id.category_parent_id', 'formula_id.category_id.product_category_id','formula_id.category_id.product_formula_category_id','formula_id.category_id.featured','formula_id.category_id.parent_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 2);

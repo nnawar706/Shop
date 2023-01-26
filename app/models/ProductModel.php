@@ -31,7 +31,7 @@ class ProductModel extends \DB\Cortex {
             'type' => \DB\SQL\Schema::DT_VARCHAR512,
             'validate' => 'required|||max_len,500'
         ],
-        'unit_type' => [
+        'unit_id' => [
             'belongs-to-one' => '\ProductUnitModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
             'validate' => 'required'
@@ -41,23 +41,23 @@ class ProductModel extends \DB\Cortex {
             'validate' => 'required|||max_len,6'
         ],
         'cost_price' => [
-            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'type' => \DB\SQL\Schema::DT_INT,
             'validate' => 'required|||max_len,7'
         ],
         'mrp' => [
-            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'type' => \DB\SQL\Schema::DT_INT,
             'validate' => 'required|||max_len,7'
         ],
         'wholesale_price' => [
-            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'type' => \DB\SQL\Schema::DT_INT,
             'validate' => 'required|||max_len,7'
         ],
         'retail_price' => [
-            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'type' => \DB\SQL\Schema::DT_INT,
             'validate' => 'required|||max_len,7'
         ],
         'discount_amount' => [
-            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'type' => \DB\SQL\Schema::DT_INT,
             'validate' => 'max_len,7'
         ]
 
@@ -78,7 +78,7 @@ class ProductModel extends \DB\Cortex {
     public function createProduct($data): array {
         $this->name = $data['name'] ?? '';
         $this->description = $data['description'] ?? '';
-        $this->unit_type = $data['unit_type'] ?? '';
+        $this->unit_id = $data['unit_id'] ?? '';
         $this->unit_size = $data['unit_size'] ?? '';
         $this->brand_id = $data['brand_id'] ?? '';
         $this->category_id = $data['category_id'] ?? '';
@@ -110,9 +110,9 @@ class ProductModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['inventory_product_id','sales_product_product_id','unit_type.product_unit_type','brand_id.image_url',
-            'brand_id.description','brand_id.product_brand_id','category_id.description','category_id.featured','category_id.parent_id',
-            'category_id.category_parent_id','category_id.product_category_id'], true);
+        $this->fields(['inventory_product_id','sales_product_product_id','unit_id.product_unit_id','unit_id.product_raw_material_unit_id',
+            'brand_id.logo_url','brand_id.description','brand_id.product_brand_id','category_id.description','category_id.featured',
+            'category_id.parent_id','category_id.category_parent_id','category_id.product_category_id','category_id.product_formula_category_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $result['data'] = $data;
@@ -127,9 +127,9 @@ class ProductModel extends \DB\Cortex {
     }
 
     public function getProduct($id): array {
-        $this->fields(['inventory_product_id','sales_product_product_id','unit_type.product_unit_type','brand_id.image_url',
-            'brand_id.description','brand_id.product_brand_id','category_id.description','category_id.featured','category_id.parent_id',
-            'category_id.category_parent_id','category_id.product_category_id'], true);
+        $this->fields(['inventory_product_id','sales_product_product_id','unit_id.product_unit_id','unit_id.product_raw_material_unit_id',
+            'brand_id.logo_url','brand_id.description','brand_id.product_brand_id','category_id.description','category_id.featured',
+            'category_id.parent_id','category_id.category_parent_id','category_id.product_category_id','category_id.product_formula_category_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $info = $this->cast();
@@ -177,7 +177,7 @@ class ProductModel extends \DB\Cortex {
     public function updateProduct($data): array {
         $this->name = $data['name'] ?? '';
         $this->description = $data['description'] ?? '';
-        $this->unit_type = $data['unit_type'] ?? '';
+        $this->unit_id = $data['unit_id'] ?? '';
         $this->unit_size = $data['unit_size'] ?? '';
         $this->brand_id = $data['brand_id'] ?? '';
         $this->category_id = $data['category_id'] ?? '';

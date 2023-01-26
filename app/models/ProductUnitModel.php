@@ -5,12 +5,12 @@ class ProductUnitModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
-        'product_unit_type' => [
-            'has-many' => ['\ProductModel','unit_type'],
+        'product_unit_id' => [
+            'has-many' => ['\ProductModel','unit_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT
         ],
-        'product_raw_material_product_unit_id' => [
-            'has-many' => ['\ProductRawMaterialModel','product_unit_id'],
+        'product_raw_material_unit_id' => [
+            'has-many' => ['\ProductRawMaterialModel','unit_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT
         ],
         'name' => [
@@ -54,7 +54,7 @@ class ProductUnitModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['product_unit_type'], true);
+        $this->fields(['product_unit_id','product_raw_material_unit_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
         if($data) {
             $status['code'] = 1;
@@ -69,7 +69,7 @@ class ProductUnitModel extends \DB\Cortex {
     }
 
     public function getProductUnit($id): array {
-        $this->fields(['product_unit_type'], true);
+        $this->fields(['product_unit_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 0);

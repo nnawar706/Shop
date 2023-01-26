@@ -24,7 +24,7 @@ class ProductController extends MainController {
             return true;
         }, false, function($fileBaseName, $formFieldName){
             $file_data = pathinfo($fileBaseName);
-            $this->image_name = "brand_" . time() . rand(100,999) . "." . $file_data['extension'];
+            $this->image_name = "product_" . time() . rand(100,999) . "." . $file_data['extension'];
             return $this->image_name;
         });
     }
@@ -41,12 +41,12 @@ class ProductController extends MainController {
                     $this->uploadImage();
                     if($this->image_name!=''){
                         $product->addImage($result['data']['id'], 'https://nafisa.selopian.us/ui/images/products/'.$this->image_name);
-                        $result['data']['image_url']= 'https://nafisa.selopian.us/ui/images/products/'.$this->image_name;
+                        $result['data']['product_image_url']= 'https://nafisa.selopian.us/ui/images/products/'.$this->image_name;
                     }
                 } catch(PDOException $e) {
                     $product->deleteProduct($result['data']['id']);
                     $result['status']['code'] = 0;
-                    $result['status']['message'] = "Sorry, couldn't add brands info.";
+                    $result['status']['message'] = "Sorry, couldn't add products info.";
                 }
             }
             header('Content-Type: application/json');
@@ -71,7 +71,7 @@ class ProductController extends MainController {
                 } catch(PDOException $e) {
                     $product->deleteProduct($result['data']['id']);
                     $result['status']['code'] = 0;
-                    $result['status']['message'] = "Sorry, couldn't add brands info.";
+                    $result['status']['message'] = "Sorry, couldn't add products info.";
                 }
             }
             header('Content-Type: application/json');

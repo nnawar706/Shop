@@ -5,6 +5,10 @@ class ProductFormulaModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
+        'product_formula_ingredients_formula_id' => [
+            'has-many' => ['\ProductFormulaIngredientsModel','formula_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
         'category_id' => [
             'belongs-to-one' => '\CategoryModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
@@ -50,7 +54,9 @@ class ProductFormulaModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['category_id.category_parent_id', 'category_id.product_category_id','category_id.product_formula_category_id','category_id.featured','category_id.parent_id'], true);
+        $this->fields(['category_id.category_parent_id', 'category_id.product_category_id',
+            'category_id.product_formula_category_id','category_id.featured','category_id.parent_id',
+            'product_formula_ingredients_formula_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $status['code'] = 1;
@@ -65,7 +71,9 @@ class ProductFormulaModel extends \DB\Cortex {
     }
 
     public function getFormula($id): array {
-        $this->fields(['category_id.category_parent_id', 'category_id.product_category_id','category_id.product_formula_category_id','category_id.featured','category_id.parent_id'], true);
+        $this->fields(['category_id.category_parent_id', 'category_id.product_category_id',
+            'category_id.product_formula_category_id','category_id.featured','category_id.parent_id',
+            'product_formula_ingredients_formula_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 1);

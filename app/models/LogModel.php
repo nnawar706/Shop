@@ -5,7 +5,7 @@ class LogModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
-        'log_type' => [
+        'log_type_id' => [
             'belongs-to-one' => '\LogTypeModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
         ]
@@ -38,7 +38,7 @@ class LogModel extends \DB\Cortex {
         $status['total pages'] = $totalPages;
         $status['current page'] = (int)$pageno;
         $result['status'] = $status;
-        $result['data'] = $this->db->exec("SELECT * FROM log WHERE log_type=$typeid LIMIT $perPage OFFSET $offset");
+        $result['data'] = $this->db->exec("SELECT * FROM log WHERE log_type_id=$typeid LIMIT $perPage OFFSET $offset");
         return $result;
     }
 
