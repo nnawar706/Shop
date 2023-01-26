@@ -34,7 +34,7 @@ class BrandModel extends \DB\Cortex {
     public function createBrand($data): array {
         $this->name = $data['name'] ?? '';
         $this->description = $data['description'] ?? '';
-        $this->image_url = $data['image_url'] ?? 'https://nafisa.selopian.us/ui/images/brands/brand_img.png';
+        $this->logo_url = $data['logo_url'] ?? 'https://nafisa.selopian.us/ui/images/brands/brand_img.png';
         unset($data['submit']);
 
         if($this->validate()) {
@@ -58,7 +58,7 @@ class BrandModel extends \DB\Cortex {
 
     public function addImage($id, $fileName) {
         $this->load(['id=?', $id]);
-        $this->image_url = $fileName;
+        $this->logo_url = $fileName;
         $this->save();
     }
 

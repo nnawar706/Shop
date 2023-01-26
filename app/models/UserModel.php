@@ -156,8 +156,8 @@ class UserModel extends \DB\Cortex {
 
     public function updateUser($id) {
         $this->load(['id=?', $id]);
-        $this->last_login = date('y-m-d h:i:s');
-        $this->last_ip = $_SERVER['REMOTE_ADDR'];
+        $this->last_login_at = date('y-m-d h:i:s');
+        $this->last_login_ip = $_SERVER['REMOTE_ADDR'];
         $this->save();
     }
 

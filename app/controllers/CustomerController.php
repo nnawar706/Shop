@@ -56,7 +56,7 @@ class CustomerController extends MainController {
                     $this->uploadImage();
                     if($this->image_name!=''){
                         $customer->addImage($result['data']['id'], '/ui/images/customers/'.$this->image_name);
-                        $result['data']['image_url']= '/ui/images/customers/'.$this->image_name;
+                        $result['data']['profile_photo_url']= '/ui/images/customers/'.$this->image_name;
                     }
                 } catch(PDOException $e) {
                     $customer->deleteCustomer($result['data']['id']);
@@ -87,8 +87,8 @@ class CustomerController extends MainController {
                 try {
                     $this->uploadImage();
                     if($this->image_name!=''){
-                        $customer->addImage($result['data']['id'], '/ui/images/customers/'.$this->image_name);
-                        $result['data']['image_url']= '/ui/images/customers/'.$this->image_name;
+                        $customer->addImage($result['data']['id'], 'https://nafisa.selopian.us/ui/images/customers/'.$this->image_name);
+                        $result['data']['profile_photo_url']= 'https://nafisa.selopian.us/ui/images/customers/'.$this->image_name;
                     }
                 } catch(PDOException $e) {
                     $result['status']['code'] = 0;

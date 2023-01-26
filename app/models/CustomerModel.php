@@ -49,8 +49,7 @@ class CustomerModel extends \DB\Cortex {
         $this->phone_no = $data['phone_no'] ?? '';
         $this->address = $data['address'] ?? '';
         $this->company_name = $data['company_name'] ?? '';
-        $this->blacklist = 0;
-        $this->image_url = $data['image_url'] ?? 'https://nafisa.selopian.us/ui/images/customers/customer_img.png';
+        $this->profile_photo_url = $data['profile_photo_url'] ?? 'https://nafisa.selopian.us/ui/images/customers/customer_img.png';
         unset($data['submit']);
 
         if($this->validate()) {
@@ -85,7 +84,7 @@ class CustomerModel extends \DB\Cortex {
             $this->address = $data['address'] ?? '';
             $this->company_name = $data['company_name'] ?? '';
             $this->blacklist = 0;
-            $this->image_url = $data['image_url'] ?? 'https://nafisa.selopian.us/ui/images/customers/customer_img.png';
+            $this->profile_photo_url = $data['profile_photo_url'] ?? 'https://nafisa.selopian.us/ui/images/customers/customer_img.png';
             unset($data['submit']);
             if($this->validate()) {
                 try {
@@ -111,7 +110,7 @@ class CustomerModel extends \DB\Cortex {
     }
 
     public function getCustomer($id): array {
-        $this->fields(['sales_order_customer_id']);
+        $this->fields(['sales_order_customer_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 0);
@@ -127,7 +126,7 @@ class CustomerModel extends \DB\Cortex {
     }
 
     public function getAllCustomers(): array {
-        $this->fields(['sales_order_customer_id']);
+        $this->fields(['sales_order_customer_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
         if($data) {
             $result['data'] = $data;
@@ -142,7 +141,7 @@ class CustomerModel extends \DB\Cortex {
     }
 
     public function getByName($data, $pageno, $perPage): array {
-        $this->fields(['sales_order_customer_id']);
+        $this->fields(['sales_order_customer_id'], true);
         $name = $data['name'];
         $offset = ($pageno - 1) * $perPage;
         $result['data'] = $this->afind(['name=?',$name], ['limit'=>$perPage, 'offset'=>$offset], 0, 0);
@@ -162,7 +161,7 @@ class CustomerModel extends \DB\Cortex {
 
     public function addImage($id, $fileName) {
         $this->load(['id=?', $id]);
-        $this->image_url = $fileName;
+        $this->profile_photo_url = $fileName;
         $this->save();
     }
 

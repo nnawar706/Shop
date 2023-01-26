@@ -34,7 +34,7 @@ class BrandController extends MainController {
                     $this->uploadImage();
                     if($this->image_name!=''){
                         $brand->addImage($result['data']['id'], 'https://nafisa.selopian.us/ui/images/brands/'.$this->image_name);
-                        $result['data']['image_url']= 'https://nafisa.selopian.us/ui/images/brands/'.$this->image_name;
+                        $result['data']['logo_url']= 'https://nafisa.selopian.us/ui/images/brands/'.$this->image_name;
                     }
                 } catch(PDOException $e) {
                     $brand->deleteBrand($result['data']['id']);
@@ -66,7 +66,7 @@ class BrandController extends MainController {
                     $this->uploadImage();
                     if($this->image_name!=''){
                         $brand->addImage($params['id'], 'https://nafisa.selopian.us/ui/images/brands/'.$this->image_name);
-                        $result['data']['image_url'] = 'https://nafisa.selopian.us/ui/images/brands/'.$this->image_name;
+                        $result['data']['logo_url'] = 'https://nafisa.selopian.us/ui/images/brands/'.$this->image_name;
                     }
                 } catch(PDOException $e) {
                     $result['status']['code'] = 0;

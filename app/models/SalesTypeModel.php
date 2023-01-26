@@ -9,7 +9,7 @@ class SalesTypeModel extends \DB\Cortex
             'has-many' => ['\SalesOrderModel','sales_type_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT
         ],
-        'type' => [
+        'name' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,
             'validate' => 'required|||unique|||alpha_space|||max_len,50'
         ]
@@ -29,7 +29,7 @@ class SalesTypeModel extends \DB\Cortex
      * @throws Exception
      */
     public function createType($data): array {
-        $this->type = $data['type'] ?? '';
+        $this->name = $data['name'] ?? '';
         if($this->validate()) {
             try {
                 $this->save();

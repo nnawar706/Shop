@@ -65,7 +65,7 @@ class SupplierModel extends \DB\Cortex {
         $this->company_address = $data['company_address'] ?? '';
         $this->bank_account_info = $data['bank_account_info'] ?? '';
         $this->ref_comment = $data['ref_comment'] ?? '';
-        $this->image_url = $data['image_url'] ?? 'https://nafisa.selopian.us/ui/images/suppliers/supplier_img.png';
+        $this->profile_photo_url = $data['profile_photo_url'] ?? 'https://nafisa.selopian.us/ui/images/suppliers/supplier_img.png';
         unset($data['submit']);
 
         if($this->validate()) {
@@ -102,7 +102,6 @@ class SupplierModel extends \DB\Cortex {
             $this->company_address = $data['company_address'] ?? '';
             $this->bank_account_info = $data['bank_account_info'] ?? '';
             $this->ref_comment = $data['ref_comment'] ?? '';
-            $this->image_url = $data['image_url'] ?? '/ui/images/suppliers/supplier_img.png';
             $this->blacklist = $data['blacklist'] ?? 0;
             unset($data['submit']);
 
@@ -192,12 +191,11 @@ class SupplierModel extends \DB\Cortex {
 
     public function addImage($id, $fileName) {
         $this->load(['id=?', $id]);
-        $this->image_url = $fileName;
+        $this->profile_photo_url = $fileName;
         $this->save();
     }
 
-    public function getByName($data, $pageno, $perPage): array
-    {
+    public function getByName($data, $pageno, $perPage): array {
         $name = $data['name'];
         $offset = ($pageno - 1) * $perPage;
         $result['data'] = $this->afind(['name=?',$name], ['limit'=>$perPage, 'offset'=>$offset], 0, 0);
