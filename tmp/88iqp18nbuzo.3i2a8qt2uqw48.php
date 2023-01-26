@@ -1,0 +1,1 @@
+<?php echo $this->render($view,NULL,get_defined_vars(),0); ?>
