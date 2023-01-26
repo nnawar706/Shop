@@ -75,7 +75,7 @@ class PurchaseTransactionModel extends \DB\Cortex {
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);  // comment 23
         if($data) {
             $status['code'] = 1;
-            $status['message'] = 'All Purchase transaction successfully fetched.';
+            $status['message'] = 'All Purchase transaction successfully fetched.'; // comment 2
         } else {
             $status['code'] = 0;
             $status['message'] = 'No Purchase transaction found.';
