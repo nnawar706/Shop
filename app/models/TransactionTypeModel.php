@@ -9,6 +9,10 @@ class TransactionTypeModel extends \DB\Cortex {
             'has-many' => ['\PurchaseTransactionModel','transaction_type_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT
         ],
+        'sales_transaction_transaction_type_id' => [
+            'has-many' => ['\SalesTransactionModel','transaction_type_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
         'name' => [
             'type' => \DB\SQL\Schema::DT_VARCHAR128,
             'validate' => 'required|||unique|||max_len,50',

@@ -127,12 +127,12 @@ class BrandModel extends \DB\Cortex {
     }
 
     public function deleteBrand($id): array {
-        $data = [];
         $this->load(['id=?', $id]);
         if($this->id) {
             try {
                 $this->erase();
                 $data['id'] = $this->id;
+                $result['data'] = $data;
                 $status['code'] = 1;
                 $status['message'] = 'brand Successfully Deleted.';
             } catch(PDOException $e) {
@@ -143,7 +143,6 @@ class BrandModel extends \DB\Cortex {
             $status['code'] = 0;
             $status['message'] = 'Invalid brand Id.';
         }
-        $result['data'] = $data;
         $result['status'] = $status;
         return $result;
     }

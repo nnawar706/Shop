@@ -7,7 +7,7 @@ class SalesProductModel extends \DB\Cortex {
     protected $fieldConf = [
         'sales_order_id' => [
             'belongs-to-one' => '\SalesOrderModel',
-            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'type' => \DB\SQL\Schema::DT_INT,
             'validate' => 'required'
         ],
         'product_id' => [
@@ -45,30 +45,43 @@ class SalesProductModel extends \DB\Cortex {
     /**
      * @throws Exception
      */
-    public function createSales($data, $sales_id): array {
-        foreach ($data as $item) {
+    public function createSales($data, $sales_id) {
+        $product = new ProductModel();
+        $this->db->begin();
+        foreach ($data['product_name_list'] as $item) {
             $this->sales_order_id = $sales_id;
-            $this->product_id = $item['product_id'];
-            $this->buying_price = $item['buying_price'];
-            $this->selling_price = $item['selling_price'];
-            $this->discount_amount = $item['discount_amount'];
-            $this->amount_unit = $item['amount_unit'];
-            if($this->validate()) {
-                try {
-                    $this->save();
-                    $product_list[] = $this->cast(NULL, 0);
-                    $this->reset();
-                    $status['code'] = 1;
-                    $status['message'] = 'Sales Product Successfully Added.';
-                } catch(PDOException $e) {
+            $prod = $product->getProduct($item['product_id']);
+            if($prod) {
+                if($data['sales_type_id'] == 1) {
+                    $this->selling_price = $prod['data']['wholesale_price'];
+                } else {
+                    $this->selling_price = $prod['data']['retail_price'];
+                }
+                $this->product_id = $item['product_id'];
+                $this->buying_price = $prod['data']['cost_price'];
+                $this->amount_unit = $item['amount_unit'];
+                $this->discount_amount = $item['discount_amount'];
+                if($this->validate()) {
+                    try {
+                        $this->save();
+                        $product_list[] = $this->cast(NULL, 0);
+                        $this->reset();
+                        $status['code'] = 1;
+                        $status['message'] = 'Sales Product Successfully Added.';
+                    } catch(PDOException $e) {
+                        $status['code'] = 0;
+                        $status['message'] = $e->errorInfo[2];
+                    }
+                } else {
                     $status['code'] = 0;
-                    $status['message'] = $e->errorInfo[2];
+                    $status['message'] = Base::instance()->get('error_msg');
                 }
             } else {
                 $status['code'] = 0;
                 $status['message'] = Base::instance()->get('error_msg');
             }
         }
+        $this->db->commit();
         return $product_list;
     }
 

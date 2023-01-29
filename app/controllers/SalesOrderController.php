@@ -24,10 +24,10 @@ class SalesOrderController extends MainController {
                         $product = new SalesProductModel();
                         $status['status']['code'] = 1;
                         $status['status']['message'] = "order placed";
-                        $status['data'] = $product->createSales($data['product_name_list'],$sales_order['id']);
+                        $status['data'] = $product->createSales($data, $sales_order['id']);
                     } else {
                         $status['code'] = 0;
-                        $status['status']['message'] = "something wnt wrong";
+                        $status['status']['message'] = "something went wrong";
                     }
                     header('Content-Type: application/json');
                     echo json_encode($status);

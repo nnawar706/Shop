@@ -7,7 +7,11 @@ class SalesOrderModel extends \DB\Cortex {
     protected $fieldConf = [
         'sales_product_sales_order_id' => [
             'has-many' => ['\SalesProductModel','sales_order_id'],
-            'type' => \DB\SQL\Schema::DT_TINYINT
+            'type' => \DB\SQL\Schema::DT_INT
+        ],
+        'sales_transaction_sales_order_id' => [
+            'has-one' => ['\SalesTransactionModel','sales_order_id'],
+            'type' => \DB\SQL\Schema::DT_INT
         ],
         'customer_id' => [
             'belongs-to-one' => '\CustomerModel',
