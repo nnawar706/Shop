@@ -13,6 +13,10 @@ class ProductModel extends \DB\Cortex {
             'has-many' => ['\SalesProductModel','product_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT
         ],
+        'inventory_trace_product_id' => [
+            'has-many' => ['\InventoryTraceModel','product_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
         'brand_id' => [
             'belongs-to-one' => '\BrandModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,

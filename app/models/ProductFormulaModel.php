@@ -55,8 +55,7 @@ class ProductFormulaModel extends \DB\Cortex {
 
     public function getAll(): array {
         $this->fields(['category_id.category_parent_id', 'category_id.product_category_id',
-            'category_id.product_formula_category_id','category_id.featured','category_id.parent_id',
-            'product_formula_ingredients_formula_id'], true);
+            'category_id.product_formula_category_id','category_id.name','category_id.description','category_id.featured','category_id.parent_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $status['code'] = 1;

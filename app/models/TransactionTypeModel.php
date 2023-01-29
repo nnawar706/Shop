@@ -50,7 +50,7 @@ class TransactionTypeModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['purchase_transaction_transaction_type']);
+        $this->fields(['purchase_transaction_transaction_type'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
         if($data) {
             $status['code'] = 1;

@@ -16,19 +16,19 @@ class SalesProductModel extends \DB\Cortex {
             'validate' => 'required'
         ],
         'buying_price' => [
-            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'type' => \DB\SQL\Schema::DT_INT,
             'validate' => 'required'
         ],
         'selling_price' => [
-            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'type' => \DB\SQL\Schema::DT_INT,
             'validate' => 'required'
         ],
         'discount_amount' => [
-            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'type' => \DB\SQL\Schema::DT_INT,
             'validate' => 'required'
         ],
         'amount_unit' => [
-            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'type' => \DB\SQL\Schema::DT_INT,
             'validate' => 'required'
         ],
     ];
@@ -45,25 +45,31 @@ class SalesProductModel extends \DB\Cortex {
     /**
      * @throws Exception
      */
-    public function createSales($data): array {
-        $this->copyfrom($data);
-        if($this->validate()) {
-            try {
-                $this->save();
-                $info = $this->cast(NULL, 0);
-                $result['data'] = $info;
-                $status['code'] = 1;
-                $status['message'] = 'Sales Product Successfully Added.';
-            } catch(PDOException $e) {
+    public function createSales($data, $sales_id): array {
+        foreach ($data as $item) {
+            $this->sales_order_id = $sales_id;
+            $this->product_id = $item['product_id'];
+            $this->buying_price = $item['buying_price'];
+            $this->selling_price = $item['selling_price'];
+            $this->discount_amount = $item['discount_amount'];
+            $this->amount_unit = $item['amount_unit'];
+            if($this->validate()) {
+                try {
+                    $this->save();
+                    $product_list[] = $this->cast(NULL, 0);
+                    $this->reset();
+                    $status['code'] = 1;
+                    $status['message'] = 'Sales Product Successfully Added.';
+                } catch(PDOException $e) {
+                    $status['code'] = 0;
+                    $status['message'] = $e->errorInfo[2];
+                }
+            } else {
                 $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status['message'] = Base::instance()->get('error_msg');
             }
-        } else {
-            $status['code'] = 0;
-            $status['message'] = Base::instance()->get('error_msg');
         }
-        $result['status'] = $status;
-        return $result;
+        return $product_list;
     }
 
     public function getAll(): array {

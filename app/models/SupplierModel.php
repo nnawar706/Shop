@@ -5,6 +5,14 @@ class SupplierModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
+        'inventory_trace_from_supplier_id' => [
+            'has-many' => ['\InventoryTraceModel','from_supplier_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
+        'inventory_trace_to_supplier_id' => [
+            'has-many' => ['\InventoryTraceModel','to_supplier_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
         'name' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,
             'validate' => 'required|||unique|||alpha|||max_len,100'

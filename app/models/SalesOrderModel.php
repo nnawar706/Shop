@@ -28,10 +28,6 @@ class SalesOrderModel extends \DB\Cortex {
             'belongs-to-one' => '\SalesTypeModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
             'validate' => 'required'
-        ],
-        'sales_time' => [
-            'type' => \DB\SQL\Schema::DT_TIMESTAMP,
-            'validate' => 'required'
         ]
     ];
 
@@ -48,24 +44,24 @@ class SalesOrderModel extends \DB\Cortex {
      * @throws Exception
      */
     public function createOrder($data): array {
-        $this->copyfrom($data);
+        $this->customer_id = $data['customer_id'];
+        $this->branch_id = $data['branch_id'];
+        $this->user_id = $data['user_id'];
+        $this->sales_type_id = $data['sales_type_id'];
+        $this->sold_at = date('y-m-d h:i:s');
         if($this->validate()) {
             try {
                 $this->save();
-                $info = $this->cast(NULL, 0);
-                $result['data'] = $info;
-                $status['code'] = 1;
-                $status['message'] = 'Sales Order Successfully Added.';
+                $status['id'] = $this->id;
             } catch(PDOException $e) {
-                $status['code'] = 0;
+                $status['id'] = 0;
                 $status['message'] = $e->errorInfo[2];
             }
         } else {
-            $status['code'] = 0;
+            $status['id'] = 0;
             $status['message'] = Base::instance()->get('error_msg');
         }
-        $result['status'] = $status;
-        return $result;
+        return $status;
     }
 
     public function getAll(): array {

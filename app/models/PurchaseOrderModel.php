@@ -9,6 +9,10 @@ class PurchaseOrderModel extends \DB\Cortex {
             'has-one' => ['\PurchaseTransactionModel','purchase_id'],
             'type' => \DB\SQL\Schema::DT_INT
         ],
+        'inventory_trace_purchase_id' => [
+            'has-many' => ['\InventoryTraceModel','purchase_id'],
+            'type' => \DB\SQL\Schema::DT_INT
+        ],
         'status' => [
             'type' => \DB\SQL\Schema::DT_VARCHAR128,
             'validate' => 'required|||max_len,50'

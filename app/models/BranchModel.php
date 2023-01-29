@@ -13,6 +13,14 @@ class BranchModel extends \DB\Cortex {
             'has-many' => ['\SalesOrderModel','branch_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT
         ],
+        'inventory_trace_from_branch_id' => [
+            'has-many' => ['\InventoryTraceModel','from_branch_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
+        'inventory_trace_to_branch_id' => [
+            'has-many' => ['\InventoryTraceModel','to_branch_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
         'shop_id' => [
             'belongs-to-one' => '\ShopModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
@@ -68,13 +76,13 @@ class BranchModel extends \DB\Cortex {
         $this->fields(['inventory_branch_id', 'sales_order_branch_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
         if($data) {
+            $result['data'] = $data;
             $status['code'] = 1;
             $status['message'] = 'All branch successfully fetched.';
         } else {
             $status['code'] = 0;
             $status['message'] = 'No branch found.';
         }
-        $result['data'] = $data;
         $result['status'] = $status;
         return $result;
     }
@@ -83,31 +91,29 @@ class BranchModel extends \DB\Cortex {
         $this->fields(['inventory_branch_id', 'sales_order_branch_id'], true);
         $data = $this->afind(['shop_id=?', $id], ['order'=>'id DESC'], 0, 0);
         if($data) {
+            $result['data'] = $data;
             $status['code'] = 1;
             $status['message'] = 'branches under one shop are successfully fetched.';
         } else {
             $status['code'] = 0;
             $status['message'] = 'No branch found.';
         }
-        $result['data'] = $data;
         $result['status'] = $status;
         return $result;
     }
 
     public function getBranch($id): array {
         $this->fields(['inventory_branch_id', 'sales_order_branch_id'], true);
-        $data = [];
-        $this->fields(['user_profile_shop_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 0);
+            $result['data'] = $data;
             $status['code'] = 1;
             $status['message'] = 'Branch Successfully Fetched.';
         } else {
             $status['code'] = 0;
             $status['message'] = 'Invalid Branch Id.';
         }
-        $result['data'] = $data;
         $result['status'] = $status;
         return $result;
     }
@@ -116,7 +122,6 @@ class BranchModel extends \DB\Cortex {
      * @throws Exception
      */
     public function updateBranch($id, $data): array {
-        $info = [];
         $this->load(['id=?', $id]);
         if($this->id) {
             $this->name = $data['name'] ?? '';
@@ -126,6 +131,7 @@ class BranchModel extends \DB\Cortex {
                 try {
                     $this->save();
                     $info['id'] = $this->id;
+                    $result['data'] = $info;
                     $status['code'] = 1;
                     $status['message'] = 'Shop Successfully Updated.';
                 } catch(PDOException $e) {
@@ -140,7 +146,6 @@ class BranchModel extends \DB\Cortex {
             $status['code'] = 0;
             $status['message'] = 'Invalid Shop Id.';
         }
-        $result['data'] = $info;
         $result['status'] = $status;
         return $result;
     }

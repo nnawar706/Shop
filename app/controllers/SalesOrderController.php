@@ -19,7 +19,16 @@ class SalesOrderController extends MainController {
                 $data = json_decode($this->f3->get('BODY'), true);
                 if (json_last_error() == JSON_ERROR_NONE) {
                     $order = new SalesOrderModel();
-                    $status = $order->createOrder($data);
+                    $sales_order = $order->createOrder($data);
+                    if ($sales_order['id'] != 0) {
+                        $product = new SalesProductModel();
+                        $status['status']['code'] = 1;
+                        $status['status']['message'] = "order placed";
+                        $status['data'] = $product->createSales($data['product_name_list'],$sales_order['id']);
+                    } else {
+                        $status['code'] = 0;
+                        $status['status']['message'] = "something wnt wrong";
+                    }
                     header('Content-Type: application/json');
                     echo json_encode($status);
                 }

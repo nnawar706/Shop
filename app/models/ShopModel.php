@@ -55,8 +55,8 @@ class ShopModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['user_profile_shop_id', 'branch_shop_id'], true);
-        $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
+        $this->fields(['user_profile_shop_id','branch_shop_id.location','branch_shop_id.geolocation','branch_shop_id.inventory_branch_id','branch_shop_id.sales_order_branch_id'], true);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $status['code'] = 1;
             $status['message'] = 'All shop successfully fetched.';

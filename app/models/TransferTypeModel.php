@@ -5,6 +5,10 @@ class TransferTypeModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
+        'inventory_trace_transfer_type_id' => [
+            'has-many' => ['\InventoryTraceModel','transfer_type_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
         'name' => [
             'type' => \DB\SQL\Schema::DT_VARCHAR128,
             'validate' => 'required|||unique|||max_len,50',
