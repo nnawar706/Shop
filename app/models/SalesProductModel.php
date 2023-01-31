@@ -62,7 +62,7 @@ class SalesProductModel extends \DB\Cortex {
                 $this->buying_price = $prod['data']['cost_price'];
                 $this->amount_unit = $item['amount_unit'] ?? 1;
                 $this->discount_amount = $item['discount_amount'] ?? 0;
-
+//
                 if($this->validate()) {
                     try {
                         $this->save();
