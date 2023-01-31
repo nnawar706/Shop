@@ -7,15 +7,18 @@ class InventoryTraceModel extends \DB\Cortex {
     protected $fieldConf = [
         'transfer_type_id' => [
             'belongs-to-one' => '\TransferTypeModel',
-            'type' => \DB\SQL\Schema::DT_TINYINT
+            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'validate' => 'required'
         ],
         'purchase_id' => [
             'belongs-to-one' => '\PurchaseOrderModel',
-            'type' => \DB\SQL\Schema::DT_INT
+            'type' => \DB\SQL\Schema::DT_INT,
+            'validate' => 'required'
         ],
         'product_id' => [
             'belongs-to-one' => '\ProductModel',
-            'type' => \DB\SQL\Schema::DT_TINYINT
+            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'validate' => 'required'
         ],
         'from_branch_id' => [
             'belongs-to-one' => '\BranchModel',
@@ -67,26 +70,21 @@ class InventoryTraceModel extends \DB\Cortex {
     /**
      * @throws Exception
      */
-    public function createTrace($data): array {
-        $this->copyfrom($data);
-        $this->event_time = date('y-m-d h:i:s');
-
-        if($this->validate()) {
-            try {
+    public function createTrace($data, $id) {
+        foreach ($data['product_name_list'] as $item) {
+            $this->transfer_type_id = 1;
+            $this->purchase_id = $id;
+            $this->product_id = $item['product_id'];
+            $this->product_quantity = $item['amount_unit'];
+            $this->from_supplier_id = $data['supplier_id'];
+            $this->to_branch_id = $data['default_branch_id'] ?? 1;
+            $this->event_time = date('y-m-d h:i:s');
+            if($this->validate()) {
                 $this->save();
-                $info = $this->cast(NULL, 0);
-                $result['data'] = $info;
-                $status['code'] = 1;
-                $status['message'] = 'Inventory trace Successfully Added.';
-            } catch(PDOException $e) {
-                $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status[] = $this->cast(NULL, 0);
+                $this->reset();
             }
-        } else {
-            $status['code'] = 0;
-            $status['message'] = Base::instance()->get('error_msg');
         }
-        $result['status'] = $status;
-        return $result;
+        return $status;
     }
 }

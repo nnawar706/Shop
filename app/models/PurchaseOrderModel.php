@@ -9,13 +9,27 @@ class PurchaseOrderModel extends \DB\Cortex {
             'has-one' => ['\PurchaseTransactionModel','purchase_id'],
             'type' => \DB\SQL\Schema::DT_INT
         ],
+        'purchase_product_purchase_order_id' => [
+            'has-many' => ['\PurchaseProductModel','purchase_order_id'],
+            'type' => \DB\SQL\Schema::DT_INT
+        ],
         'inventory_trace_purchase_id' => [
             'has-many' => ['\InventoryTraceModel','purchase_id'],
             'type' => \DB\SQL\Schema::DT_INT
         ],
-        'status' => [
-            'type' => \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||max_len,50'
+        'default_branch_id' => [
+            'belongs-to-one' => '\BranchModel',
+            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'validate' => 'required'
+        ],
+        'supplier_id' => [
+            'belongs-to-one' => '\SupplierModel',
+            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'validate' => 'required'
+        ],
+        'supply_schedule' => [
+            'type' => \DB\SQL\Schema::DT_TIMESTAMP,
+            'validate' => 'required'
         ]
     ];
 
@@ -26,6 +40,83 @@ class PurchaseOrderModel extends \DB\Cortex {
         $vd->onError(function($text,$key) {
             Base::instance()->set('error_msg', $text);
         });
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function createOrder($data): array {
+        $this->default_branch_id = $data['branch_id'] ?? 1;
+        $this->supplier_id = $data['supplier_id'] ?? '';
+        $this->total_amount = $data['total_amount'];
+        $this->paid_amount = $data['paid_amount'];
+        $this->supply_schedule = $data['supply_schedule'] ?? '';
+        $this->purchased_at = date('y-m-d h:i:s');
+        if($this->validate()) {
+            try {
+                $this->save();
+                $status['id'] = $this->id;
+            } catch(PDOException $e) {
+                $status['id'] = 0;
+                $status['message'] = $e->errorInfo[2];
+            }
+        } else {
+            $status['id'] = 0;
+            $status['message'] = Base::instance()->get('error_msg');
+        }
+        return $status;
+    }
+
+    public function getPurchase($id): array {
+        $this->fields(['purchase_transaction_purchase_id', 'purchase_product_purchase_order_id','inventory_trace_purchase_id'], true);
+        $this->load(['id=?', $id]);
+        if($this->id) {
+            $data = $this->cast(NULL, 0);
+            $result['data'] = $data;
+            $status['code'] = 1;
+            $status['message'] = 'Purchase Order Successfully Fetched.';
+        } else {
+            $status['code'] = 0;
+            $status['message'] = 'Invalid Purchase Order Id.';
+        }
+        $result['status'] = $status;
+        return $result;
+    }
+
+    public function getAll(): array {
+        $this->fields(['purchase_transaction_purchase_id', 'purchase_product_purchase_order_id','inventory_trace_purchase_id'], true);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
+        if($data) {
+            $result['data'] = $data;
+            $status['code'] = 1;
+            $status['message'] = 'All Purchase Order successfully fetched.';
+        } else {
+            $status['code'] = 0;
+            $status['message'] = 'No Purchase Order found.';
+        }
+        $result['status'] = $status;
+        return $result;
+    }
+
+    public function deletePurchase($id): array {
+        $this->load(['id=?', $id]);
+        if($this->id) {
+            try {
+                $this->erase();
+                $data['id'] = $this->id;
+                $result['data'] = $data;
+                $status['code'] = 1;
+                $status['message'] = 'Purchase Product Successfully Deleted.';
+            } catch(PDOException $e) {
+                $status['code'] = 0;
+                $status['message'] = $e->errorInfo[2];
+            }
+        } else {
+            $status['code'] = 0;
+            $status['message'] = 'Invalid Purchase Product Id.';
+        }
+        $result['status'] = $status;
+        return $result;
     }
 
 }

@@ -45,9 +45,10 @@ class SalesProductModel extends \DB\Cortex {
     /**
      * @throws Exception
      */
-    public function createSales($data, $sales_id) {
+    public function createSales($data, $sales_id): array {
         $product = new ProductModel();
-        $this->db->begin();
+        $inv = new InventoryModel();
+        $status['sales_order_id'] = $sales_id;
         foreach ($data['product_name_list'] as $item) {
             $this->sales_order_id = $sales_id;
             $prod = $product->getProduct($item['product_id']);
@@ -59,30 +60,31 @@ class SalesProductModel extends \DB\Cortex {
                 }
                 $this->product_id = $item['product_id'];
                 $this->buying_price = $prod['data']['cost_price'];
-                $this->amount_unit = $item['amount_unit'];
-                $this->discount_amount = $item['discount_amount'];
+                $this->amount_unit = $item['amount_unit'] ?? 1;
+                $this->discount_amount = $item['discount_amount'] ?? 0;
+
                 if($this->validate()) {
                     try {
                         $this->save();
-                        $product_list[] = $this->cast(NULL, 0);
+                        $inv->saleProduct($data['branch_id'], $item['product_id'], $item['amount_unit']);
+                        $status['product_list'][] = $this->cast(NULL, 0);
+                        $status['code'][] = 1;
+                        $status['message'][] = 'Sales Product Successfully Added.';
                         $this->reset();
-                        $status['code'] = 1;
-                        $status['message'] = 'Sales Product Successfully Added.';
                     } catch(PDOException $e) {
-                        $status['code'] = 0;
-                        $status['message'] = $e->errorInfo[2];
+                        $status['code'][] = 0;
+                        $status['message'][] = $e->errorInfo[2];
                     }
                 } else {
-                    $status['code'] = 0;
-                    $status['message'] = Base::instance()->get('error_msg');
+                    $status['code'][] = 0;
+                    $status['message'][] = Base::instance()->get('error_msg');
                 }
             } else {
-                $status['code'] = 0;
-                $status['message'] = Base::instance()->get('error_msg');
+                $status['code'][] = 0;
+                $status['message'][] = 'Product not available';
             }
         }
-        $this->db->commit();
-        return $product_list;
+        return $status;
     }
 
     public function getAll(): array {

@@ -41,7 +41,7 @@ class InventoryModel extends \DB\Cortex {
         $this->product_id = $data['product_id'] ?? '';
         $this->branch_id = $data['to_branch_id'] ?? '';
         $this->stock_amount = $data['product_quantity'] ?? '';
-        $this->min_stock_alert = $data['min_stock_alert'] ?? '';
+        $this->min_stock_alert = $data['min_stock_alert'] ?? 2;
         if ($this->validate()) {
             try {
                 $this->save();
@@ -141,6 +141,7 @@ class InventoryModel extends \DB\Cortex {
             $stock_updated = $stock + $product_quantity;
             $this->stock_amount = $stock_updated;
             $this->save();
+            $this->reset();
             $info['message'] = "Stock updated";
             $info['status'] = 1;
         } else {
@@ -148,4 +149,32 @@ class InventoryModel extends \DB\Cortex {
         }
         return $info;
     }
+
+    public function saleProduct($branch, $product, $amount) {
+        $this->load(['product_id=? AND branch_id=?', $product, $branch]);
+        $stock = $this->stock_amount;
+        $stock_updated = $stock - $amount;
+        $this->stock_amount = $stock_updated;
+        $this->save();
+    }
+
+    public function checkEligibility($data): array {
+        foreach ($data['product_name_list'] as $item) {
+            $this->load(['product_id=? AND branch_id=?',$item['product_id'],$data['branch_id']]);
+            if($this->id){
+                if($this->stock_amount - $item['amount_unit'] >= 0) {
+                    $status['code'][] = 1;
+                    $status['message'][] = "available in stock";
+                } else {
+                    $status['code'][] = 0;
+                    $status['message'][] = "insufficient amount of product";
+                }
+            } else {
+                $status['code'][] = 0;
+                $status['message'][] = "product is not available in this branch";
+            }
+        }
+        return $status;
+    }
+
 }

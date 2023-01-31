@@ -33,12 +33,11 @@ class ShopModel extends \DB\Cortex {
      * @throws Exception
      */
     public function createShop($data): array {
-        $info = [];
         $this->name = $data['name'] ?? '';
         if($this->validate()) {
             try {
                 $this->save();
-                $info['id'] = $this->id;
+                $result['data']['id'] = $this->id;
                 $status['code'] = 1;
                 $status['message'] = 'Shop Successfully Added.';
             } catch(PDOException $e) {
@@ -49,7 +48,6 @@ class ShopModel extends \DB\Cortex {
             $status['code'] = 0;
             $status['message'] = Base::instance()->get('error_msg');
         }
-        $result['data'] = $info;
         $result['status'] = $status;
         return $result;
     }

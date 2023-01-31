@@ -18,16 +18,23 @@ class SalesOrderController extends MainController {
             if (strlen($this->f3->get('BODY'))) {
                 $data = json_decode($this->f3->get('BODY'), true);
                 if (json_last_error() == JSON_ERROR_NONE) {
-                    $order = new SalesOrderModel();
-                    $sales_order = $order->createOrder($data);
-                    if ($sales_order['id'] != 0) {
-                        $product = new SalesProductModel();
-                        $status['status']['code'] = 1;
-                        $status['status']['message'] = "order placed";
-                        $status['data'] = $product->createSales($data, $sales_order['id']);
+                    $inventory = new InventoryModel();
+                    $eligibility = $inventory->checkEligibility($data);
+                    if (!in_array("0", $eligibility['code'])) {
+                        $order = new SalesOrderModel();
+                        $sales_order = $order->createOrder($data);
+                        if ($sales_order['id'] != 0) {
+                            $product = new SalesProductModel();
+                            $status['status']['code'] = 1;
+                            $status['status']['message'] = "order placed";
+                            $status['sales_data'] = $product->createSales($data, $sales_order['id']);
+                        } else {
+                            $status['status']['code'] = 0;
+                            $status['status']['message'] = "something went wrong";
+                        }
                     } else {
                         $status['code'] = 0;
-                        $status['status']['message'] = "something went wrong";
+                        $status['status']['message'] = $eligibility['message'];
                     }
                     header('Content-Type: application/json');
                     echo json_encode($status);

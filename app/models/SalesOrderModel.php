@@ -48,11 +48,12 @@ class SalesOrderModel extends \DB\Cortex {
      * @throws Exception
      */
     public function createOrder($data): array {
-        $this->customer_id = $data['customer_id'];
-        $this->branch_id = $data['branch_id'];
-        $this->user_id = $data['user_id'];
-        $this->sales_type_id = $data['sales_type_id'];
-        $this->sold_at = date('y-m-d h:i:s');
+        $this->customer_id = $data['customer_id'] ?? '';
+        $this->branch_id = $data['branch_id'] ?? '';
+        $this->user_id = $data['user_id'] ?? '';
+        $this->sales_type_id = $data['sales_type_id'] ?? '';
+        $this->total_amount = $data['total_amount'] ?? '';
+        $this->sold_at = date('y-m-d h:i:s') ?? '';
         if($this->validate()) {
             try {
                 $this->save();

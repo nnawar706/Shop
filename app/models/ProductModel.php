@@ -13,6 +13,10 @@ class ProductModel extends \DB\Cortex {
             'has-many' => ['\SalesProductModel','product_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT
         ],
+        'purchase_product_product_id' => [
+            'has-many' => ['\PurchaseProductModel','product_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
         'inventory_trace_product_id' => [
             'has-many' => ['\InventoryTraceModel','product_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT
@@ -115,7 +119,7 @@ class ProductModel extends \DB\Cortex {
 
     public function getAll(): array {
         $this->fields(['inventory_product_id','sales_product_product_id','unit_id.product_unit_id','unit_id.product_raw_material_unit_id',
-            'brand_id.logo_url','brand_id.description','brand_id.product_brand_id','category_id.description','category_id.featured',
+            'brand_id.logo_url','brand_id.description','brand_id.product_brand_id','category_id.description','category_id.featured','purchase_product_product_id',
             'category_id.parent_id','category_id.category_parent_id','category_id.product_category_id','category_id.product_formula_category_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
@@ -132,7 +136,7 @@ class ProductModel extends \DB\Cortex {
 
     public function getProduct($id): array {
         $this->fields(['inventory_product_id','sales_product_product_id','unit_id.product_unit_id','unit_id.product_raw_material_unit_id',
-            'brand_id.logo_url','brand_id.description','brand_id.product_brand_id','category_id.description','category_id.featured',
+            'brand_id.logo_url','brand_id.description','brand_id.product_brand_id','category_id.description','category_id.featured','purchase_product_product_id',
             'category_id.parent_id','category_id.category_parent_id','category_id.product_category_id','category_id.product_formula_category_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
