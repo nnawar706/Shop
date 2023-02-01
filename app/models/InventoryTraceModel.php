@@ -82,6 +82,9 @@ class InventoryTraceModel extends \DB\Cortex {
             if($this->validate()) {
                 $this->save();
                 $status[] = $this->cast(NULL, 0);
+                $log = new LogModel();
+                $stat = "Product ID: " . $item['product_id'] . " has been purchased from supplier ID: " . $item['from_supplier_id'] . " at branch ID: " . $item['to_branch_id'];
+                $log->add($stat, 9);
                 $this->reset();
             }
         }
@@ -102,8 +105,10 @@ class InventoryTraceModel extends \DB\Cortex {
         if($this->validate()) {
             try {
                 $this->save();
-                $data['id'] = $this->cast(NULL, 0);
-                $result['data'] = $data;
+                $status['data'] = $this->cast(NULL, 0);
+                $log = new LogModel();
+                $stat = "Product ID: " . $data['product_id'] . " has been transferred from branch ID: " . $data['from_branch_id'] . " to branch ID: " . $data['to_branch_id'];
+                $log->add($stat, 10);
                 $status['code'] = 1;
                 $status['message'] = 'Stock Successfully transferred.';
             } catch (PDOException $e) {

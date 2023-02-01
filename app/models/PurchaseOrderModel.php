@@ -56,6 +56,9 @@ class PurchaseOrderModel extends \DB\Cortex {
             try {
                 $this->save();
                 $status['id'] = $this->id;
+                $log = new LogModel();
+                $stat = "Products have been bought from supplier ID: " . $data['supplier_id'];
+                $log->add($stat, 11);
             } catch(PDOException $e) {
                 $status['id'] = 0;
                 $status['message'] = $e->errorInfo[2];

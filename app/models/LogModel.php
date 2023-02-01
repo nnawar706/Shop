@@ -51,4 +51,21 @@ class LogModel extends \DB\Cortex {
             return $this->afind(['date(event_time)>=? AND date(event_time)<=?', $date_start, $date_end], ['limit'=>$perPage, 'offset'=>$offset], 0, 0);
         }
     }
+
+    public function add($data, $type) {
+        $this->log_type_id = $type;
+        $this->details = $data;
+        $this->save();
+    }
+
+    public function addCron($data) {
+        $this->db->exec('DELETE FROM log WHERE log_type_id=3');
+        foreach ($data as $row) {
+            $stat = "Stock refill alert for product_id " . $row['product_id'] . " at branch_id " . $row['branch_id'];
+            $this->details = $stat;
+            $this->log_type_id = 3;
+            $this->save();
+            $this->reset();
+        }
+    }
 }

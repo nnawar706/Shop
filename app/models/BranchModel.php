@@ -55,6 +55,9 @@ class BranchModel extends \DB\Cortex {
         if($this->validate()) {
             try {
                 $this->save();
+                $log = new LogModel();
+                $stat = "Branch ID: " . $this->id . " has been created.";
+                $log->add($stat, 4);
                 $result = $this->getBranch($this->id);
                 $status['code'] = 1;
                 $status['message'] = 'Branch Successfully Added.';
@@ -132,6 +135,9 @@ class BranchModel extends \DB\Cortex {
                 try {
                     $this->save();
                     $result = $this->getBranch($this->id);
+                    $log = new LogModel();
+                    $stat = "Branch ID: " . $this->id . " has been updated.";
+                    $log->add($stat, 4);
                     $status['code'] = 1;
                     $status['message'] = 'Branch Successfully Updated.';
                 } catch(PDOException $e) {
@@ -156,6 +162,9 @@ class BranchModel extends \DB\Cortex {
             try {
                 $this->erase();
                 $data['id'] = $this->id;
+                $log = new LogModel();
+                $stat = "Branch ID: " . $this->id . " has been deleted.";
+                $log->add($stat, 4);
                 $result['data'] = $data;
                 $status['code'] = 1;
                 $status['message'] = 'Branch Successfully Deleted.';

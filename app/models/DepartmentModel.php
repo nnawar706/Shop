@@ -32,8 +32,10 @@ class DepartmentModel extends \DB\Cortex {
         if($this->validate()) {
             try {
                 $this->save();
-                $info['id'] = $this->id;
-                $result['data'] = $info;
+                $result = $this->getDepartment($this->id);
+                $log = new LogModel();
+                $stat = "Department ID: " . $this->id . " has been created.";
+                $log->add($stat, 8);
                 $status['code'] = 1;
                 $status['message'] = 'Department Successfully Added.';
             } catch(PDOException $e) {
@@ -89,8 +91,10 @@ class DepartmentModel extends \DB\Cortex {
             if($this->validate()) {
                 try {
                     $this->save();
-                    $result['data']['id'] = $this->id;
-                    $result['data']['name'] = $this->name;
+                    $result = $this->getDepartment($this->id);
+                    $log = new LogModel();
+                    $stat = "Department ID: " . $this->id . " has been updated.";
+                    $log->add($stat, 8);
                     $status['code'] = 1;
                     $status['message'] = 'Department Successfully Updated.';
                 } catch(PDOException $e) {
@@ -115,6 +119,9 @@ class DepartmentModel extends \DB\Cortex {
             try {
                 $this->erase();
                 $result['data']['id'] = $this->id;
+                $log = new LogModel();
+                $stat = "Department ID: " . $this->id . " has been deleted.";
+                $log->add($stat, 8);
                 $status['code'] = 1;
                 $status['message'] = 'Department Successfully Deleted.';
             } catch(PDOException $e) {

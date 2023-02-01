@@ -42,6 +42,9 @@ class BrandModel extends \DB\Cortex {
                 $this->save();
                 $info = $this->cast(NULL, 0);
                 $result['data'] = $info;
+                $log = new LogModel();
+                $stat = "Brand ID: " . $this->id . " has been created.";
+                $log->add($stat, 5);
                 $status['code'] = 1;
                 $status['message'] = 'Brand Successfully Added.';
             } catch(PDOException $e) {
@@ -108,6 +111,9 @@ class BrandModel extends \DB\Cortex {
                     $this->save();
                     $info = $this->cast(NULL, 0);
                     $result['data'] = $info;
+                    $log = new LogModel();
+                    $stat = "Brand ID: " . $this->id . " has been updated.";
+                    $log->add($stat, 5);
                     $status['code'] = 1;
                     $status['message'] = 'Brand Successfully Updated.';
                 } catch(PDOException $e) {
@@ -131,8 +137,10 @@ class BrandModel extends \DB\Cortex {
         if($this->id) {
             try {
                 $this->erase();
-                $data['id'] = $this->id;
-                $result['data'] = $data;
+                $result['data']['id'] = $this->id;
+                $log = new LogModel();
+                $stat = "Brand ID: " . $this->id . " has been deleted.";
+                $log->add($stat, 5);
                 $status['code'] = 1;
                 $status['message'] = 'brand Successfully Deleted.';
             } catch(PDOException $e) {

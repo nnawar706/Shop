@@ -63,6 +63,9 @@ class UserModel extends \DB\Cortex {
                 $this->password = md5($data['password']);
                 $this->save();
                 $result = $this->getUser($this->id);
+                $log = new LogModel();
+                $stat = "User ID: " . $this->id . " has been created";
+                $log->add($stat, 15);
                 $status['code'] = 1;
                 $status['message'] = 'User Successfully Added.';
             } catch (PDOException $e) {
@@ -134,6 +137,9 @@ class UserModel extends \DB\Cortex {
                     $this->password_changed_at = date('y-m-d h:i:s');
                     $this->save();
                     $result = $this->getUser($this->id);
+                    $log = new LogModel();
+                    $stat = "User ID: " . $this->id . " has been updated";
+                    $log->add($stat, 15);
                     $status['code'] = 1;
                     $status['message'] = 'User Successfully Updated.';
                 } catch (PDOException $e) {
@@ -165,6 +171,9 @@ class UserModel extends \DB\Cortex {
             try {
                 $this->erase();
                 $result['data']['id'] = $this->id;
+                $log = new LogModel();
+                $stat = "User ID: " . $this->id . " has been deleted";
+                $log->add($stat, 15);
                 $status['code'] = 1;
                 $status['message'] = 'User Successfully Deleted.';
             } catch(PDOException $e) {

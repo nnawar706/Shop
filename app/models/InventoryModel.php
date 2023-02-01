@@ -177,8 +177,8 @@ class InventoryModel extends \DB\Cortex {
         return $status;
     }
 
-    public function checkAlert() {
-        $this->cast([],[]);
+    public function alertChecker(): ?array{
+        return $this->afind(['stock_amount<=min_stock_alert'], [], 0, 0);
     }
 
 }

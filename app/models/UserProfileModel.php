@@ -70,13 +70,15 @@ class UserProfileModel extends \DB\Cortex {
         if($this->validate()) {
             try {
                 $this->save();
-                $info = $this->cast(NULL, 0);
-                $result['data'] = $info;
+                $result = $this->getProfile($this->id);
+                $log = new LogModel();
+                $stat = "User profile ID: " . $this->id . " has been created for user ID: ." . $data['user_id'];
+                $log->add($stat, 13);
                 $status['code'] = 1;
                 $status['message'] = 'User profile Successfully Added.';
             } catch(PDOException $e) {
                 $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status['message'] = ($e->errorInfo[1] == 1452) ? "Invalid input data." : (($e->errorInfo[1] == 1062) ? "User profile for this user already exists." : $e->errorInfo[1]);
             }
         } else {
             $status['code'] = 0;
@@ -103,8 +105,10 @@ class UserProfileModel extends \DB\Cortex {
             if($this->validate()) {
                 try {
                     $this->save();
-                    $info = $this->cast(NULL, 0);
-                    $result['data'] = $info;
+                    $result = $this->getProfile($this->id);
+                    $log = new LogModel();
+                    $stat = "User profile ID: " . $this->id . " has been updated";
+                    $log->add($stat, 13);
                     $status['code'] = 1;
                     $status['message'] = 'User profile Successfully Updated.';
                 } catch(PDOException $e) {
@@ -127,7 +131,6 @@ class UserProfileModel extends \DB\Cortex {
         $this->fields(['user_id.id','user_id.phone_username']);
         $this->fields(['designation_id.user_profile_designation_id','department_id.user_profile_department_id','shop_id.user_profile_shop_id','shop_id.branch_shop_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
-
         if($data) {
             $result['data'] = $data;
             $status['code'] = 1;
@@ -174,8 +177,10 @@ class UserProfileModel extends \DB\Cortex {
         if($this->id) {
             try {
                 $this->erase();
-                $data['id'] = $this->id;
-                $result['data'] = $data;
+                $result['data']['id'] = $this->id;
+                $log = new LogModel();
+                $stat = "User profile ID: " . $this->id . " has been deleted";
+                $log->add($stat, 13);
                 $status['code'] = 1;
                 $status['message'] = 'User Profile Successfully Deleted.';
             } catch(PDOException $e) {
@@ -209,6 +214,4 @@ class UserProfileModel extends \DB\Cortex {
         $result['status'] = $status;
         return $result;
     }
-
-
 }

@@ -57,6 +57,9 @@ class CustomerModel extends \DB\Cortex {
                 $this->save();
                 $info = $this->cast(NULL, 0);
                 $result['data'] = $info;
+                $log = new LogModel();
+                $stat = "Customer ID: " . $this->id . " has been created.";
+                $log->add($stat, 7);
                 $status['code'] = 1;
                 $status['message'] = 'Customer Successfully Added.';
             } catch(PDOException $e) {
@@ -91,6 +94,9 @@ class CustomerModel extends \DB\Cortex {
                     $this->save();
                     $info = $this->cast(NULL, 0);
                     $result['data'] = $info;
+                    $log = new LogModel();
+                    $stat = "Customer ID: " . $this->id . " has been updated.";
+                    $log->add($stat, 7);
                     $status['code'] = 1;
                     $status['message'] = 'Customer Successfully Updated.';
                 } catch(PDOException $e) {
@@ -171,6 +177,9 @@ class CustomerModel extends \DB\Cortex {
             try {
                 $this->erase();
                 $data['id'] = $this->id;
+                $log = new LogModel();
+                $stat = "Customer ID: " . $this->id . " has been deleted.";
+                $log->add($stat, 7);
                 $result['data'] = $data;
                 $status['code'] = 1;
                 $status['message'] = 'Customer Successfully Deleted.';

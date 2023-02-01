@@ -57,6 +57,9 @@ class CategoryModel extends \DB\Cortex {
             try {
                 $this->save();
                 $result = $this->getCategory($this->id);
+                $log = new LogModel();
+                $stat = "Category ID: " . $this->id . " has been created.";
+                $log->add($stat, 6);
                 $status['code'] = 1;
                 $status['message'] = 'Category Successfully Added.';
             } catch(PDOException $e) {
@@ -132,6 +135,9 @@ class CategoryModel extends \DB\Cortex {
                 try {
                     $this->save();
                     $result = $this->getCategory($this->id);
+                    $log = new LogModel();
+                    $stat = "Category ID: " . $this->id . " has been updated.";
+                    $log->add($stat, 6);
                     $status['code'] = 1;
                     $status['message'] = 'Category Successfully Updated.';
                 } catch(PDOException $e) {
@@ -157,6 +163,9 @@ class CategoryModel extends \DB\Cortex {
                 $this->erase();
                 $data['id'] = $this->id;
                 $result['data'] = $data;
+                $log = new LogModel();
+                $stat = "Category ID: " . $this->id . " has been deleted.";
+                $log->add($stat, 6);
                 $status['code'] = 1;
                 $status['message'] = 'Category Successfully Deleted.';
             } catch(PDOException $e) {

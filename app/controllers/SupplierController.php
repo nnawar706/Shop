@@ -41,7 +41,7 @@ class SupplierController extends MainController {
                     $this->uploadImage();
                     if($this->image_name!=''){
                         $supplier->addImage($result['data']['id'], 'https://nafisa.selopian.us/ui/images/suppliers/'.$this->image_name);
-                        $result['data']['image_url']= 'https://nafisa.selopian.us/ui/images/suppliers/'.$this->image_name;
+                        $result['data']['profile_photo_url']= 'https://nafisa.selopian.us/ui/images/suppliers/'.$this->image_name;
                     }
                 } catch(PDOException $e) {
                     $supplier->deleteSupplier($result['data']['id']);

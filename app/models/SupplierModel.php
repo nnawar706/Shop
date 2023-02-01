@@ -15,7 +15,7 @@ class SupplierModel extends \DB\Cortex {
         ],
         'name' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||unique|||alpha|||max_len,100'
+            'validate' => 'required|||unique|||alpha|||min_len,5|||max_len,100'
         ],
         'email' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,
@@ -79,8 +79,10 @@ class SupplierModel extends \DB\Cortex {
         if($this->validate()) {
             try {
                 $this->save();
-                $info = $this->cast(NULL, 0);
-                $result['data'] = $info;
+                $result = $this->getSupplier($this->id);
+                $log = new LogModel();
+                $stat = "Supplier ID: " . $this->id . " has been created";
+                $log->add($stat, 14);
                 $status['code'] = 1;
                 $status['message'] = 'Supplier Successfully Added.';
             } catch(PDOException $e) {
@@ -116,8 +118,10 @@ class SupplierModel extends \DB\Cortex {
             if($this->validate()) {
                 try {
                     $this->save();
-                    $info = $this->cast(NULL, 0);
-                    $result['data'] = $info;
+                    $result = $this->getSupplier($this->id);
+                    $log = new LogModel();
+                    $stat = "Supplier ID: " . $this->id . " has been updated";
+                    $log->add($stat, 14);
                     $status['code'] = 1;
                     $status['message'] = 'Supplier Successfully Updated.';
                 } catch(PDOException $e) {
@@ -148,6 +152,7 @@ class SupplierModel extends \DB\Cortex {
     }
 
     public function getSupplier($id): array {
+        $this->fields(['inventory_trace_from_supplier_id','inventory_trace_to_supplier_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 0);
@@ -167,13 +172,15 @@ class SupplierModel extends \DB\Cortex {
         if($this->id) {
             try {
                 $this->erase();
-                $data['id'] = $this->id;
-                $result['data'] = $data;
+                $result['data']['id'] = $this->id;
+                $log = new LogModel();
+                $stat = "Supplier ID: " . $this->id . " has been deleted";
+                $log->add($stat, 14);
                 $status['code'] = 1;
                 $status['message'] = 'Supplier Successfully Deleted.';
             } catch(PDOException $e) {
                 $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status['message'] = ($e->errorInfo[1] == 1451) ? "Deletion of this supplier is restricted." : $e->errorInfo[2];
             }
         } else {
             $status['code'] = 0;
@@ -184,6 +191,7 @@ class SupplierModel extends \DB\Cortex {
     }
 
     public function getAllSuppliers(): array {
+        $this->fields(['inventory_trace_from_supplier_id','inventory_trace_to_supplier_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
         if($data) {
             $result['data'] = $data;

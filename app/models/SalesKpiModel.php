@@ -36,6 +36,9 @@ class SalesKpiModel extends \DB\Cortex {
             try {
                 $this->save();
                 $result = $this->getSalesKpi($this->id);
+                $log = new LogModel();
+                $stat = "Sales KPI ID: " . $this->id . " has been created.";
+                $log->add($stat, 12);
                 $status['code'] = 1;
                 $status['message'] = 'Sales KPI Successfully Added.';
             } catch(PDOException $e) {
@@ -116,6 +119,9 @@ class SalesKpiModel extends \DB\Cortex {
                 try {
                     $this->save();
                     $result = $this->getSalesKpi($this->id);
+                    $log = new LogModel();
+                    $stat = "Sales KPI ID: " . $this->id . " has been updated.";
+                    $log->add($stat, 12);
                     $status['code'] = 1;
                     $status['message'] = 'Sales KPI Successfully Updated.';
                 } catch(PDOException $e) {
@@ -140,6 +146,9 @@ class SalesKpiModel extends \DB\Cortex {
             try {
                 $this->erase();
                 $result['data']['id'] = $this->id;
+                $log = new LogModel();
+                $stat = "Sales KPI ID: " . $this->id . " has been deleted.";
+                $log->add($stat, 12);
                 $status['code'] = 1;
                 $status['message'] = 'Sales KPI Successfully Deleted.';
             } catch(PDOException $e) {

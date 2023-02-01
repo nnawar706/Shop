@@ -103,6 +103,9 @@ class ProductModel extends \DB\Cortex {
                 $this->save();
                 $info = $this->cast(NULL, 0);
                 $result['data'] = $info;
+                $log = new LogModel();
+                $stat = "Product ID: " . $this->id . " has been created.";
+                $log->add($stat, 11);
                 $status['code'] = 1;
                 $status['message'] = 'Product Successfully Added.';
             } catch(PDOException $e) {
@@ -118,9 +121,10 @@ class ProductModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['inventory_product_id','sales_product_product_id','unit_id.product_unit_id','unit_id.product_raw_material_unit_id',
-            'brand_id.logo_url','brand_id.description','brand_id.product_brand_id','category_id.description','category_id.featured','purchase_product_product_id',
-            'category_id.parent_id','category_id.category_parent_id','category_id.product_category_id','category_id.product_formula_category_id'], true);
+        $this->fields(['inventory_product_id','sales_product_product_id','unit_id.product_unit_id',
+            'unit_id.product_raw_material_unit_id','brand_id.logo_url','brand_id.description','brand_id.product_brand_id',
+            'category_id.description','category_id.featured','purchase_product_product_id','category_id.parent_id',
+            'category_id.category_parent_id','category_id.product_category_id','category_id.product_formula_category_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $result['data'] = $data;
@@ -135,9 +139,10 @@ class ProductModel extends \DB\Cortex {
     }
 
     public function getProduct($id): array {
-        $this->fields(['inventory_product_id','sales_product_product_id','unit_id.product_unit_id','unit_id.product_raw_material_unit_id',
-            'brand_id.logo_url','brand_id.description','brand_id.product_brand_id','category_id.description','category_id.featured','purchase_product_product_id',
-            'category_id.parent_id','category_id.category_parent_id','category_id.product_category_id','category_id.product_formula_category_id'], true);
+        $this->fields(['inventory_product_id','sales_product_product_id','unit_id.product_unit_id',
+            'unit_id.product_raw_material_unit_id','brand_id.logo_url','brand_id.description','brand_id.product_brand_id'
+            ,'category_id.description','category_id.featured','purchase_product_product_id','category_id.parent_id',
+            'category_id.category_parent_id','category_id.product_category_id','category_id.product_formula_category_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $info = $this->cast();
@@ -163,8 +168,10 @@ class ProductModel extends \DB\Cortex {
         if($this->id) {
             try {
                 $this->erase();
-                $data['id'] = $this->id;
-                $result['data'] = $data;
+                $result['data']['id'] = $this->id;
+                $log = new LogModel();
+                $stat = "Product ID: " . $this->id . " has been deleted.";
+                $log->add($stat, 11);
                 $status['code'] = 1;
                 $status['message'] = 'Product Successfully Deleted.';
             } catch(PDOException $e) {
@@ -201,6 +208,9 @@ class ProductModel extends \DB\Cortex {
                 $this->save();
                 $info = $this->cast(NULL, 0);
                 $result['data'] = $info;
+                $log = new LogModel();
+                $stat = "Product ID: " . $this->id . " has been updated.";
+                $log->add($stat, 11);
                 $status['code'] = 1;
                 $status['message'] = 'Product Successfully Added.';
             } catch(PDOException $e) {

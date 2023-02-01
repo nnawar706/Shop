@@ -18,10 +18,6 @@ class MainController {
 
     function __construct() {
         date_default_timezone_set('Asia/Dhaka');
-//        header("Access-Control-Allow-Origin: *");
-//        header('Access-Control-Allow-Credentials: true');
-//        header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
-
         $f3 = Base::instance();
         $db = new DB\SQL(
             $f3->get('db_dns') . $f3->get('db_name'),
