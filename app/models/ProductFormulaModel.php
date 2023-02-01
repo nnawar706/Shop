@@ -139,7 +139,6 @@ class ProductFormulaModel extends \DB\Cortex {
     }
 
     public function getByCategory($id): array {
-//        $this->fields(['category_id.category_parent_id', 'category_id.product_category_id','category_id.product_formula_category_id','category_id.featured','category_id.parent_id'], true);
         $data = $this->afind(['category_id=?',$id], ['order'=>'id DESC'], 0, 0);
         if($data) {
             $status['code'] = 1;

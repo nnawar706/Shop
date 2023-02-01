@@ -97,7 +97,6 @@ class ProductModel extends \DB\Cortex {
         $this->discount_amount = $data['discount_amount'] ?? '';
         $this->product_image_url = $data['product_image_url'] ?? 'https://nafisa.selopian.us/ui/images/products/product_img.png';
         unset($data['submit']);
-
         if($this->validate()) {
             try {
                 $this->save();
@@ -121,7 +120,7 @@ class ProductModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['inventory_product_id','sales_product_product_id','unit_id.product_unit_id',
+        $this->fields(['inventory_trace_product_id','inventory_product_id','sales_product_product_id','unit_id.product_unit_id',
             'unit_id.product_raw_material_unit_id','brand_id.logo_url','brand_id.description','brand_id.product_brand_id',
             'category_id.description','category_id.featured','purchase_product_product_id','category_id.parent_id',
             'category_id.category_parent_id','category_id.product_category_id','category_id.product_formula_category_id'], true);
@@ -139,7 +138,7 @@ class ProductModel extends \DB\Cortex {
     }
 
     public function getProduct($id): array {
-        $this->fields(['inventory_product_id','sales_product_product_id','unit_id.product_unit_id',
+        $this->fields(['inventory_trace_product_id','inventory_product_id','sales_product_product_id','unit_id.product_unit_id',
             'unit_id.product_raw_material_unit_id','brand_id.logo_url','brand_id.description','brand_id.product_brand_id'
             ,'category_id.description','category_id.featured','purchase_product_product_id','category_id.parent_id',
             'category_id.category_parent_id','category_id.product_category_id','category_id.product_formula_category_id'], true);
@@ -176,7 +175,7 @@ class ProductModel extends \DB\Cortex {
                 $status['message'] = 'Product Successfully Deleted.';
             } catch(PDOException $e) {
                 $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status['message'] = ($e->errorInfo[1] == 1452) ? "Invalid input data." : (($e->errorInfo[1] == 1451) ? "Deletion of this product is restricted." : $e->errorInfo[2]);
             }
         } else {
             $status['code'] = 0;

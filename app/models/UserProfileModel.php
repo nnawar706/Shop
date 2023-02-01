@@ -72,13 +72,13 @@ class UserProfileModel extends \DB\Cortex {
                 $this->save();
                 $result = $this->getProfile($this->id);
                 $log = new LogModel();
-                $stat = "User profile ID: " . $this->id . " has been created for user ID: ." . $data['user_id'];
+                $stat = "User profile ID: " . $this->id . " has been created for user ID: " . $data['user_id'];
                 $log->add($stat, 13);
                 $status['code'] = 1;
                 $status['message'] = 'User profile Successfully Added.';
             } catch(PDOException $e) {
                 $status['code'] = 0;
-                $status['message'] = ($e->errorInfo[1] == 1452) ? "Invalid input data." : (($e->errorInfo[1] == 1062) ? "User profile for this user already exists." : $e->errorInfo[1]);
+                $status['message'] = ($e->errorInfo[1] == 1452) ? "Invalid input data." : (($e->errorInfo[1] == 1062) ? "User profile for this user already exists." : $e->errorInfo[2]);
             }
         } else {
             $status['code'] = 0;

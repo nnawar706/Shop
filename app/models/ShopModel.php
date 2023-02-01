@@ -133,7 +133,7 @@ class ShopModel extends \DB\Cortex {
                 $status['message'] = 'Shop Successfully Deleted.';
             } catch(PDOException $e) {
                 $status['code'] = 0;
-                $status['message'] = ($e->errorInfo[1] == 1451) ? "Cannot delete this shop since it has branches." : $e->errorInfo[2];
+                $status['message'] = ($e->errorInfo[1] == 1451) ? "Deletion of this shop is restricted." : $e->errorInfo[2];
             }
         } else {
             $status['code'] = 0;
