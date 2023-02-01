@@ -62,10 +62,9 @@ class UserModel extends \DB\Cortex {
             try {
                 $this->password = md5($data['password']);
                 $this->save();
-                $info['id'] = $this->id;
+                $result = $this->getUser($this->id);
                 $status['code'] = 1;
                 $status['message'] = 'User Successfully Added.';
-                $result['data'] = $info;
             } catch (PDOException $e) {
                 $status['code'] = 0;
                 $status['message'] = $e->errorInfo[2];
@@ -128,16 +127,15 @@ class UserModel extends \DB\Cortex {
             $this->role = $data['role'] ?? '';
             $this->last_password = $this->password;
             $this->password = $data['password'] ?? '';
+            $this->account_status = $data['account_status'] ?? 1;
             if($this->validate()) {
                 try {
                     $this->password = md5($data['password']);
                     $this->password_changed_at = date('y-m-d h:i:s');
                     $this->save();
-                    $info['id'] = $this->id;
-                    $info['phone_no'] = $this->phone_username;
+                    $result = $this->getUser($this->id);
                     $status['code'] = 1;
                     $status['message'] = 'User Successfully Updated.';
-                    $result['data'] = $info;
                 } catch (PDOException $e) {
                     $status['code'] = 0;
                     $status['message'] = $e->errorInfo[2];
@@ -162,18 +160,16 @@ class UserModel extends \DB\Cortex {
     }
 
     public function deleteUser($id): array {
-        $data = [];
         $this->load(['id=?', $id]);
         if($this->id) {
             try {
                 $this->erase();
-                $data['id'] = $this->id;
-                $result['data'] = $data;
+                $result['data']['id'] = $this->id;
                 $status['code'] = 1;
                 $status['message'] = 'User Successfully Deleted.';
             } catch(PDOException $e) {
                 $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status['message'] = ($e->errorInfo[1] == 1451) ? "Deletion of this user is restricted." : $e->errorInfo[2];
             }
         } else {
             $status['code'] = 0;
