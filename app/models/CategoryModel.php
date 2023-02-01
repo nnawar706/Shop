@@ -56,8 +56,7 @@ class CategoryModel extends \DB\Cortex {
         if($this->validate()) {
             try {
                 $this->save();
-                $info = $this->cast(NULL, 0);
-                $result['data'] = $info;
+                $result = $this->getCategory($this->id);
                 $status['code'] = 1;
                 $status['message'] = 'Category Successfully Added.';
             } catch(PDOException $e) {
@@ -103,10 +102,11 @@ class CategoryModel extends \DB\Cortex {
     }
 
     public function getCategory($id): array {
-        $this->fields(['category_parent_id','product_formula_category_id'], true);
+        $this->fields(['category_parent_id','product_formula_category_id','product_category_id'], true);
+        $this->fields(['parent_id.id','parent_id.name']);
         $this->load(['id=?', $id]);
         if($this->id) {
-            $data = $this->cast(NULL, 0);
+            $data = $this->cast(NULL, 1);
             $result['data'] = $data;
             $status['code'] = 1;
             $status['message'] = 'Category Successfully Fetched.';
@@ -131,8 +131,7 @@ class CategoryModel extends \DB\Cortex {
             if($this->validate()) {
                 try {
                     $this->save();
-                    $info = $this->cast(NULL, 0);
-                    $result['data'] = $info;
+                    $result = $this->getCategory($this->id);
                     $status['code'] = 1;
                     $status['message'] = 'Category Successfully Updated.';
                 } catch(PDOException $e) {
@@ -162,7 +161,7 @@ class CategoryModel extends \DB\Cortex {
                 $status['message'] = 'Category Successfully Deleted.';
             } catch(PDOException $e) {
                 $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status['message'] = ($e->errorInfo[1] == 1451) ? "Cannot delete this category since it has products." : $e->errorInfo[2];
             }
         } else {
             $status['code'] = 0;
