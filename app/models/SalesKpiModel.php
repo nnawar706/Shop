@@ -8,7 +8,7 @@ class SalesKpiModel extends \DB\Cortex {
         'user_id' => [
             'belongs-to-one' => '\UserModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
-            'validate' => 'required',
+            'validate' => 'required|||unique',
         ],
         'target_sales_volume' => [
             'type' => \DB\SQL\Schema::DT_INT,
@@ -29,15 +29,13 @@ class SalesKpiModel extends \DB\Cortex {
      * @throws Exception
      */
     public function createSalesKpi($data): array {
-        $info = [];
         $this->user_id = $data['user_id'] ?? '';
-        $this->target_target_sales_volume = $data['target_sales_volume'] ?? '';
+        $this->target_sales_volume = $data['target_sales_volume'] ?? '';
         $this->last_modified_at = date('y-m-d h:i:s');
-
         if($this->validate()) {
             try {
                 $this->save();
-                $info['id'] = $this->id;
+                $result = $this->getSalesKpi($this->id);
                 $status['code'] = 1;
                 $status['message'] = 'Sales KPI Successfully Added.';
             } catch(PDOException $e) {
@@ -48,7 +46,6 @@ class SalesKpiModel extends \DB\Cortex {
             $status['code'] = 0;
             $status['message'] = Base::instance()->get('error_msg');
         }
-        $result['data'] = $info;
         $result['status'] = $status;
         return $result;
     }
@@ -111,7 +108,6 @@ class SalesKpiModel extends \DB\Cortex {
      * @throws Exception
      */
     public function updateSalesKpi($id, $data): array {
-        $info = [];
         $this->load(['id=?', $id]);
         if($this->id) {
             $this->target_sales_volume = $data['target_sales_volume'] ?? '';
@@ -119,7 +115,7 @@ class SalesKpiModel extends \DB\Cortex {
             if($this->validate()) {
                 try {
                     $this->save();
-                    $info['id'] = $this->id;
+                    $result = $this->getSalesKpi($this->id);
                     $status['code'] = 1;
                     $status['message'] = 'Sales KPI Successfully Updated.';
                 } catch(PDOException $e) {
@@ -134,7 +130,6 @@ class SalesKpiModel extends \DB\Cortex {
             $status['code'] = 0;
             $status['message'] = 'Invalid Sales KPI Id.';
         }
-        $result['data'] = $info;
         $result['status'] = $status;
         return $result;
     }
@@ -158,5 +153,4 @@ class SalesKpiModel extends \DB\Cortex {
         $result['status'] = $status;
         return $result;
     }
-
 }
