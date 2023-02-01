@@ -101,7 +101,8 @@ class BrandModel extends \DB\Cortex {
     public function updateBrand($id, $data): array {
         $this->load(['id=?', $id]);
         if($this->id) {
-            $this->copyfrom($data);
+            $this->name = $data['name'] ?? '';
+            $this->description = $data['description'] ?? '';
             if($this->validate()) {
                 try {
                     $this->save();

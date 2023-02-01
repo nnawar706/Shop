@@ -53,7 +53,6 @@ class CategoryModel extends \DB\Cortex {
         $this->description = $data['description'] ?? '';
         $this->featured = $data['featured'] ?? '';
         $this->parent_id = $data['parent_id'] ?? 0;
-
         if($this->validate()) {
             try {
                 $this->save();
@@ -126,6 +125,9 @@ class CategoryModel extends \DB\Cortex {
         $this->load(['id=?', $id]);
         if($this->id) {
             $this->name = $data['name'] ?? '';
+            $this->description = $data['description'] ?? '';
+            $this->featured = $data['featured'] ?? '';
+            $this->parent_id = $data['parent_id'] ?? 0;
             if($this->validate()) {
                 try {
                     $this->save();

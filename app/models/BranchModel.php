@@ -49,7 +49,9 @@ class BranchModel extends \DB\Cortex {
      * @throws Exception
      */
     public function createBranch($data): array {
-        $this->copyfrom($data);
+        $this->name = $data['name'] ?? '';
+        $this->shop_id = $data['shop_id'] ?? '';
+        $this->location = $data['location'] ?? '';
         if($this->validate()) {
             try {
                 $this->save();
@@ -123,7 +125,9 @@ class BranchModel extends \DB\Cortex {
     public function updateBranch($id, $data): array {
         $this->load(['id=?', $id]);
         if($this->id) {
-            $this->copyfrom($data);
+            $this->name = $data['name'] ?? '';
+            $this->shop_id = $data['shop_id'] ?? '';
+            $this->location = $data['location'] ?? '';
             if($this->validate()) {
                 try {
                     $this->save();
