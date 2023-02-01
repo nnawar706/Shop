@@ -8,11 +8,11 @@ class SalesKpiModel extends \DB\Cortex {
         'user_id' => [
             'belongs-to-one' => '\UserModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
-            'validate' => 'required|||unique',
+            'validate' => 'required',
         ],
         'target_sales_volume' => [
             'type' => \DB\SQL\Schema::DT_INT,
-            'validate' => 'required|||max_len,11'
+            'validate' => 'required|||max_len,11|||numeric'
         ]
     ];
 
@@ -40,7 +40,7 @@ class SalesKpiModel extends \DB\Cortex {
                 $status['message'] = 'Sales KPI Successfully Added.';
             } catch(PDOException $e) {
                 $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status['message'] = ($e->errorInfo[1] == 1452) ? "This user does not exist." : (($e->errorInfo[1] == 1062) ? "Sales kpi for this user already exists." : $e->errorInfo[2]);
             }
         } else {
             $status['code'] = 0;
