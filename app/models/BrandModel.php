@@ -11,7 +11,7 @@ class BrandModel extends \DB\Cortex {
         ],
         'name' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||unique|||alpha|||max_len,50'
+            'validate' => 'required|||unique|||alpha_space|||max_len,50|||min_len,5'
         ],
         'description' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR512,
@@ -101,8 +101,7 @@ class BrandModel extends \DB\Cortex {
     public function updateBrand($id, $data): array {
         $this->load(['id=?', $id]);
         if($this->id) {
-            $this->name = $data['name'] ?? '';
-            $this->description = $data['description'] ?? '';
+            $this->copyfrom($data);
             if($this->validate()) {
                 try {
                     $this->save();

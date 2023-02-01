@@ -87,4 +87,44 @@ class InventoryTraceModel extends \DB\Cortex {
         }
         return $status;
     }
+
+    /**
+     * @throws Exception
+     */
+    public function transferStock($data): array {
+        $this->transfer_type_id = 2;
+        $this->purchase_id = $data['purchase_id'];
+        $this->product_id = $data['product_id'];
+        $this->product_quantity = $data['product_quantity'];
+        $this->from_branch_id = $data['from_branch_id'];
+        $this->to_branch_id = $data['to_branch_id'];
+        $this->event_time = date('y-m-d h:i:s');
+        if($this->validate()) {
+            try {
+                $this->save();
+                $data['id'] = $this->cast(NULL, 0);
+                $result['data'] = $data;
+                $status['code'] = 1;
+                $status['message'] = 'Stock Successfully transferred.';
+            } catch (PDOException $e) {
+                $status['code'] = 0;
+                $status['message'] = $e->errorInfo[2];
+            }
+        } else {
+            $status['code'] = 0;
+            $status['message'] = 'Invalid data.';
+        }
+        return $status;
+    }
+
+    public function supplierChecker($data): bool{
+        $this->load(['from_supplier_id=? AND to_branch_id=?',$data['to_supplier_id'],$data['from_branch_id']]);
+        if($this->id) {
+            var_dump(
+                'uguyvyf'
+            );
+            return true;
+        }
+        return false;
+    }
 }

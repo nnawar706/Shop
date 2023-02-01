@@ -28,11 +28,11 @@ class BranchModel extends \DB\Cortex {
         ],
         'name' => [
             'type' => \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||unique|||alpha',
+            'validate' => 'required|||unique|||alpha_space|||min_len,5|||max_len,30',
         ],
         'location' => [
             'type' => \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||unique',
+            'validate' => 'required|||unique|||max_len,100',
         ],
     ];
 
@@ -49,15 +49,11 @@ class BranchModel extends \DB\Cortex {
      * @throws Exception
      */
     public function createBranch($data): array {
-        $this->name = $data['name'] ?? '';
-        $this->shop_id = $data['shop_id'] ?? '';
-        $this->location = $data['location'] ?? '';
-
+        $this->copyfrom($data);
         if($this->validate()) {
             try {
                 $this->save();
-                $info = $this->cast(NULL, 0);
-                $result['data'] = $info;
+                $result = $this->getBranch($this->id);
                 $status['code'] = 1;
                 $status['message'] = 'Branch Successfully Added.';
             } catch(PDOException $e) {
@@ -73,8 +69,9 @@ class BranchModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['inventory_branch_id', 'sales_order_branch_id'], true);
-        $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
+        $this->fields(['inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
+            'inventory_trace_to_branch_id','shop_id.user_profile_shop_id','shop_id.branch_shop_id'], true);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $result['data'] = $data;
             $status['code'] = 1;
@@ -88,7 +85,8 @@ class BranchModel extends \DB\Cortex {
     }
 
     public function getAllShop($id): int|array {
-        $this->fields(['inventory_branch_id', 'sales_order_branch_id'], true);
+        $this->fields(['inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
+            'inventory_trace_to_branch_id','shop_id.user_profile_shop_id','shop_id.branch_shop_id'], true);
         $data = $this->afind(['shop_id=?', $id], ['order'=>'id DESC'], 0, 0);
         if($data) {
             $result['data'] = $data;
@@ -103,10 +101,11 @@ class BranchModel extends \DB\Cortex {
     }
 
     public function getBranch($id): array {
-        $this->fields(['inventory_branch_id', 'sales_order_branch_id'], true);
+        $this->fields(['inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
+            'inventory_trace_to_branch_id','shop_id.user_profile_shop_id','shop_id.branch_shop_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
-            $data = $this->cast(NULL, 0);
+            $data = $this->cast(NULL, 1);
             $result['data'] = $data;
             $status['code'] = 1;
             $status['message'] = 'Branch Successfully Fetched.';
@@ -124,16 +123,13 @@ class BranchModel extends \DB\Cortex {
     public function updateBranch($id, $data): array {
         $this->load(['id=?', $id]);
         if($this->id) {
-            $this->name = $data['name'] ?? '';
-            $this->shop_id = $data['shop_id'] ?? '';
-            $this->location = $data['location'] ?? '';
+            $this->copyfrom($data);
             if($this->validate()) {
                 try {
                     $this->save();
-                    $info['id'] = $this->id;
-                    $result['data'] = $info;
+                    $result = $this->getBranch($this->id);
                     $status['code'] = 1;
-                    $status['message'] = 'Shop Successfully Updated.';
+                    $status['message'] = 'Branch Successfully Updated.';
                 } catch(PDOException $e) {
                     $status['code'] = 0;
                     $status['message'] = $e->errorInfo[2];
@@ -144,7 +140,7 @@ class BranchModel extends \DB\Cortex {
             }
         } else {
             $status['code'] = 0;
-            $status['message'] = 'Invalid Shop Id.';
+            $status['message'] = 'Invalid Branch Id.';
         }
         $result['status'] = $status;
         return $result;
@@ -161,7 +157,7 @@ class BranchModel extends \DB\Cortex {
                 $status['message'] = 'Branch Successfully Deleted.';
             } catch(PDOException $e) {
                 $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status['message'] = ($e->errorInfo[1] == 1451) ? "Cannot delete this branch since it has inventories." : $e->errorInfo[2];
             }
         } else {
             $status['code'] = 0;

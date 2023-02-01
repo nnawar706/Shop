@@ -19,7 +19,7 @@ class CategoryModel extends \DB\Cortex {
         ],
         'name' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||unique|||alpha|||max_len,50'
+            'validate' => 'required|||unique|||alpha_space|||min_len,5|||max_len,50'
         ],
         'description' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR512,

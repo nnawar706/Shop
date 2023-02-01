@@ -16,7 +16,7 @@ class ShopModel extends \DB\Cortex {
         'name' => [
             'type' => \DB\SQL\Schema::DT_VARCHAR128,
             'filter' => 'trim',
-            'validate' => 'required|||unique|||min_len,5|||max_len,50|||alpha'
+            'validate' => 'required|||unique|||min_len,5|||max_len,50|||alpha_space'
         ],
     ];
 
@@ -53,7 +53,9 @@ class ShopModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['user_profile_shop_id','branch_shop_id.location','branch_shop_id.geolocation','branch_shop_id.inventory_branch_id','branch_shop_id.sales_order_branch_id'], true);
+        $this->fields(['user_profile_shop_id','branch_shop_id.location','branch_shop_id.geolocation',
+            'branch_shop_id.inventory_branch_id','branch_shop_id.sales_order_branch_id',
+            'branch_shop_id.inventory_trace_from_branch_id','branch_shop_id.inventory_trace_to_branch_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $status['code'] = 1;
@@ -68,7 +70,9 @@ class ShopModel extends \DB\Cortex {
     }
 
     public function getShop($id): array {
-        $this->fields(['user_profile_shop_id', 'branch_shop_id'], true);
+        $this->fields(['user_profile_shop_id','branch_shop_id.location','branch_shop_id.geolocation',
+            'branch_shop_id.inventory_branch_id','branch_shop_id.sales_order_branch_id',
+            'branch_shop_id.inventory_trace_from_branch_id','branch_shop_id.inventory_trace_to_branch_id'], true);
         $data = [];
         $this->fields(['user_profile_shop_id'], true);
         $this->load(['id=?', $id]);
@@ -97,6 +101,8 @@ class ShopModel extends \DB\Cortex {
                 try {
                     $this->save();
                     $info['id'] = $this->id;
+                    $info['name'] = $this->name;
+                    $result['data'] = $info;
                     $status['code'] = 1;
                     $status['message'] = 'Shop Successfully Updated.';
                 } catch(PDOException $e) {
@@ -111,7 +117,6 @@ class ShopModel extends \DB\Cortex {
             $status['code'] = 0;
             $status['message'] = 'Invalid Shop Id.';
         }
-        $result['data'] = $info;
         $result['status'] = $status;
         return $result;
     }
@@ -123,17 +128,17 @@ class ShopModel extends \DB\Cortex {
             try {
                 $this->erase();
                 $data['id'] = $this->id;
+                $result['data'] = $data;
                 $status['code'] = 1;
                 $status['message'] = 'Shop Successfully Deleted.';
-            } catch(\PDOException $e) {
+            } catch(PDOException $e) {
                 $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status['message'] = ($e->errorInfo[1] == 1451) ? "Cannot delete this shop since it has branches." : $e->errorInfo[2];
             }
         } else {
             $status['code'] = 0;
             $status['message'] = 'Invalid Shop Id.';
         }
-        $result['data'] = $data;
         $result['status'] = $status;
         return $result;
     }

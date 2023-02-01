@@ -3,7 +3,7 @@ require 'vendor/autoload.php';
 $f3 = Base::instance();
 $cron = Cron::instance();
 $cron->web=TRUE;
-$cron->set('Job1', 'CronController->job', '@daily');
+$cron->set('Job1', 'CronController->job', '* * * * *');
 
 $f3->config('config/config.ini');
 $f3->config('config/database.ini');

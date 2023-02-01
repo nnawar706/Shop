@@ -177,4 +177,8 @@ class InventoryModel extends \DB\Cortex {
         return $status;
     }
 
+    public function checkAlert() {
+        $this->cast([],[]);
+    }
+
 }

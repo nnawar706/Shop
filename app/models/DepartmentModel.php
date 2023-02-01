@@ -11,7 +11,7 @@ class DepartmentModel extends \DB\Cortex {
         ],
         'name' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||unique|||alpha_space|||max_len,100'
+            'validate' => 'required|||unique|||alpha_space|||min_len,5|||max_len,100'
         ]
     ];
 
@@ -83,16 +83,16 @@ class DepartmentModel extends \DB\Cortex {
      * @throws Exception
      */
     public function updateDepartment($id, $data): array {
-        $info = [];
         $this->load(['id=?', $id]);
         if($this->id) {
             $this->name = $data['name'] ?? '';
             if($this->validate()) {
                 try {
                     $this->save();
-                    $info['id'] = $this->id;
+                    $result['data']['id'] = $this->id;
+                    $result['data']['name'] = $this->name;
                     $status['code'] = 1;
-                    $status['message'] = 'department Successfully Updated.';
+                    $status['message'] = 'Department Successfully Updated.';
                 } catch(PDOException $e) {
                     $status['code'] = 0;
                     $status['message'] = $e->errorInfo[2];
@@ -105,29 +105,26 @@ class DepartmentModel extends \DB\Cortex {
             $status['code'] = 0;
             $status['message'] = 'Invalid department Id.';
         }
-        $result['data'] = $info;
         $result['status'] = $status;
         return $result;
     }
 
     public function deleteDepartment($id): array {
-        $data = [];
         $this->load(['id=?', $id]);
         if($this->id) {
             try {
                 $this->erase();
-                $data['id'] = $this->id;
+                $result['data']['id'] = $this->id;
                 $status['code'] = 1;
-                $status['message'] = 'department Successfully Deleted.';
+                $status['message'] = 'Department Successfully Deleted.';
             } catch(PDOException $e) {
                 $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status['message'] = ($e->errorInfo[1] == 1451) ? "Cannot delete this department since it has employees." : $e->errorInfo[2];
             }
         } else {
             $status['code'] = 0;
             $status['message'] = 'Invalid department Id.';
         }
-        $result['data'] = $data;
         $result['status'] = $status;
         return $result;
     }
