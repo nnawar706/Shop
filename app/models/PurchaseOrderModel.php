@@ -73,32 +73,6 @@ class PurchaseOrderModel extends \DB\Cortex {
         return $info;
     }
 
-//    /**
-//     * @throws Exception
-//     */
-//    public function createOrder($data): array {
-//        $this->default_branch_id = $data['branch_id'] ?? 1;
-//        $this->supplier_id = $data['supplier_id'] ?? '';
-//        $this->supply_schedule = $data['supply_schedule'] ?? '';
-//        $this->purchased_at = date('y-m-d h:i:s');
-//        if($this->validate()) {
-//            try {
-//                $this->save();
-//                $status['id'] = $this->id;
-//                $log = new LogModel();
-//                $stat = "Products have been bought from supplier ID: " . $data['supplier_id'];
-//                $log->add($stat, 11);
-//            } catch(PDOException $e) {
-//                $status['id'] = 0;
-//                $status['message'] = $e->errorInfo[2];
-//            }
-//        } else {
-//            $status['id'] = 0;
-//            $status['message'] = Base::instance()->get('error_msg');
-//        }
-//        return $status;
-//    }
-
     public function getPurchase($id): array {
         $this->fields(['default_branch_id.id','default_branch_id.name','supplier_id.id','supplier_id.name']);
         $this->fields(['purchase_transaction_purchase_id','inventory_trace_purchase_id'], true);
@@ -159,4 +133,9 @@ class PurchaseOrderModel extends \DB\Cortex {
         $this->save();
     }
 
+    public function updatePaidAmount($amount_paid, $purchase_id) {
+        $this->load(['id=?',$purchase_id]);
+        $this->paid_amount = $amount_paid;
+        $this->save();
+    }
 }

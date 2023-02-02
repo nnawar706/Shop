@@ -49,11 +49,13 @@ class PurchaseTransactionModel extends \DB\Cortex {
         $this->transaction_document_url = $data['transaction_document_url'] ?? '';
         $this->ref_comment = $data['ref_comment'] ?? '';
         $this->payment_status_id = $data['payment_status_id'] ?? '';
-        $this->transaction_date = date("Y-m_d H-i-s");
+        $this->transaction_at = date('y-m-d h:i:s');
         if($this->validate()) {
             try {
                 $this->save();
                 $info = $this->cast(NULL, 0);
+                $amount = new PurchaseOrderModel();
+                $amount->updatePaidAmount($data['amount_paid'], $data['purchase_id']);
                 $result['data'] = $info;
                 $status['code'] = 1;
                 $status['message'] = 'Purchase Transaction Successfully Added.';
@@ -83,6 +85,12 @@ class PurchaseTransactionModel extends \DB\Cortex {
         $result['data'] = $data;
         $result['status'] = $status;
         return $result;
+    }
+
+    public function addDoc($id, $fileName) {
+        $this->load(['id=?', $id]);
+        $this->transaction_document_url = $fileName;
+        $this->save();
     }
 
     public function getPurchase($id): array {
