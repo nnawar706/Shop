@@ -54,9 +54,6 @@ class PurchaseOrderModel extends \DB\Cortex {
         if($this->validate()) {
             try {
                 $this->save();
-                $log = new LogModel();
-                $stat = "Products have been bought from supplier ID: " . $data['supplier_id'];
-                $log->add($stat, 11);
                 $products = new PurchaseProductModel();
                 $info['data'] = $products->createPurchase($data, $this->id);
                 $trace = new InventoryTraceModel();
