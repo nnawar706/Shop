@@ -5,6 +5,10 @@ class InventoryModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
+        'notification_inventory_id' => [
+            'has-many' => ['\NotificationModel','inventory_id'],
+            'type' => \DB\SQL\Schema::DT_INT
+        ],
         'branch_id' => [
             'belongs-to-one' => '\BranchModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
@@ -63,7 +67,7 @@ class InventoryModel extends \DB\Cortex {
 
     public function getAll(): array {
         $this->fields(['product_id.id','product_id.name','product_id.category_id.category_id','product_id.category_id.name']);
-        $this->fields(['branch_id'], true);
+        $this->fields(['notification_inventory_id','branch_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 2);
         if($data) {
             $result['data'] = $data;
@@ -178,7 +182,15 @@ class InventoryModel extends \DB\Cortex {
     }
 
     public function alertChecker(): ?array{
-        return $this->afind(['stock_amount<=min_stock_alert'], [], 0, 0);
+        return $this->afind(['stock_amount<=min_stock_alert AND flag_stock_alert=0'], [], 0, 0);
+    }
+
+    public function updateFlag($id, $flag) {
+        $this->load(['id=?',$id]);
+        if($this->id){
+            $this->flag_stock_alert = $flag;
+            $this->save();
+        }
     }
 
 }

@@ -6,8 +6,11 @@ class CronController extends MainController {
         $inventory = new InventoryModel();
         $data = $inventory->alertChecker();
         if($data) {
-            $log = new LogModel();
-            $log->addCron($data);
+            foreach ($data as $item) {
+                $notification = new NotificationModel();
+                $notification->addCron($item);
+                $inventory->updateFlag($item['id'], 1);
+            }
         }
     }
 }

@@ -39,36 +39,42 @@ class PurchaseProductModel extends \DB\Cortex {
      */
     public function createPurchase($data, $purchase_id): array {
         $product = new ProductModel();
-        $this->db->begin();
-        $status['id'] = $purchase_id;
+        $total_amount = 0;
         foreach ($data['product_name_list'] as $item) {
             $this->purchase_order_id = $purchase_id;
             $prod = $product->getProduct($item['product_id']);
             if($prod) {
                 $this->product_id = $item['product_id'];
-                $this->product_price = $prod['data']['cost_price'];
+                $total = $prod['data']['cost_price'] * $item['amount_unit'] - $item['discount_amount'];
+                $this->product_price = $total;
                 $this->amount_unit = $item['amount_unit'];
+                $total_amount = $total_amount + $total;
                 if($this->validate()) {
                     try {
                         $this->save();
-                        $status['product_list'][] = $this->cast(NULL, 0);
+                        $status['product_product_list'][] = $this->cast(NULL, 0);
                         $this->reset();
-                        $status['code'][] = 1;
-                        $status['message'][] = 'Purchase Product Successfully Added.';
+//                        $status['code'][] = 1;
+//                        $status['message'][] = 'Purchase Product Successfully Added.';
                     } catch(PDOException $e) {
-                        $status['code'][] = 0;
-                        $status['message'][] = $e->errorInfo[2];
+//                        $status['code'][] = 0;
+                        $status['purchase_product_list'][] = $e->errorInfo[2];
                     }
-                } else {
-                    $status['code'][] = 0;
-                    $status['message'][] = Base::instance()->get('error_msg');
                 }
-            } else {
-                $status['code'][] = 0;
-                $status['message'][] = Base::instance()->get('error_msg');
+                else {
+//                    $status['code'][] = 0;
+                    $status['product_product_list'][] = Base::instance()->get('error_msg');
+                }
+            }
+            else {
+//                $status['code'][] = 0;
+                $status['product_product_list'][] = "Product is not available";
             }
         }
-        $this->db->commit();
+        $order = new PurchaseOrderModel();
+        $order->addTotalAmount($purchase_id, $total_amount);
+        $status['total_amount'] = $total_amount;
+        $status['purchase_order_id'] = $purchase_id;
         return $status;
     }
 }

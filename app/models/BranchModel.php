@@ -21,6 +21,10 @@ class BranchModel extends \DB\Cortex {
             'has-many' => ['\InventoryTraceModel','to_branch_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT
         ],
+        'notification_branch_id' => [
+            'has-many' => ['\NotificationModel','branch_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
         'shop_id' => [
             'belongs-to-one' => '\ShopModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,

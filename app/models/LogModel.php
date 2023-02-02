@@ -58,14 +58,4 @@ class LogModel extends \DB\Cortex {
         $this->save();
     }
 
-    public function addCron($data) {
-        $this->db->exec('DELETE FROM log WHERE log_type_id=3');
-        foreach ($data as $row) {
-            $stat = "Stock refill alert for product_id " . $row['product_id'] . " at branch_id " . $row['branch_id'];
-            $this->details = $stat;
-            $this->log_type_id = 3;
-            $this->save();
-            $this->reset();
-        }
-    }
 }

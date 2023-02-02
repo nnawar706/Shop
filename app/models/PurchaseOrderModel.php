@@ -46,29 +46,60 @@ class PurchaseOrderModel extends \DB\Cortex {
      * @throws Exception
      */
     public function createOrder($data): array {
+        $this->db->begin();
         $this->default_branch_id = $data['branch_id'] ?? 1;
         $this->supplier_id = $data['supplier_id'] ?? '';
-        $this->total_amount = $data['total_amount'];
-        $this->paid_amount = $data['paid_amount'];
-        $this->supply_schedule = $data['supply_schedule'] ?? '';
         $this->purchased_at = date('y-m-d h:i:s');
+        $this->supply_schedule = $data['supply_schedule'] ?? '';
         if($this->validate()) {
             try {
                 $this->save();
-                $status['id'] = $this->id;
                 $log = new LogModel();
                 $stat = "Products have been bought from supplier ID: " . $data['supplier_id'];
                 $log->add($stat, 11);
-            } catch(PDOException $e) {
-                $status['id'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $products = new PurchaseProductModel();
+                $info['data'] = $products->createPurchase($data, $this->id);
+                $trace = new InventoryTraceModel();
+                $status = $trace->createTrace($data, $this->id);
+                $info['status']['code'] = 1;
+                $info['status']['message'] = "Request successful";
+            } catch (PDOException $e) {
+                $info['status']['code'] = 0;
+                $info['status']['message'] = 'Invalid data';
             }
         } else {
-            $status['id'] = 0;
-            $status['message'] = Base::instance()->get('error_msg');
+            $info['status']['code'] = 0;
+            $info['status']['message'] = 'Invalid data';
         }
-        return $status;
+        $this->db->commit();
+        return $info;
     }
+
+//    /**
+//     * @throws Exception
+//     */
+//    public function createOrder($data): array {
+//        $this->default_branch_id = $data['branch_id'] ?? 1;
+//        $this->supplier_id = $data['supplier_id'] ?? '';
+//        $this->supply_schedule = $data['supply_schedule'] ?? '';
+//        $this->purchased_at = date('y-m-d h:i:s');
+//        if($this->validate()) {
+//            try {
+//                $this->save();
+//                $status['id'] = $this->id;
+//                $log = new LogModel();
+//                $stat = "Products have been bought from supplier ID: " . $data['supplier_id'];
+//                $log->add($stat, 11);
+//            } catch(PDOException $e) {
+//                $status['id'] = 0;
+//                $status['message'] = $e->errorInfo[2];
+//            }
+//        } else {
+//            $status['id'] = 0;
+//            $status['message'] = Base::instance()->get('error_msg');
+//        }
+//        return $status;
+//    }
 
     public function getPurchase($id): array {
         $this->fields(['purchase_transaction_purchase_id', 'purchase_product_purchase_order_id','inventory_trace_purchase_id'], true);
@@ -120,6 +151,12 @@ class PurchaseOrderModel extends \DB\Cortex {
         }
         $result['status'] = $status;
         return $result;
+    }
+
+    public function addTotalAmount($purchase_id, $total_amount) {
+        $this->load(['id=?',$purchase_id]);
+        $this->total_amount = $total_amount;
+        $this->save();
     }
 
 }
