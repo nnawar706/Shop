@@ -46,20 +46,18 @@ class PurchaseOrderModel extends \DB\Cortex {
      * @throws Exception
      */
     public function createOrder($data): array {
-        $this->db->begin();
+
         $this->default_branch_id = $data['branch_id'] ?? 1;
         $this->supplier_id = $data['supplier_id'] ?? '';
         $this->purchased_at = date('y-m-d h:i:s');
         $this->supply_schedule = $data['supply_schedule'] ?? '';
         if($this->validate()) {
             try {
+                $this->db->begin();
                 $this->save();
                 $products = new PurchaseProductModel();
                 $info['data'] = $products->createPurchase($data, $this->id);
-                $trace = new InventoryTraceModel();
-                $status = $trace->createTrace($data, $this->id);
-                $info['status']['code'] = 1;
-                $info['status']['message'] = "Request successful";
+                $this->db->commit();
             } catch (PDOException $e) {
                 $info['status']['code'] = 0;
                 $info['status']['message'] = 'Invalid data';
@@ -68,7 +66,6 @@ class PurchaseOrderModel extends \DB\Cortex {
             $info['status']['code'] = 0;
             $info['status']['message'] = 'Invalid data';
         }
-        $this->db->commit();
         return $info;
     }
 
