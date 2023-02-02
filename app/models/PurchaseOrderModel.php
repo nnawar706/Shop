@@ -9,7 +9,7 @@ class PurchaseOrderModel extends \DB\Cortex {
             'has-one' => ['\PurchaseTransactionModel','purchase_id'],
             'type' => \DB\SQL\Schema::DT_INT
         ],
-        'purchase_product_purchase_order_id' => [
+        'purchase_product_list' => [
             'has-many' => ['\PurchaseProductModel','purchase_order_id'],
             'type' => \DB\SQL\Schema::DT_INT
         ],
@@ -100,10 +100,11 @@ class PurchaseOrderModel extends \DB\Cortex {
 //    }
 
     public function getPurchase($id): array {
-        $this->fields(['purchase_transaction_purchase_id', 'purchase_product_purchase_order_id','inventory_trace_purchase_id'], true);
+        $this->fields(['default_branch_id.id','default_branch_id.name','supplier_id.id','supplier_id.name']);
+        $this->fields(['purchase_transaction_purchase_id','inventory_trace_purchase_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
-            $data = $this->cast(NULL, 0);
+            $data = $this->cast(NULL, 1);
             $result['data'] = $data;
             $status['code'] = 1;
             $status['message'] = 'Purchase Order Successfully Fetched.';
@@ -116,8 +117,9 @@ class PurchaseOrderModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['purchase_transaction_purchase_id', 'purchase_product_purchase_order_id','inventory_trace_purchase_id'], true);
-        $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
+        $this->fields(['default_branch_id.id','default_branch_id.name','supplier_id.id','supplier_id.name']);
+        $this->fields(['purchase_transaction_purchase_id','inventory_trace_purchase_id'], true);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $result['data'] = $data;
             $status['code'] = 1;
