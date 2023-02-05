@@ -178,4 +178,32 @@ class SalesOrderModel extends \DB\Cortex {
         $this->save();
     }
 
+    public function getTotalOrders($data, $cid): int {
+        $this->load(['date(sold_at)>=? AND date(sold_at)<=? AND customer_id=?',$data['from'], $data['to'],$cid]);
+        return $this->loaded();
+    }
+
+    public function getTotalDueAndPaid($data, $cid): array {
+        $due = 0;
+        $paid = 0;
+        $total = 0;
+        $rows = $this->afind(['date(sold_at)>=? AND date(sold_at)<=? AND customer_id=?',$data['from'], $data['to'],$cid]);
+        if($rows) {
+            foreach ($rows as $item) {
+                $due = $due + ($item['total_amount'] - $item['paid_amount']);
+                $paid = $paid + $item['paid_amount'];
+                $total = $total + $item['total_amount'];
+            }
+        }
+        $data['due'] = $due;
+        $data['paid'] = $paid;
+        $data['total'] = $total;
+        return $data;
+    }
+
+    public function completedOrders($data, $cid): int {
+        $this->load(['total_amount=paid_amount AND date(sold_at)>=? AND date(sold_at)<=? AND customer_id=?',$data['from'],$data['to'],$cid]);
+        return $this->loaded();
+    }
+
 }
