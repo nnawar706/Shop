@@ -47,24 +47,19 @@ class PurchaseProductModel extends \DB\Cortex {
                 $this->product_id = $item['product_id'];
                 $total = $prod['data']['cost_price'] * $item['amount_unit'] - $item['discount_amount'];
                 $this->product_price = $total;
-                $this->amount_unit = $item['amount_unit'];
+                $this->amount_unit = $item['amount_unit'] ?? 1;
                 $total_amount = $total_amount + $total;
                 if($this->validate()) {
                     $this->save();
-                    $status['product_product_list'][] = $this->cast(NULL, 0);
+                    $status['purchase_product_list'][] = $this->cast(NULL, 0);
                     $this->reset();
-//                    $status['code'][] = 1;
                 }
                 else {
                     $this->db->rollback();
-//                    $status['code'][] = 0;
-//                    $status['product_product_list'][] = Base::instance()->get('error_msg');
                 }
             }
             else {
                 $this->db->rollback();
-//                $status['code'][] = 0;
-//                $status['product_product_list'][] = "Product is not available";
             }
         }
         $order = new PurchaseOrderModel();

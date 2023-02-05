@@ -23,7 +23,7 @@ class CategoryModel extends \DB\Cortex {
         ],
         'description' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR512,
-            'validate' => 'required|||max_len,500'
+            'validate' => 'required|||max_len,500|||alpha_space'
         ],
         'featured' => [
             'type'=> \DB\SQL\Schema::DT_TINYINT,

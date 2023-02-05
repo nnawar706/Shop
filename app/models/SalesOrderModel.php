@@ -48,25 +48,27 @@ class SalesOrderModel extends \DB\Cortex {
      * @throws Exception
      */
     public function createOrder($data): array {
+        $this->db->begin();
         $this->customer_id = $data['customer_id'] ?? '';
         $this->branch_id = $data['branch_id'] ?? '';
         $this->user_id = $data['user_id'] ?? '';
         $this->sales_type_id = $data['sales_type_id'] ?? '';
-        $this->total_amount = $data['total_amount'] ?? '';
         $this->sold_at = date('y-m-d h:i:s') ?? '';
         if($this->validate()) {
             try {
                 $this->save();
-                $status['id'] = $this->id;
+                $products = new SalesProductModel();
+                $info['data'] = $products->createSales($data, $this->id);
             } catch(PDOException $e) {
-                $status['id'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $info['status']['code'] = 0;
+                $info['status']['message'] = 'Invalid data';
             }
         } else {
-            $status['id'] = 0;
-            $status['message'] = Base::instance()->get('error_msg');
+            $info['status']['code'] = 0;
+            $info['status']['message'] = 'Invalid data';
         }
-        return $status;
+        $this->db->commit();
+        return $info;
     }
 
     public function getAll(): array {
@@ -153,6 +155,12 @@ class SalesOrderModel extends \DB\Cortex {
         }
         $result['status'] = $status;
         return $result;
+    }
+
+    public function addTotalAmount($sales_id, $total_amount) {
+        $this->load(['id=?',$sales_id]);
+        $this->total_amount = $total_amount;
+        $this->save();
     }
 
 }

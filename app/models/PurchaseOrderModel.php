@@ -65,7 +65,6 @@ class PurchaseOrderModel extends \DB\Cortex {
                 $info['status']['message'] = 'Invalid data';
             }
         } else {
-
             $info['status']['code'] = 0;
             $info['status']['message'] = 'Invalid data';
         }
@@ -126,6 +125,7 @@ class PurchaseOrderModel extends \DB\Cortex {
         $result['status'] = $status;
         return $result;
     }
+    //bgyygjkblkll
 
     public function addTotalAmount($purchase_id, $total_amount) {
         $this->load(['id=?',$purchase_id]);

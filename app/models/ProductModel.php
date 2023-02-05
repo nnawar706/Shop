@@ -33,11 +33,11 @@ class ProductModel extends \DB\Cortex {
         ],
         'name' => [
             'type' => \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||alpha_space|||max_len,100'
+            'validate' => 'required|||alpha_space|||max_len,100|||min_len,5'
         ],
         'description' => [
             'type' => \DB\SQL\Schema::DT_VARCHAR512,
-            'validate' => 'required|||max_len,500'
+            'validate' => 'required|||max_len,500|||alpha_space'
         ],
         'unit_id' => [
             'belongs-to-one' => '\ProductUnitModel',

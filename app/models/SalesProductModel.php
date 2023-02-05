@@ -49,41 +49,38 @@ class SalesProductModel extends \DB\Cortex {
         $product = new ProductModel();
         $inv = new InventoryModel();
         $status['sales_order_id'] = $sales_id;
+        $total_amount = 0;
         foreach ($data['product_name_list'] as $item) {
             $this->sales_order_id = $sales_id;
             $prod = $product->getProduct($item['product_id']);
-            if($prod) {
+            if($prod['status']['code'] == 1) {
                 if($data['sales_type_id'] == 1) {
                     $this->selling_price = $prod['data']['wholesale_price'];
+                    $total = $prod['data']['wholesale_price'] * $item['amount_unit'] - $item['discount_amount'];
                 } else {
                     $this->selling_price = $prod['data']['retail_price'];
+                    $total = $prod['data']['retail_price'] * $item['amount_unit'] - $item['discount_amount'];
                 }
+                $total_amount = $total_amount + $total;
                 $this->product_id = $item['product_id'];
                 $this->buying_price = $prod['data']['cost_price'];
                 $this->amount_unit = $item['amount_unit'] ?? 1;
                 $this->discount_amount = $item['discount_amount'] ?? 0;
-
                 if($this->validate()) {
-                    try {
-                        $this->save();
-                        $inv->saleProduct($data['branch_id'], $item['product_id'], $item['amount_unit']);
-                        $status['product_list'][] = $this->cast(NULL, 0);
-                        $status['code'][] = 1;
-                        $status['message'][] = 'Sales Product Successfully Added.';
-                        $this->reset();
-                    } catch(PDOException $e) {
-                        $status['code'][] = 0;
-                        $status['message'][] = $e->errorInfo[2];
-                    }
+                    $this->save();
+                    $status['sales_product_list'][] = $this->cast(NULL, 0);
+                    $inv->saleProduct($data['branch_id'], $item['product_id'], $item['amount_unit']);
+                    $this->reset();
                 } else {
-                    $status['code'][] = 0;
-                    $status['message'][] = Base::instance()->get('error_msg');
+                    $this->db->rollback();
                 }
             } else {
-                $status['code'][] = 0;
-                $status['message'][] = 'Product not available';
+                $this->db->rollback();
             }
         }
+        $order = new SalesOrderModel();
+        $order->addTotalAmount($sales_id, $total_amount);
+        $status['total_amount'] = $total_amount;
         return $status;
     }
 
@@ -111,36 +108,6 @@ class SalesProductModel extends \DB\Cortex {
         } else {
             $status['code'] = 0;
             $status['message'] = 'Invalid sales product Id.';
-        }
-        $result['status'] = $status;
-        return $result;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function updateSales($id, $data): array {
-        $this->load(['id=?', $id]);
-        if($this->id) {
-            $this->copyfrom($data);
-            if($this->validate()) {
-                try {
-                    $this->save();
-                    $info = $this->cast(NULL, 0);;
-                    $result['data'] = $info;
-                    $status['code'] = 1;
-                    $status['message'] = 'Sales Product Successfully Updated.';
-                } catch(PDOException $e) {
-                    $status['code'] = 0;
-                    $status['message'] = $e->errorInfo[2];
-                }
-            } else {
-                $status['code'] = 0;
-                $status['message'] = Base::instance()->get('error_msg');
-            }
-        } else {
-            $status['code'] = 0;
-            $status['message'] = 'Invalid Sales Product Id.';
         }
         $result['status'] = $status;
         return $result;

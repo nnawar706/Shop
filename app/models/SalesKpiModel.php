@@ -12,7 +12,7 @@ class SalesKpiModel extends \DB\Cortex {
         ],
         'target_sales_volume' => [
             'type' => \DB\SQL\Schema::DT_INT,
-            'validate' => 'required|||max_len,11|||numeric'
+            'validate' => 'required|||max_len,11'
         ]
     ];
 

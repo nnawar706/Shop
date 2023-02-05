@@ -11,7 +11,7 @@ class TransferTypeModel extends \DB\Cortex {
         ],
         'name' => [
             'type' => \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||unique|||max_len,50',
+            'validate' => 'required|||unique|||max_len,50|||min_len,5|||alpha',
         ]
     ];
 

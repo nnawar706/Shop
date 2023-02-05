@@ -22,18 +22,9 @@ class SalesOrderController extends MainController {
                     $eligibility = $inventory->checkEligibility($data);
                     if (!in_array("0", $eligibility['code'])) {
                         $order = new SalesOrderModel();
-                        $sales_order = $order->createOrder($data);
-                        if ($sales_order['id'] != 0) {
-                            $product = new SalesProductModel();
-                            $status['status']['code'] = 1;
-                            $status['status']['message'] = "order placed";
-                            $status['sales_data'] = $product->createSales($data, $sales_order['id']);
-                        } else {
-                            $status['status']['code'] = 0;
-                            $status['status']['message'] = "something went wrong";
-                        }
+                        $status = $order->createOrder($data);
                     } else {
-                        $status['code'] = 0;
+                        $status['status']['code'] = 0;
                         $status['status']['message'] = $eligibility['message'];
                     }
                     header('Content-Type: application/json');
