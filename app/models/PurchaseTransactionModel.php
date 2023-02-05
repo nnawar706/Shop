@@ -47,18 +47,10 @@ class PurchaseTransactionModel extends \DB\Cortex {
         $this->amount_paid = $data['amount_paid'] ?? '';
         $this->transaction_document_url = $data['transaction_document_url'] ?? '';
         $this->ref_comment = $data['ref_comment'] ?? '';
+        $this->payment_status_id = $data['payment_status_id'];
         $this->transaction_at = date('y-m-d h:i:s');
         if($this->validate()) {
             try {
-                $order = new PurchaseOrderModel();
-                $total_amount = $order->getTotalAmount($data['purchase_id']);
-                if($total_amount == $data['amount_paid']) {
-                    $this->payment_status_id = 1;
-                } else if ($total_amount > $data['amount_paid']) {
-                    $this->payment_status_id = 3;
-                } else {
-                    $this->payment_status_id = 0;
-                }
                 $this->save();
                 $amount = new PurchaseOrderModel();
                 $amount->updatePaidAmount($data['amount_paid'], $data['purchase_id']);

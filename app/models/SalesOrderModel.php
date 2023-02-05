@@ -163,4 +163,19 @@ class SalesOrderModel extends \DB\Cortex {
         $this->save();
     }
 
+    public function getTotalAmount($sales_id): int {
+        $this->load(['id=?',$sales_id]);
+        if($this->id) {
+            return $this->total_amount;
+        } else {
+            return 0;
+        }
+    }
+
+    public function updatePaidAmount($sales_id, $amount_paid) {
+        $this->load(['id=?',$sales_id]);
+        $this->paid_amount = $amount_paid;
+        $this->save();
+    }
+
 }

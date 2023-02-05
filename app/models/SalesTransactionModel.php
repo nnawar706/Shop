@@ -15,6 +15,10 @@ class SalesTransactionModel extends \DB\Cortex {
             'type' => \DB\SQL\Schema::DT_TINYINT,
             'validate' => 'required'
         ],
+        'sales_status_id' => [
+            'belongs-to-one' => '\SalesStatusModel',
+            'type' => \DB\SQL\Schema::DT_INT
+        ],
         'amount_paid' => [
             'type' => \DB\SQL\Schema::DT_TINYINT,
             'validate' => 'required'
@@ -43,6 +47,14 @@ class SalesTransactionModel extends \DB\Cortex {
         unset($data['submit']);
         if($this->validate()) {
             try {
+                $order = new SalesOrderModel();
+                $total = $order->getTotalAmount($data['sales_order_id']);
+                if($total > $data['amount_paid']) {
+                    $this->sales_status_id = 2;
+                } else {
+                    $this->sales_status_id = 1;
+                }
+                $order->updatePaidAmount($data['sales_order_id'], $data['amount_paid']);
                 $this->save();
                 $info = $this->cast(NULL, 0);
                 $result['data'] = $info;
@@ -61,8 +73,8 @@ class SalesTransactionModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['sales_order_id.id','transaction_type_id.id','transaction_type_id.name']);
-        $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
+        $this->fields(['sales_transaction_sales_status_id'], true);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
         if($data) {
             $status['code'] = 1;
             $status['message'] = 'All Purchase transaction successfully fetched.';
