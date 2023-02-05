@@ -4,12 +4,12 @@ class SalesTransactionController extends MainController {
 
     public $file_name;
 
-//    public function index() {
-//        $sales = new SalesTransactionModel();
-//        $data = $sales->getAll();
-//        header('Content-Type: application/json');
-//        echo json_encode($data);
-//    }
+    public function index() {
+        $sales = new SalesTransactionModel();
+        $data = $sales->getAll();
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
 
     protected function uploadDoc() {
         $this->f3->set('UPLOADS','ui/images/transactions/');
@@ -45,5 +45,12 @@ class SalesTransactionController extends MainController {
             header('Content-Type: application/json');
             echo json_encode($result);
         }
+    }
+
+    public function read($f3, $params) {
+        $sales = new SalesTransactionModel();
+        $data = $sales->getSales($params['id']);
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 }

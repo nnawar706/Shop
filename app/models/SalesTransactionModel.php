@@ -14,6 +14,10 @@ class SalesTransactionModel extends \DB\Cortex {
             'belongs-to-one' => '\TransactionTypeModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
             'validate' => 'required'
+        ],
+        'amount_paid' => [
+            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'validate' => 'required'
         ]
     ];
 
@@ -32,12 +36,11 @@ class SalesTransactionModel extends \DB\Cortex {
     public function createTransaction($data): array {
         $this->sales_order_id = $data['sales_order_id'] ?? '';
         $this->transaction_type_id = $data['transaction_type_id'] ?? '';
-        $this->amount_paid = $data['amount_paid'];
+        $this->amount_paid = $data['amount_paid'] ?? '';
         $this->transaction_document_url = $data['transaction_document_url'] ?? '';
-        $this->ref_comment = $data['ref_comment'];
+        $this->ref_comment = $data['ref_comment'] ?? '';
         $this->transaction_at = date('y-m-d h:i:s');
         unset($data['submit']);
-
         if($this->validate()) {
             try {
                 $this->save();
@@ -53,6 +56,21 @@ class SalesTransactionModel extends \DB\Cortex {
             $status['code'] = 0;
             $status['message'] = Base::instance()->get('error_msg');
         }
+        $result['status'] = $status;
+        return $result;
+    }
+
+    public function getAll(): array {
+        $this->fields(['sales_order_id.id','transaction_type_id.id','transaction_type_id.name']);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
+        if($data) {
+            $status['code'] = 1;
+            $status['message'] = 'All Purchase transaction successfully fetched.';
+        } else {
+            $status['code'] = 0;
+            $status['message'] = 'No Purchase transaction found.';
+        }
+        $result['data'] = $data;
         $result['status'] = $status;
         return $result;
     }
@@ -79,6 +97,22 @@ class SalesTransactionModel extends \DB\Cortex {
         } else {
             $status['code'] = 0;
             $status['message'] = 'Invalid sales transaction Id.';
+        }
+        $result['status'] = $status;
+        return $result;
+    }
+
+    public function getSales($id): array {
+        $this->fields(['sales_order_id.id','transaction_type_id.id','transaction_type_id.name']);
+        $this->load(['id=?', $id]);
+        if($this->id) {
+            $data = $this->cast(NULL, 1);
+            $result['data'] = $data;
+            $status['code'] = 1;
+            $status['message'] = 'Purchase transaction Successfully Fetched.';
+        } else {
+            $status['code'] = 0;
+            $status['message'] = 'Invalid Purchase transaction Id.';
         }
         $result['status'] = $status;
         return $result;

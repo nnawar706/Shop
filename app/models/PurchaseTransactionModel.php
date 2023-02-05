@@ -116,36 +116,6 @@ class PurchaseTransactionModel extends \DB\Cortex {
         return $result;
     }
 
-    /**
-     * @throws Exception
-     */
-    public function updatePurchase($id, $data): array {
-        $this->load(['id=?', $id]);
-        if($this->id) {
-            $this->name = $data['name'] ?? '';
-            if($this->validate()) {
-                try {
-                    $this->save();
-                    $info = $this->cast(NULL, 0);;
-                    $result['data'] = $info;
-                    $status['code'] = 1;
-                    $status['message'] = 'Purchase transaction Successfully Updated.';
-                } catch(PDOException $e) {
-                    $status['code'] = 0;
-                    $status['message'] = $e->errorInfo[2];
-                }
-            } else {
-                $status['code'] = 0;
-                $status['message'] = Base::instance()->get('error_msg');
-            }
-        } else {
-            $status['code'] = 0;
-            $status['message'] = 'Invalid Purchase transaction Id.';
-        }
-        $result['status'] = $status;
-        return $result;
-    }
-
     public function deletePurchase($id): array {
         $this->load(['id=?', $id]);
         if($this->id) {
