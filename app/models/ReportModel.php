@@ -2,8 +2,9 @@
 
 class ReportModel {
 
-    public function getDues($data, $cid): array {
+    //reports
 
+    public function getDues($data, $cid): array {
         $customer = new CustomerModel();
         $order = new SalesOrderModel();
 
@@ -37,7 +38,7 @@ class ReportModel {
 
         $info['data']['customer_id'] = $cid;
         $info['data']['name'] = $customer_info['data']['name'];
-        $info['data']['orders'] = $order->getOrders($data, $cid);
+        //$info['data']['orders'] = $order->getOrders($data, $cid);
         $info['data']['from'] = $data['from'];
         $info['data']['to'] = $data['to'];
         return $info;
