@@ -74,7 +74,7 @@ class SalesOrderModel extends \DB\Cortex {
     public function getAll(): array {
         $this->fields(['customer_id.id','customer_id.name','branch_id.id','branch_id.name','user_id.id',
             'user_id.profile_user_id.user_id','user_id.profile_user_id.name','sales_type_id.id','sales_type_id.type']);
-        $this->fields(['sales_product_sales_order_id'], true);
+        $this->fields(['sales_transaction_sales_order_id','sales_product_sales_order_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 2);
         if($data) {
             $status['code'] = 1;
@@ -91,7 +91,7 @@ class SalesOrderModel extends \DB\Cortex {
     public function getSales($id): array {
         $this->fields(['customer_id.id','customer_id.name','branch_id.id','branch_id.name','user_id.id',
             'user_id.profile_user_id.user_id','user_id.profile_user_id.name','sales_type_id.id','sales_type_id.type']);
-        $this->fields(['sales_product_sales_order_id'], true);
+        $this->fields(['sales_transaction_sales_order_id','sales_product_sales_order_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 2);

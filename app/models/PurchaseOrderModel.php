@@ -125,7 +125,6 @@ class PurchaseOrderModel extends \DB\Cortex {
         $result['status'] = $status;
         return $result;
     }
-    //bgyygjkblkll
 
     public function addTotalAmount($purchase_id, $total_amount) {
         $this->load(['id=?',$purchase_id]);
@@ -137,5 +136,14 @@ class PurchaseOrderModel extends \DB\Cortex {
         $this->load(['id=?',$purchase_id]);
         $this->paid_amount = $amount_paid;
         $this->save();
+    }
+
+    public function getTotalAmount($purchase_id): int {
+        $this->load(['id=?',$purchase_id]);
+        if($this->id) {
+            return $this->total_amount;
+        } else {
+            return 0;
+        }
     }
 }

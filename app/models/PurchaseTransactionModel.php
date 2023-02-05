@@ -17,8 +17,7 @@ class PurchaseTransactionModel extends \DB\Cortex {
         ],
         'payment_status_id' => [
             'belongs-to-one' => '\PurchaseStatusModel',
-            'type' => \DB\SQL\Schema::DT_TINYINT,
-            'validate' => 'required'
+            'type' => \DB\SQL\Schema::DT_TINYINT
         ],
         'amount_paid' => [
             'type' => \DB\SQL\Schema::DT_TINYINT,
@@ -48,15 +47,22 @@ class PurchaseTransactionModel extends \DB\Cortex {
         $this->amount_paid = $data['amount_paid'] ?? '';
         $this->transaction_document_url = $data['transaction_document_url'] ?? '';
         $this->ref_comment = $data['ref_comment'] ?? '';
-        $this->payment_status_id = $data['payment_status_id'] ?? '';
         $this->transaction_at = date('y-m-d h:i:s');
         if($this->validate()) {
             try {
+                $order = new PurchaseOrderModel();
+                $total_amount = $order->getTotalAmount($data['purchase_id']);
+                if($total_amount == $data['amount_paid']) {
+                    $this->payment_status_id = 1;
+                } else if ($total_amount > $data['amount_paid']) {
+                    $this->payment_status_id = 3;
+                } else {
+                    $this->payment_status_id = 0;
+                }
                 $this->save();
-                $info = $this->cast(NULL, 0);
                 $amount = new PurchaseOrderModel();
                 $amount->updatePaidAmount($data['amount_paid'], $data['purchase_id']);
-                $result['data'] = $info;
+                $result['data'] = $this->cast(NULL, 0);
                 $status['code'] = 1;
                 $status['message'] = 'Purchase Transaction Successfully Added.';
             } catch(PDOException $e) {
@@ -73,7 +79,7 @@ class PurchaseTransactionModel extends \DB\Cortex {
 
     public function getAll(): array {
         $this->fields(['purchase_id.id']);
-        $this->fields(['transaction_type_id.purchase_transaction_transaction_type','payment_status_id.purchase_transaction_payment_status_id'], true);
+        $this->fields(['transaction_type_id.sales_transaction_transaction_type_id','transaction_type_id.purchase_transaction_transaction_type','payment_status_id.purchase_transaction_payment_status_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $status['code'] = 1;
@@ -95,7 +101,7 @@ class PurchaseTransactionModel extends \DB\Cortex {
 
     public function getPurchase($id): array {
         $this->fields(['purchase_id.id']);
-        $this->fields(['transaction_type_id.purchase_transaction_transaction_type','payment_status_id.purchase_transaction_payment_status_id'], true);
+        $this->fields(['transaction_type_id.sales_transaction_transaction_type_id','transaction_type_id.purchase_transaction_transaction_type','payment_status_id.purchase_transaction_payment_status_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 1);
