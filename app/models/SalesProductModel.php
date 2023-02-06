@@ -133,4 +133,18 @@ class SalesProductModel extends \DB\Cortex {
         $result['status'] = $status;
         return $result;
     }
+
+    public function getTotalProduct($orders)
+    {
+        $product_ids = [];
+        foreach ($orders as $item) {
+            $data = $this->afind(['sales_order_id=?',$item],[],0,0);
+            foreach ($data as $product) {
+                $product_ids[] = $product['product_id'];
+            }
+        }
+        $product_ids = array_unique($product_ids);
+        sort($product_ids);
+        var_dump($product_ids);
+    }
 }

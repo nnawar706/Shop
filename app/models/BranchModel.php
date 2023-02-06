@@ -78,7 +78,7 @@ class BranchModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
+        $this->fields(['notification_branch_id','inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
             'inventory_trace_to_branch_id','shop_id.user_profile_shop_id','shop_id.branch_shop_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
@@ -110,7 +110,7 @@ class BranchModel extends \DB\Cortex {
     }
 
     public function getBranch($id): array {
-        $this->fields(['inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
+        $this->fields(['notification_branch_id','inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
             'inventory_trace_to_branch_id','shop_id.user_profile_shop_id','shop_id.branch_shop_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {

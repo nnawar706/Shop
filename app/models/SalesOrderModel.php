@@ -73,7 +73,7 @@ class SalesOrderModel extends \DB\Cortex {
 
     public function getAll(): array {
         $this->fields(['customer_id.id','customer_id.name','branch_id.id','branch_id.name','user_id.id',
-            'user_id.profile_user_id.user_id','user_id.profile_user_id.name','sales_type_id.id','sales_type_id.type']);
+            'user_id.profile_user_id.user_id','user_id.profile_user_id.name','sales_type_id.id','sales_type_id.name']);
         $this->fields(['sales_transaction_sales_order_id','product_list'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 2);
         if($data) {
@@ -90,7 +90,7 @@ class SalesOrderModel extends \DB\Cortex {
 
     public function getSales($id): array {
         $this->fields(['customer_id.id','customer_id.name','branch_id.id','branch_id.name','user_id.id',
-            'user_id.profile_user_id.user_id','user_id.profile_user_id.name','sales_type_id.id','sales_type_id.type']);
+            'user_id.profile_user_id.user_id','user_id.profile_user_id.name','sales_type_id.id','sales_type_id.name','sales_type_id.type']);
         $this->fields(['sales_transaction_sales_order_id','product_list'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
@@ -227,6 +227,18 @@ class SalesOrderModel extends \DB\Cortex {
             }
         }
         return $total;
+    }
+
+    public function getSalesOrders($data): array {
+        $sales_order_ids = [];
+        $this->fields(['id','product_list']);
+        $rows = $this->afind(['date(sold_at)>=? AND date(sold_at)<=? AND branch_id=?',$data['from'], $data['to'], $data['branch_id']],['order'=>'id DESC'],0,1);
+        if($rows){
+            foreach ($rows as $item) {
+                $sales_order_ids[] = $item['id'];
+            }
+        }
+        return $sales_order_ids;
     }
 
 }

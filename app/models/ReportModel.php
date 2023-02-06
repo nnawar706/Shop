@@ -84,20 +84,26 @@ class ReportModel {
         return $info;
     }
 
-    public function getProductSales($data, $pid): array {
-        $product = new ProductModel();
+    public function getProductSales($data): array {
+        $branch = new BranchModel();
+        $order = new SalesOrderModel();
+        $products = new SalesProductModel();
 
+        $branch_info = $branch->getBranch($data['branch_id']);
+        $orders = $order->getSalesOrders($data);
+        $sales_product = $products->getTotalProduct($orders);
 
-        $product_info = $product->getProduct($pid);
+        if($branch_info['status']['code'] == 1) {
+            $info['data']['branch_id'] = $data['branch_id'];
+            $info['data']['name'] = $branch_info['data']['name'];
+            $info['data']['products'] =
+            $info['status']['code'] = 1;
+            $info['status']['message'] = "request successful";
 
-        $info['status']['code'] = 1;
-        $info['status']['message'] = "request successful";
+            $info['data']['from'] = $data['from'];
+            $info['data']['to'] = $data['to'];
+        }
 
-        $info['data']['id'] = $product_info['data']['id'];
-        $info['data']['name'] = $product_info['data']['name'];
-
-        $info['data']['from'] = $data['from'];
-        $info['data']['to'] = $data['to'];
         return $info;
     }
 
