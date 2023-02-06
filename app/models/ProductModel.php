@@ -232,4 +232,12 @@ class ProductModel extends \DB\Cortex {
         }
     }
 
+    public function getBuyingPrice($product_id)
+    {
+        $this->load(['id=?',$product_id]);
+        if($this->id) {
+            return $this->cost_price;
+        }
+    }
+
 }

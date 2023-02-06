@@ -94,7 +94,7 @@ class ReportModel {
         if($branch_info['status']['code'] == 1) {
             $info['data']['branch_id'] = $data['branch_id'];
             $info['data']['name'] = $branch_info['data']['name'];
-//            $info['data']['products'] =
+            $info['data']['products'] = $products->getProducts($data);
             $info['status']['code'] = 1;
             $info['status']['message'] = "request successful";
 
@@ -156,4 +156,5 @@ class ReportModel {
         }
         return $info;
     }
+
 }
