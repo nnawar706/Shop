@@ -5,7 +5,7 @@ class SalesOrderModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
-        'sales_product_sales_order_id' => [
+        'product_list' => [
             'has-many' => ['\SalesProductModel','sales_order_id'],
             'type' => \DB\SQL\Schema::DT_INT
         ],
@@ -74,7 +74,7 @@ class SalesOrderModel extends \DB\Cortex {
     public function getAll(): array {
         $this->fields(['customer_id.id','customer_id.name','branch_id.id','branch_id.name','user_id.id',
             'user_id.profile_user_id.user_id','user_id.profile_user_id.name','sales_type_id.id','sales_type_id.type']);
-        $this->fields(['sales_transaction_sales_order_id','sales_product_sales_order_id'], true);
+        $this->fields(['sales_transaction_sales_order_id','product_list'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 2);
         if($data) {
             $status['code'] = 1;
@@ -91,7 +91,7 @@ class SalesOrderModel extends \DB\Cortex {
     public function getSales($id): array {
         $this->fields(['customer_id.id','customer_id.name','branch_id.id','branch_id.name','user_id.id',
             'user_id.profile_user_id.user_id','user_id.profile_user_id.name','sales_type_id.id','sales_type_id.type']);
-        $this->fields(['sales_transaction_sales_order_id','sales_product_sales_order_id'], true);
+        $this->fields(['sales_transaction_sales_order_id','product_list'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 2);
@@ -204,6 +204,17 @@ class SalesOrderModel extends \DB\Cortex {
     public function completedOrders($data, $cid): int {
         $this->load(['total_amount=paid_amount AND date(sold_at)>=? AND date(sold_at)<=? AND customer_id=?',$data['from'],$data['to'],$cid]);
         return $this->loaded();
+    }
+
+    public function getOrders($data, $cid)
+    {
+        $this->fields(['branch_id.id','branch_id.name']);
+        $this->fields(['sales_transaction_sales_order_id','customer_id','user_id','sales_type_id.sales_order_sales_type_id','total_amount',
+            'paid_amount','product_list.buying_price'], true);
+        $rows = $this->afind(['date(sold_at)>=? AND date(sold_at)<=? AND customer_id=?',$data['from'], $data['to'],$cid]);
+        if($rows) {
+            return $rows;
+        }
     }
 
 }

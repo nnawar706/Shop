@@ -29,7 +29,7 @@ class ReportModel {
 
     public function getPurchases($data, $cid): array {
         $customer = new CustomerModel();
-        $order = new SalesOrderModel();
+        $orders = new SalesOrderModel();
 
         $customer_info = $customer->getCustomer($cid);
 
@@ -38,9 +38,38 @@ class ReportModel {
 
         $info['data']['customer_id'] = $cid;
         $info['data']['name'] = $customer_info['data']['name'];
-        //$info['data']['orders'] = $order->getOrders($data, $cid);
+        $info['data']['orders'] = $orders->getOrders($data, $cid);
         $info['data']['from'] = $data['from'];
         $info['data']['to'] = $data['to'];
         return $info;
+    }
+
+    public function getProductSales($data, $pid): array {
+        $product = new ProductModel();
+
+
+        $product_info = $product->getProduct($pid);
+
+        $info['status']['code'] = 1;
+        $info['status']['message'] = "request successful";
+
+        $info['data']['id'] = $product_info['data']['id'];
+        $info['data']['name'] = $product_info['data']['name'];
+
+        $info['data']['from'] = $data['from'];
+        $info['data']['to'] = $data['to'];
+        return $info;
+    }
+
+    public function getPerformance($data, $sid)
+    {
+        $user = new UserModel();
+        $salesman = $user->getSalesmanInfo($sid);
+
+        $info['status']['code'] = 1;
+        $info['status']['message'] = "request successful";
+
+        $info['data']['id'] = $salesman;
+        return $salesman;
     }
 }

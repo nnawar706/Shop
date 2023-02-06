@@ -216,4 +216,11 @@ class UserModel extends \DB\Cortex {
         return $result;
     }
 
+    public function getSalesmanInfo($sid): ?array
+    {
+        $this->fields(['role','phone_username','password','salt','last_password','password']);
+        $data = $this->afind(['id=?',$sid]);
+        return $data;
+    }
+
 }
