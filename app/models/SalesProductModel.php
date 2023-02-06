@@ -134,17 +134,22 @@ class SalesProductModel extends \DB\Cortex {
         return $result;
     }
 
-    public function getTotalProduct($orders)
-    {
-        $product_ids = [];
-        foreach ($orders as $item) {
-            $data = $this->afind(['sales_order_id=?',$item],[],0,0);
-            foreach ($data as $product) {
-                $product_ids[] = $product['product_id'];
-            }
-        }
-        $product_ids = array_unique($product_ids);
-        sort($product_ids);
-        var_dump($product_ids);
-    }
+//    public function getTotalProduct($orders)
+//    {
+//        $prod = new ProductModel();
+//        foreach ($orders as $item) {
+//            $data = $this->afind(['sales_order_id=?',$item],[],0,0);
+//            foreach ($data as $product) {
+//                $info[$product['product_id']]['product_id'] = $product['product_id'];
+//                $info[$product['product_id']]['product_name'] = $prod->getName($product['product_id']);
+//                $info[$product['product_id']]['units_sold'] = 0;
+//                $info[$product['product_id']]['total_buying_price'] = 0;
+//                $info[$product['product_id']]['total_selling_price'] = 0;
+//                $info[$product['product_id']]['total_profit'] = 0;
+//            }
+//        }
+//        var_dump($info);
+//    }
+
+
 }

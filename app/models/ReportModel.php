@@ -90,13 +90,11 @@ class ReportModel {
         $products = new SalesProductModel();
 
         $branch_info = $branch->getBranch($data['branch_id']);
-        $orders = $order->getSalesOrders($data);
-        $sales_product = $products->getTotalProduct($orders);
 
         if($branch_info['status']['code'] == 1) {
             $info['data']['branch_id'] = $data['branch_id'];
             $info['data']['name'] = $branch_info['data']['name'];
-            $info['data']['products'] =
+//            $info['data']['products'] =
             $info['status']['code'] = 1;
             $info['status']['message'] = "request successful";
 

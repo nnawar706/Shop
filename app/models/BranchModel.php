@@ -5,6 +5,10 @@ class BranchModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
+        'user_profile_branch_id' => [
+            'has-many' => ['\UserProfileModel','branch_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
         'inventory_branch_id' => [
             'has-many' => ['\InventoryModel','branch_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT
@@ -78,7 +82,7 @@ class BranchModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['notification_branch_id','inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
+        $this->fields(['user_profile_branch_id','notification_branch_id','inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
             'inventory_trace_to_branch_id','shop_id.user_profile_shop_id','shop_id.branch_shop_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
@@ -94,7 +98,7 @@ class BranchModel extends \DB\Cortex {
     }
 
     public function getAllShop($id): int|array {
-        $this->fields(['inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
+        $this->fields(['user_profile_branch_id','inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
             'inventory_trace_to_branch_id','shop_id.user_profile_shop_id','shop_id.branch_shop_id'], true);
         $data = $this->afind(['shop_id=?', $id], ['order'=>'id DESC'], 0, 0);
         if($data) {
@@ -110,7 +114,7 @@ class BranchModel extends \DB\Cortex {
     }
 
     public function getBranch($id): array {
-        $this->fields(['notification_branch_id','inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
+        $this->fields(['user_profile_branch_id','notification_branch_id','inventory_branch_id', 'sales_order_branch_id','inventory_trace_from_branch_id',
             'inventory_trace_to_branch_id','shop_id.user_profile_shop_id','shop_id.branch_shop_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {

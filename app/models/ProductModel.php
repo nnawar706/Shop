@@ -224,4 +224,12 @@ class ProductModel extends \DB\Cortex {
         return $result;
     }
 
+    public function getName($product_id)
+    {
+        $this->load(['id=?',$product_id]);
+        if($this->id) {
+            return $this->name;
+        }
+    }
+
 }

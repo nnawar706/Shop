@@ -33,8 +33,8 @@ class UserProfileModel extends \DB\Cortex {
             'type' => \DB\SQL\Schema::DT_INT,
             'validate' => 'required|||numeric|||max_len,7'
         ],
-        'shop_id' => [
-            'belongs-to-one' => '\ShopModel',
+        'branch_id' => [
+            'belongs-to-one' => '\BranchModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
             'validate' => 'required'
         ],
@@ -65,7 +65,7 @@ class UserProfileModel extends \DB\Cortex {
         $this->designation_id = $data['designation_id'] ?? '';
         $this->salary= $data['salary'] ?? '';
         $this->department_id = $data['department_id'] ?? '';
-        $this->shop_id = $data['shop_id'] ?? '';
+        $this->branch_id = $data['branch_id'] ?? '';
         $this->ref_comment = $data['ref_comment'] ?? '';
         if($this->validate()) {
             try {

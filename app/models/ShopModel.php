@@ -5,10 +5,6 @@ class ShopModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
-        'user_profile_shop_id' => [
-            'has-many' => ['\UserProfileModel','shop_id'],
-            'type' => \DB\SQL\Schema::DT_TINYINT
-        ],
         'branch_shop_id' => [
             'has-many' => ['\BranchModel','shop_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT

@@ -96,7 +96,7 @@ class UserModel extends \DB\Cortex {
     }
 
     public function getUser($id): array {
-        $this->fields(['sales_order_user_id', 'password', 'salt', 'last_password', 'sales_kpi_user_id', 'profile_user_id', 'attendance_user_id'], true);
+        $this->fields(['profile_user_id','sales_order_user_id', 'password', 'salt', 'last_password', 'sales_kpi_user_id', 'attendance_user_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 0);
@@ -221,6 +221,12 @@ class UserModel extends \DB\Cortex {
             'last_login_at','last_login_ip','account_status','sales_kpi_user_id.last_modified_at','sales_order_user_id'], true);
         $this->fields(['profile_user_id.id','profile_user_id.name','profile_user_id.user_id']);
         return $this->afind(['id=?',$sid],[],0,1);
+    }
+
+    public function getBranch($user_id) {
+        $this->load(['id=?',$user_id]);
+        $data = $this->cast(NULL, 1);
+        return $data['profile_user_id']['branch_id'];
     }
 
 }
