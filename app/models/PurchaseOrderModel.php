@@ -9,7 +9,7 @@ class PurchaseOrderModel extends \DB\Cortex {
             'has-one' => ['\PurchaseTransactionModel','purchase_id'],
             'type' => \DB\SQL\Schema::DT_INT
         ],
-        'purchase_product_list' => [
+        'product_list' => [
             'has-many' => ['\PurchaseProductModel','purchase_order_id'],
             'type' => \DB\SQL\Schema::DT_INT
         ],
@@ -138,12 +138,42 @@ class PurchaseOrderModel extends \DB\Cortex {
         $this->save();
     }
 
-    public function getTotalAmount($purchase_id): int {
-        $this->load(['id=?',$purchase_id]);
-        if($this->id) {
-            return $this->total_amount;
+    public function getOrders($data, $sid): ?array {
+        $this->fields(['supplier_id','purchase_transaction_purchase_id','total_amount','paid_amount','inventory_trace_purchase_id'], true);
+        $this->fields(['default_branch_id.id','default_branch_id.name']);
+        $rows = $this->afind(['date(purchased_at)>=? AND date(purchased_at)<=? AND supplier_id=?',$data['from'], $data['to'],$sid],['order'=>'id DESC']);
+        if($rows) {
+            return $rows;
         } else {
-            return 0;
+            return null;
         }
+    }
+
+    public function getTotalDueAndPaid($data, $sid): array {
+        $due = 0;
+        $paid = 0;
+        $total = 0;
+        $rows = $this->afind(['date(purchased_at)>=? AND date(purchased_at)<=? AND supplier_id=?',$data['from'], $data['to'],$sid]);
+        if($rows) {
+            foreach ($rows as $item) {
+                $due = $due + ($item['total_amount'] - $item['paid_amount']);
+                $paid = $paid + $item['paid_amount'];
+                $total = $total + $item['total_amount'];
+            }
+        }
+        $data['due'] = $due;
+        $data['paid'] = $paid;
+        $data['total'] = $total;
+        return $data;
+    }
+
+    public function getTotalOrders($data, $sid): int {
+        $this->load(['date(purchased_at)>=? AND date(purchased_at)<=? AND supplier_id=?',$data['from'], $data['to'],$sid]);
+        return $this->loaded();
+    }
+
+    public function completedOrders($data, $sid): int {
+        $this->load(['total_amount=paid_amount AND date(purchased_at)>=? AND date(purchased_at)<=? AND supplier_id=?',$data['from'],$data['to'],$sid]);
+        return $this->loaded();
     }
 }

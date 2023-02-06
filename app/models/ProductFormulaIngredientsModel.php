@@ -8,15 +8,20 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
         'formula_id' => [
             'belongs-to-one' => '\ProductFormulaModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
-            'validate' => 'required|||max_len,4'
+            'validate' => 'required'
+        ],
+        'raw_mat_id' => [
+            'belongs-to-one' => '\ProductRawMaterialModel',
+            'type' => \DB\SQL\Schema::DT_TINYINT,
+            'validate' => 'required'
         ],
         'percentage' => [
             'type' => \DB\SQL\Schema::DT_TINYINT,
-            'validate' => 'required|||max_len,3'
+            'validate' => 'required'
         ],
-        'unit_size' => [
+        'no_of_unit' => [
             'type' => \DB\SQL\Schema::DT_TINYINT,
-            'validate' => 'required|||max_len,7'
+            'validate' => 'required'
         ]
     ];
 
@@ -32,25 +37,19 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
     /**
      * @throws Exception
      */
-    public function createFormula($data): array {
-        $this->copyfrom($data);
-        if($this->validate()) {
-            try {
+    public function createFormulaIngredient($data, $formula_id) {
+        foreach ($data['formula_ingredients_list'] as $item) {
+            $this->formula_id = $formula_id;
+            $this->raw_mat_id = $item['raw_mat_id'] ?? '';
+            $this->percentage = $item['percentage'] ?? '';
+            $this->no_of_unit = $item['no_of_unit'] ?? '';
+            if($this->validate()) {
                 $this->save();
-                $info = $this->cast(NULL, 0);
-                $result['data'] = $info;
-                $status['code'] = 1;
-                $status['message'] = 'Product Formula Ingredient Successfully Added.';
-            } catch(PDOException $e) {
-                $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $this->reset();
+            } else {
+                $this->db->rollback();
             }
-        } else {
-            $status['code'] = 0;
-            $status['message'] = Base::instance()->get('error_msg');
         }
-        $result['status'] = $status;
-        return $result;
     }
 
     public function getAll(): array {
@@ -136,5 +135,4 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
         $result['status'] = $status;
         return $result;
     }
-
 }

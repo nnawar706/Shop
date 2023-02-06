@@ -206,15 +206,27 @@ class SalesOrderModel extends \DB\Cortex {
         return $this->loaded();
     }
 
-    public function getOrders($data, $cid)
-    {
+    public function getOrders($data, $cid): ?array {
         $this->fields(['branch_id.id','branch_id.name']);
         $this->fields(['sales_transaction_sales_order_id','customer_id','user_id','sales_type_id.sales_order_sales_type_id','total_amount',
             'paid_amount','product_list.buying_price'], true);
         $rows = $this->afind(['date(sold_at)>=? AND date(sold_at)<=? AND customer_id=?',$data['from'], $data['to'],$cid]);
         if($rows) {
             return $rows;
+        } else {
+            return null;
         }
+    }
+
+    public function getCompletedKpi($data, $sid): int {
+        $total = 0;
+        $rows = $this->afind(['date(sold_at)>=? AND date(sold_at)<=? AND user_id=?',$data['from'], $data['to'],$sid]);
+        if($rows) {
+            foreach ($rows as $item) {
+                $total = $total + $item['total_amount'];
+            }
+        }
+        return $total;
     }
 
 }

@@ -16,7 +16,7 @@ class ProductFormulaModel extends \DB\Cortex {
         ],
         'name' => [
             'type' => \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||unique|||max_len,100'
+            'validate' => 'required|||unique|||max_len,100|||min_len,5'
         ]
     ];
 
@@ -33,22 +33,21 @@ class ProductFormulaModel extends \DB\Cortex {
      * @throws Exception
      */
     public function createFormula($data): array {
-        $this->copyfrom($data);
+        $this->db->begin();
+        $this->name = $data['formula_name'] ?? '';
+        $this->category_id = $data['category_id'] ?? '';
         if($this->validate()) {
-            try {
-                $this->save();
-                $info = $this->cast(NULL, 0);
-                $result['data'] = $info;
-                $status['code'] = 1;
-                $status['message'] = 'Product Formula Successfully Added.';
-            } catch(PDOException $e) {
-                $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
-            }
+            $this->save();
+            $ingredient = new ProductFormulaIngredientsModel();
+            $ingredient->createFormulaIngredient($data, $this->id);
+            $result['data'] = $data;
+            $status['code'] = 1;
+            $status['message'] = 'Product Formula Successfully Added.';
         } else {
             $status['code'] = 0;
             $status['message'] = Base::instance()->get('error_msg');
         }
+        $this->db->commit();
         $result['status'] = $status;
         return $result;
     }

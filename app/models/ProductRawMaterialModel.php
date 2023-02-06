@@ -5,6 +5,10 @@ class ProductRawMaterialModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
+        'ingredient_raw_mat' => [
+            'has-many' => ['\ProductFormulaIngredientsModel','raw_mat_id'],
+            'type' => \DB\SQL\Schema::DT_TINYINT
+        ],
         'unit_id' => [
             'belongs-to-one' => '\ProductUnitModel',
             'type' => \DB\SQL\Schema::DT_TINYINT,
