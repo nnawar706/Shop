@@ -19,7 +19,7 @@ class SalesOrderController extends MainController {
                 $data = json_decode($this->f3->get('BODY'), true);
                 if (json_last_error() == JSON_ERROR_NONE) {
                     $user = new UserModel();
-                    $data['branch_id'] = $user->getBranch($data['user_id']);
+                    $data['branch_id'] = $user->getBranch(2);
                     $inventory = new InventoryModel();
                     $eligibility = $inventory->checkEligibility($data);
                     if (!in_array("0", $eligibility['code'])) {

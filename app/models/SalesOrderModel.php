@@ -49,7 +49,7 @@ class SalesOrderModel extends \DB\Cortex {
     public function createOrder($data): array {
         $this->db->begin();
         $this->customer_id = $data['customer_id'] ?? '';
-        $this->user_id = $data['user_id'];
+        $this->user_id = 2;
         $this->branch_id = $data['branch_id'];
         $this->sales_type_id = $data['sales_type_id'] ?? '';
         $this->sold_at = date('y-m-d h:i:s') ?? '';
