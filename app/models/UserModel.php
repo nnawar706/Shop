@@ -233,4 +233,17 @@ class UserModel extends \DB\Cortex {
         }
     }
 
+    public function isValidId($user_id): bool {
+        $this->load(['id=?',$user_id]);
+        if($this->id) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getRole($id) {
+        $this->load(['id=?',$id]);
+        return $this->role;
+    }
+
 }

@@ -8,6 +8,7 @@
       <path value="$PROJECT_DIR$/vendor/ikkez/f3-schema-builder" />
       <path value="$PROJECT_DIR$/vendor/composer" />
       <path value="$PROJECT_DIR$/vendor/vlucas/valitron" />
+      <path value="$PROJECT_DIR$/vendor/firebase/php-jwt" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0">

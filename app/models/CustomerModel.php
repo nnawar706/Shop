@@ -11,7 +11,7 @@ class CustomerModel extends \DB\Cortex {
         ],
         'name' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||alpha_space|||max_len,100'
+            'validate' => 'required|||alpha_space|||max_len,100|||min_len,5'
         ],
         'email' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,
@@ -19,11 +19,11 @@ class CustomerModel extends \DB\Cortex {
         ],
         'phone_no' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'required|||regex,/^(?:\+88|88)?(01[3-9]\d{8})$/'
+            'validate' => 'required|||unique|||regex,/^(?:\+88|88)?(01[3-9]\d{8})$/'
         ],
         'address' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,
-            'validate' => 'max_len,5|||max_len,100'
+            'validate' => 'min_len,5|||max_len,100'
         ],
         'company_name' => [
             'type'=> \DB\SQL\Schema::DT_VARCHAR128,

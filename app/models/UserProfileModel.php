@@ -156,8 +156,8 @@ class UserProfileModel extends \DB\Cortex {
     }
 
     public function getProfile($id): array {
-        $this->fields(['user_id.id','user_id.phone_username']);
-        $this->fields(['designation_id.user_profile_designation_id','department_id.user_profile_department_id','shop_id.user_profile_shop_id','shop_id.branch_shop_id'], true);
+        $this->fields(['user_id.id','user_id.phone_username','branch_id.id','branch_id.name']);
+        $this->fields(['designation_id.user_profile_designation_id','department_id.user_profile_department_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 1);

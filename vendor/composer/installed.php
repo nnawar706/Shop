@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'bcosca/fatfree',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '8366c12cfc48a1be658540aa09c19ed5341ac781',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'bcosca/fatfree' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '8366c12cfc48a1be658540aa09c19ed5341ac781',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -25,6 +25,15 @@
             'reference' => 'f6ea45472f55a1ecabd4ced74cb56f0efd6af34e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../bcosca/fatfree-core',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'firebase/php-jwt' => array(
+            'pretty_version' => 'v6.3.2',
+            'version' => '6.3.2.0',
+            'reference' => 'ea7dda77098b96e666c5ef382452f94841e439cd',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../firebase/php-jwt',
             'aliases' => array(),
             'dev_requirement' => false,
         ),

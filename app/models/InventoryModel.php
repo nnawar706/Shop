@@ -21,11 +21,11 @@ class InventoryModel extends \DB\Cortex {
         ],
         'stock_amount' => [
             'type' => \DB\SQL\Schema::DT_INT,
-            'validate' => 'required|||max_len,11|||integer'
+            'validate' => 'required'
         ],
         'min_stock_alert' => [
             'type' => \DB\SQL\Schema::DT_INT,
-            'validate' => 'required|||max_len,3|||integer'
+            'validate' => 'required'
         ]
     ];
 

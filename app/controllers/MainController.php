@@ -6,7 +6,7 @@ class MainController {
     function beforeroute() {
 //        if(!$this->f3->get('SESSION.isLoggedIn')) {
 //            $data['status'] = 0;
-//            $data['msg'] = 'Not authorized to access the content.';
+//            $data['msg'] = 'Not authorized to access the application.';
 //            header('Content-Type: application/json');
 //            echo json_encode($data);
 //            die();

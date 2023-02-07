@@ -9,6 +9,7 @@
 		"ikkez/f3-cortex": "^1.7",
 		"ext-pdo": "*",
 		"vlucas/valitron": "^1.4",
-		"ikkez/f3-validation-engine": "^1.7"
+		"ikkez/f3-validation-engine": "^1.7",
+		"firebase/php-jwt": "^6.3"
 	}
 }

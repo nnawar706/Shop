@@ -1,12 +1,15 @@
 <?php
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 class RootController extends DemoController {
 
     public function index() {
         echo "HOMEPAGE HERE";
     }
 
-    public function signin() {
+    public function signIn() {
         if ($this->f3->VERB == 'POST' && str_contains($this->f3->get('HEADERS[Content-Type]'), 'json')) {
             $this->f3->set('BODY', file_get_contents('php://input'));
             if (strlen($this->f3->get('BODY'))) {
@@ -15,17 +18,16 @@ class RootController extends DemoController {
                     $user = new UserModel();
                     if($user->isAvailable($data)) {
                         $id = $user->getUserID($data['phone_username']);
+                        $role = $user->getRole($id);
                         $user->updateUser($id);
-//                        $role = $user->getRole($id);
-                        $this->f3->set('SESSION.isLoggedIn', TRUE);
-                        $this->f3->set('SESSION.username', $this->f3->get('POST.phone_username'));
-                        $this->f3->set('SESSION.userid', $id);
-//                        $this->f3->set('SESSION.role', $role);
+                        $info['data'] = $this->generateCookie($id, $role);
+                        $this->generateRefreshToken($id, $role);
                         $info['status'] = 1;
                         $info['message'] = 'Successfully signed in!';
                     } else {
-                        $info['status'] = 0;
-                        $info['message'] = 'User not found.';
+                        $info['status']['code'] = 0;
+                        $info['status']['message'] = 'Invalid data.';
+                        $this->f3->status(401);
                     }
                     header('Content-Type: application/json');
                     echo json_encode($info);
@@ -34,14 +36,61 @@ class RootController extends DemoController {
         }
     }
 
-    public function signout() {
-        $this->f3->clear('SESSION.isLoggedIn');
-        $this->f3->clear('SESSION.email');
-        $this->f3->clear('SESSION.userid');
+    private function generateCookie($id, $role): array {
+        $secret_key = "I am a key. Use me to unlock the door to this application.";
+        $payload = [
+            "id" => $id,
+            "role" => $role,
+            "iat" => time(),
+            "exp" => time() + (60 * 15)
+        ];
+        $jwt = JWT::encode($payload, $secret_key, 'HS256');
+        $data['type'] = "Bearer";
+        $data['token'] = $jwt;
+        return $data;
+    }
+
+    private function deleteCookie() {
+        setcookie('jwt', '', time() - (60 * 60));
+        unset($_COOKIE['jwt']);
+    }
+
+    public function signOut() {
+        $this->deleteCookie();
         $data['status'] = 1;
         $data['message'] = 'Successfully signed out.';
         header('Content-Type: application/json');
         echo json_encode($data);
+    }
+
+    public function refreshToken() {
+        $jwt = $_COOKIE['jwt'];
+        try {
+            $secret_key = "I am a key. Use me to unlock the door to this application.";
+            $decoded = JWT::decode($jwt, new Key($secret_key, 'HS256'));
+            $user_id = $decoded->id;
+            $role = $decoded->role;
+            $user = new UserModel();
+            $valid = $user->isValidId($user_id);
+            if($valid) {
+                $this->deleteCookie();
+                $this->generateCookie($user_id, $role);
+            }
+        } catch(Exception $e) {
+            echo "Invalid JWT token";
+        }
+    }
+
+    private function generateRefreshToken($id, $role) {
+        $secret_key = "I am a key. Use me to unlock the door to this application.";
+        $payload = [
+            "id" => $id,
+            "role" => $role,
+            "iat" => time(),
+            "exp" => time() + (60 * 60 * 24 * 90)
+        ];
+        $jwt = JWT::encode($payload, $secret_key, 'HS256');
+        setcookie("secured_jwt", $jwt, time() + 3600, "", "", true, true);
     }
 
 }

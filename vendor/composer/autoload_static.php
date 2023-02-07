@@ -11,12 +11,20 @@ class ComposerStaticInit31a73b6b20108c86e3950bdd660ca2dd
         array (
             'Valitron\\' => 9,
         ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'Valitron\\' => 
         array (
             0 => __DIR__ . '/..' . '/vlucas/valitron/src/Valitron',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
     );
 
@@ -30,6 +38,7 @@ class ComposerStaticInit31a73b6b20108c86e3950bdd660ca2dd
         'CLI\\WS' => __DIR__ . '/..' . '/bcosca/fatfree-core/cli/ws.php',
         'Cache' => __DIR__ . '/..' . '/bcosca/fatfree-core/base.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Cron' => __DIR__ . '/..' . '/bcosca/fatfree-core/cron.php',
         'DB\\Cortex' => __DIR__ . '/..' . '/ikkez/f3-cortex/lib/db/cortex.php',
         'DB\\CortexCollection' => __DIR__ . '/..' . '/ikkez/f3-cortex/lib/db/cortex.php',
         'DB\\CortexQueryParser' => __DIR__ . '/..' . '/ikkez/f3-cortex/lib/db/cortex.php',

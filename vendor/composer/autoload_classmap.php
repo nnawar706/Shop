@@ -15,6 +15,7 @@ return array(
     'CLI\\WS' => $vendorDir . '/bcosca/fatfree-core/cli/ws.php',
     'Cache' => $vendorDir . '/bcosca/fatfree-core/base.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'Cron' => $vendorDir . '/bcosca/fatfree-core/cron.php',
     'DB\\Cortex' => $vendorDir . '/ikkez/f3-cortex/lib/db/cortex.php',
     'DB\\CortexCollection' => $vendorDir . '/ikkez/f3-cortex/lib/db/cortex.php',
     'DB\\CortexQueryParser' => $vendorDir . '/ikkez/f3-cortex/lib/db/cortex.php',

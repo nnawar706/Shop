@@ -53,10 +53,9 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['formula_id.category_id.category_parent_id','formula_id.category_id.product_category_id',
-            'formula_id.category_id.product_formula_category_id','formula_id.category_id.featured',
-            'formula_id.category_id.parent_id','formula_id.product_formula_ingredients_formula_id','formula_id.category_id.description'], true);
-        $data = $this->afind([], ['order'=>'id DESC'], 0, 2);
+        $this->fields(['raw_mat_id.id','raw_mat_id.name']);
+        $this->fields(['formula_id.category_id','formula_id.product_formula_ingredients_formula_id'], true);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $status['code'] = 1;
             $status['message'] = 'All Product Formula Ingredient successfully fetched.';
