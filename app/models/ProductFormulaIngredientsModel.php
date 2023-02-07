@@ -51,7 +51,7 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
             }
         }
     }
-
+//jfwlnvwnvbwnvwnvwnwkgfwkgkrgge4
     public function getAll(): array {
         $this->fields(['raw_mat_id.id','raw_mat_id.name']);
         $this->fields(['formula_id.category_id','formula_id.product_formula_ingredients_formula_id'], true);
