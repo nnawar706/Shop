@@ -9,6 +9,13 @@ class InventoryController extends MainController {
         echo json_encode($data);
     }
 
+    public function branchWiseRead($f3, $params) {
+        $inventory = new InventoryModel();
+        $data = $inventory->getByBranch($params['branch_id']);
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
     /**
      * @throws Exception
      */

@@ -229,4 +229,22 @@ class SalesOrderModel extends \DB\Cortex {
         return $total;
     }
 
+    public function getTotalSales($from, $to): int {
+        $result = $this->db->exec("SELECT SUM(amount_unit) AS total FROM sales_product JOIN sales_order ON 
+    sales_product.sales_order_id=sales_order.id WHERE DATE(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "'");
+        return intval($result[0]['total']);
+    }
+
+    public function getTotalCost($from, $to): int {
+        $result = $this->db->exec("SELECT SUM(buying_price*amount_unit) AS total FROM sales_product JOIN sales_order ON 
+    sales_product.sales_order_id=sales_order.id WHERE DATE(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "'");
+        return intval($result[0]['total']);
+    }
+
+    public function getTotalRevenue($from, $to): int {
+        $result = $this->db->exec("SELECT SUM((selling_price*amount_unit)-discount_amount) AS total FROM sales_product JOIN sales_order ON 
+    sales_product.sales_order_id=sales_order.id WHERE DATE(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "'");
+        return intval($result[0]['total']);
+    }
+
 }

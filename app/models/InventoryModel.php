@@ -66,8 +66,8 @@ class InventoryModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['product_id.id','product_id.name','product_id.category_id.category_id','product_id.category_id.name']);
-        $this->fields(['notification_inventory_id','branch_id'], true);
+        $this->fields(['branch_id.id','branch_id.name','product_id.id','product_id.name','product_id.category_id.category_id','product_id.category_id.name']);
+        $this->fields(['notification_inventory_id','flag_stock_alert'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 2);
         if($data) {
             $result['data'] = $data;
@@ -191,6 +191,10 @@ class InventoryModel extends \DB\Cortex {
             $this->flag_stock_alert = $flag;
             $this->save();
         }
+    }
+
+    public function getByBranch($branch_id)
+    {
     }
 
 }

@@ -170,41 +170,44 @@ class ReportModel {
     }
 
     public function revenue($id): array {
-        if($id == 1) {
-            $data = $this->getYearlyRevenue();
-        }
-        if($id == 2) {
-            $data = $this->getMonthlyRevenue();
-        }
-        if($id == 3) {
-            $data = $this->getDailyRevenue();
-        }
-        $info['status']['code'] = 1;
-        $info['status']['message'] = "request successful";
+        $order = new SalesOrderModel();
 
-        $info['data'] = $data;
+        $data = ($id == 1) ? $this->getYearCount() : (($id == 2) ? $this->getMonthCount() : (($id == 3) ? $this->getDayCount() : 1));
+
+        if($id == 1 || $id == 2 || $id == 3) {
+            $info['status']['code'] = 1;
+            $info['status']['message'] = "request successful";
+
+            $data['info']['total_number_of_products_sold'] = $order->getTotalSales($data['from'], $data['to']);
+            $data['info']['total_cost'] = $order->getTotalCost($data['from'], $data['to']);
+            $data['info']['net_revenue'] = $order->getTotalRevenue($data['from'], $data['to']);
+            $data['info']['net_profit'] = $data['info']['net_revenue'] - $data['info']['total_cost'];
+
+            $info['data'] = $data;
+        } else {
+            $info['status']['code'] = 0;
+            $info['status']['message'] = "invalid request";
+        }
+
         return $info;
     }
 
-    private function getYearlyRevenue(): array {
-        $order = new SalesOrderModel();
-
+    private function getYearCount(): array {
         $data['from'] = date("Y-m-d", (time() - (60 * 60 * 24 * 365)));
         $data['to'] = date("Y-m-d");
-
-        $data['info']['total_number_of_sales'] = $order->getTotalSales($data['from']);
-        $data['info']['total_cost'] = 0;
-        $data['info']['net_revenue'] = 0;
-        $data['info']['net_profit'] = 0;
         return $data;
     }
 
-    private function getMonthlyRevenue()
-    {
+    private function getMonthCount(): array {
+        $data['from'] = date("Y-m-d", (time() - (60 * 60 * 24 * 30)));
+        $data['to'] = date("Y-m-d");
+        return $data;
     }
 
-    private function getDailyRevenue()
-    {
+    private function getDayCount(): array {
+        $data['from'] = date("Y-m-d", (time() - (60 * 60 * 24)));
+        $data['to'] = date("Y-m-d");
+        return $data;
     }
 
 }
