@@ -225,8 +225,12 @@ class UserModel extends \DB\Cortex {
 
     public function getBranch($user_id) {
         $this->load(['id=?',$user_id]);
-        $data = $this->cast(NULL, 1);
-        return $data['profile_user_id']['branch_id'];
+        if($this->id) {
+            $data = $this->cast(NULL, 1);
+            return $data['profile_user_id']['branch_id'];
+        } else {
+            return 0;
+        }
     }
 
 }

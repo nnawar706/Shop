@@ -49,9 +49,8 @@ class SalesOrderModel extends \DB\Cortex {
     public function createOrder($data): array {
         $this->db->begin();
         $this->customer_id = $data['customer_id'] ?? '';
-        $this->user_id = 2;
-//        $user = new UserModel();
-        $this->branch_id = 1;
+        $this->user_id = $data['user_id'];
+        $this->branch_id = $data['branch_id'];
         $this->sales_type_id = $data['sales_type_id'] ?? '';
         $this->sold_at = date('y-m-d h:i:s') ?? '';
         if($this->validate()) {
@@ -242,7 +241,7 @@ class SalesOrderModel extends \DB\Cortex {
     }
 
     public function getTotalRevenue($from, $to): int {
-        $result = $this->db->exec("SELECT SUM((selling_price*amount_unit)-discount_amount) AS total FROM sales_product JOIN sales_order ON 
+        $result = $this->db->exec("SELECT SUM(selling_price*amount_unit) AS total FROM sales_product JOIN sales_order ON 
     sales_product.sales_order_id=sales_order.id WHERE DATE(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "'");
         return intval($result[0]['total']);
     }

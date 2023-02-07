@@ -81,6 +81,22 @@ class InventoryModel extends \DB\Cortex {
         return $result;
     }
 
+    public function getByBranch($branch_id): array {
+        $this->fields(['branch_id.id','branch_id.name','product_id.id','product_id.name','product_id.category_id.category_id','product_id.category_id.name']);
+        $this->fields(['notification_inventory_id','flag_stock_alert'], true);
+        $data = $this->afind(['branch_id=?',$branch_id], ['order'=>'id DESC'], 0, 2);
+        if($data) {
+            $result['data'] = $data;
+            $status['code'] = 1;
+            $status['message'] = 'All inventory under one branch successfully fetched.';
+        } else {
+            $status['code'] = 0;
+            $status['message'] = 'No inventory data found.';
+        }
+        $result['status'] = $status;
+        return $result;
+    }
+
     /**
      * @throws Exception
      */
@@ -192,9 +208,4 @@ class InventoryModel extends \DB\Cortex {
             $this->save();
         }
     }
-
-    public function getByBranch($branch_id)
-    {
-    }
-
 }
