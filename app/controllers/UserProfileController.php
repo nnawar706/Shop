@@ -49,7 +49,7 @@ class UserProfileController extends MainController {
                         $result['data']['profile_photo_url']= 'https://nafisa.selopian.us/ui/images/users/'.$this->profile_photo_url;
                     }
                     if($this->nid_photo_url!=''){
-                        $user->addNidPhotoImage($result['data']['id'], 'https://nafisa.selopian.us/ui/images/users/'.$this->nid_photo_url);
+                        $user->addNidPhotoImage($result['data']['id'], 'https://nafisa.selopian.us/ui/images/nids/'.$this->nid_photo_url);
                         $result['data']['nid_photo_url']= 'https://nafisa.selopian.us/ui/images/nids/'.$this->nid_photo_url;
                     }
                 } catch(PDOException $e) {

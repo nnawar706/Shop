@@ -58,6 +58,8 @@ class SalesOrderModel extends \DB\Cortex {
                 $this->save();
                 $products = new SalesProductModel();
                 $info['data'] = $products->createSales($data, $this->id);
+                $info['status']['code'] = 1;
+                $info['status']['message'] = 'Sales Order Successfully added';
             } catch(PDOException $e) {
                 $info['status']['code'] = 0;
                 $info['status']['message'] = 'Invalid data';
