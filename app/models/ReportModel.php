@@ -97,9 +97,11 @@ class ReportModel {
             $info['data']['products'] = $products->getProducts($data);
             $info['status']['code'] = 1;
             $info['status']['message'] = "request successful";
-
             $info['data']['from'] = $data['from'];
             $info['data']['to'] = $data['to'];
+        } else {
+            $info['status']['code'] = 0;
+            $info['status']['message'] = "invalid request";
         }
 
         return $info;
@@ -155,6 +157,54 @@ class ReportModel {
             $info['status']['message'] = "invalid request";
         }
         return $info;
+    }
+
+    public function categoryWiseProduct($data): array {
+        $product= new ProductModel();
+        $info['status']['code'] = 1;
+        $info['status']['message'] = "request successful";
+        $info['data']['category_list'] = $product->getList($data);
+        $info['data']['from'] = $data['from'];
+        $info['data']['to'] = $data['to'];
+        return $info;
+    }
+
+    public function revenue($id): array {
+        if($id == 1) {
+            $data = $this->getYearlyRevenue();
+        }
+        if($id == 2) {
+            $data = $this->getMonthlyRevenue();
+        }
+        if($id == 3) {
+            $data = $this->getDailyRevenue();
+        }
+        $info['status']['code'] = 1;
+        $info['status']['message'] = "request successful";
+
+        $info['data'] = $data;
+        return $info;
+    }
+
+    private function getYearlyRevenue(): array {
+        $order = new SalesOrderModel();
+
+        $data['from'] = date("Y-m-d", (time() - (60 * 60 * 24 * 365)));
+        $data['to'] = date("Y-m-d");
+
+        $data['info']['total_number_of_sales'] = $order->getTotalSales($data['from']);
+        $data['info']['total_cost'] = 0;
+        $data['info']['net_revenue'] = 0;
+        $data['info']['net_profit'] = 0;
+        return $data;
+    }
+
+    private function getMonthlyRevenue()
+    {
+    }
+
+    private function getDailyRevenue()
+    {
     }
 
 }

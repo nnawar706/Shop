@@ -180,4 +180,9 @@ class CategoryModel extends \DB\Cortex {
         return $result;
     }
 
+    public function getName($id): string {
+        $this->load(['id=?', $id]);
+        return $this->name;
+    }
+
 }

@@ -49,9 +49,9 @@ class SalesOrderModel extends \DB\Cortex {
     public function createOrder($data): array {
         $this->db->begin();
         $this->customer_id = $data['customer_id'] ?? '';
-        $this->user_id = $data['user_id'] ?? '';
-        $user = new UserModel();
-        $this->branch_id = $data['branch_id'];
+        $this->user_id = 2;
+//        $user = new UserModel();
+        $this->branch_id = 1;
         $this->sales_type_id = $data['sales_type_id'] ?? '';
         $this->sold_at = date('y-m-d h:i:s') ?? '';
         if($this->validate()) {
@@ -228,17 +228,5 @@ class SalesOrderModel extends \DB\Cortex {
         }
         return $total;
     }
-
-//    public function getSalesOrders($data): array {
-//        $sales_order_ids = [];
-//        $this->fields(['id','product_list']);
-//        $rows = $this->afind(['date(sold_at)>=? AND date(sold_at)<=? AND branch_id=?',$data['from'], $data['to'], $data['branch_id']],['order'=>'id DESC'],0,1);
-//        if($rows){
-//            foreach ($rows as $item) {
-//                $sales_order_ids[] = $item['id'];
-//            }
-//        }
-//        return $sales_order_ids;
-//    }
 
 }

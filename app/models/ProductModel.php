@@ -240,4 +240,29 @@ class ProductModel extends \DB\Cortex {
         }
     }
 
+    public function getList($data): array {
+        $category = new CategoryModel();
+        $order = new SalesProductModel();
+        $list = [];
+        $result = $this->db->exec("SELECT category_id AS id, count(*) AS total_products FROM product GROUP BY category_id");
+        for($i=0;$i<count($result);$i++) {
+            $list[$i]['id'] = $result[$i]['id'];
+            $list[$i]['name'] = $category->getName($list[$i]['id']);
+            $list[$i]['total_products'] = $result[$i]['total_products'];
+            $product_list = $this->getAllByCategory($list[$i]['id']);
+            $list[$i]['sold_amount'] = $order->getAmount($data, $product_list);
+            $list[$i]['sold_amount'] = $order->total_sold_amount($data, $product_list);
+        }
+        return $list;
+    }
+
+    private function getAllByCategory($id): array {
+        $this->fields(['id']);
+        $data = $this->afind(['category_id=?',$id],[],0,0);
+        foreach ($data as $pid) {
+            $products[] = $pid['id'];
+        }
+        return $products;
+    }
+
 }

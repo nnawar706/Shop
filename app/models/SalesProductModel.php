@@ -171,4 +171,29 @@ class SalesProductModel extends \DB\Cortex {
         return $result[0]['total'];
     }
 
+    public function getAmount($data, $product_list) {
+        $to = $data['to'];
+        $from = $data['from'];
+        $sold_amount = 0;
+        foreach ($product_list as $product) {
+            $result = $this->db->exec("SELECT SUM(selling_price*amount_unit-discount_amount) AS total FROM sales_product JOIN sales_order ON sales_product.sales_order_id=sales_order.id 
+                                                               WHERE DATE(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "' AND sales_product.product_id='" . $product . "'");
+            $sold_amount = $sold_amount + $result[0]['total'];
+        }
+        return $sold_amount;
+    }
+
+    public function total_sold_amount($data, $product_list)
+    {
+        $total_sold_count = 0;
+        $to = $data['to'];
+        $from = $data['from'];
+        foreach ($product_list as $product) {
+            $result = $this->db->exec("SELECT COUNT(*) AS total FROM sales_product JOIN sales_order ON sales_product.sales_order_id=sales_order.id 
+                                                               WHERE DATE(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "' AND sales_product.product_id='" . $product . "'");
+            $total_sold_count = $total_sold_count + $result[0]['total'];
+        }
+        return $total_sold_count;
+    }
+
 }
