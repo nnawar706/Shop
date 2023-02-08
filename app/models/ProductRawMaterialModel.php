@@ -37,12 +37,15 @@ class ProductRawMaterialModel extends \DB\Cortex {
         });
     }
 
+    /**
+     * @throws Exception
+     */
     public function createMaterial($data): array {
         $this->name = $data['name'] ?? '';
         $this->unit_id = $data['unit_id'] ?? '';
         $this->unit_size = $data['unit_size'] ?? '';
         $this->cost_price = $data['cost_price'] ?? '';
-        if($this->valid()) {
+        if($this->validate()) {
             try {
                 $this->save();
                 $log = new LogModel();
