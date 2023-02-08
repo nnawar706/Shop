@@ -68,10 +68,11 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
     }
 
     public function getFormula($id): array {
-        $this->fields(['formula_id.category_id.category_parent_id', 'formula_id.category_id.product_category_id','formula_id.category_id.product_formula_category_id','formula_id.category_id.featured','formula_id.category_id.parent_id'], true);
+        $this->fields(['raw_mat_id.id','raw_mat_id.name']);
+        $this->fields(['formula_id.product_formula_ingredients_formula_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
-            $data = $this->cast(NULL, 2);
+            $data = $this->cast(NULL, 1);
             $result['data'] = $data;
             $status['code'] = 1;
             $status['message'] = 'Product Formula Successfully Fetched.';
@@ -93,7 +94,7 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
             if($this->validate()) {
                 try {
                     $this->save();
-                    $info = $this->cast(NULL, 0);
+                    $info = $this->getFormula($this->id);
                     $result['data'] = $info;
                     $status['code'] = 1;
                     $status['message'] = 'Product Formula Ingredient Successfully Updated.';
