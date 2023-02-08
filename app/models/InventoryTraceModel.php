@@ -51,7 +51,8 @@ class InventoryTraceModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $this->fields(['purchase_id.id','product_id.id','product_id.name','from_branch_id.id','from_branch_id.name','to_branch_id.id','to_branch_id.name','from_supplier_id.id','from_supplier_id.name','to_supplier.id','to_supplier_id.name']);
+        $this->fields(['purchase_id.id','product_id.id','product_id.name','from_branch_id.id','from_branch_id.name','to_branch_id.id','to_branch_id.name',
+            'from_supplier_id.id','from_supplier_id.name','to_supplier.id','to_supplier_id.name']);
         $this->fields(['transfer_type_id.inventory_trace_transfer_type_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
@@ -135,11 +136,11 @@ class InventoryTraceModel extends \DB\Cortex {
      */
     public function returnStock($data): array {
         $this->transfer_type_id = 3;
-        $this->purchase_id = $data['purchase_id'];
-        $this->product_id = $data['product_id'];
-        $this->product_quantity = $data['product_quantity'];
-        $this->from_branch_id = $data['from_branch_id'];
-        $this->to_supplier_id = $data['to_supplier_id'];
+        $this->purchase_id = $data['purchase_id'] ?? '';
+        $this->product_id = $data['product_id'] ?? '';
+        $this->product_quantity = $data['product_quantity'] ?? '';
+        $this->from_branch_id = $data['from_branch_id'] ?? '';
+        $this->to_supplier_id = $data['to_supplier_id'] ?? '';
         $this->event_time = date('y-m-d h:i:s');
         if($this->validate()) {
             try {

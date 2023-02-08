@@ -37,12 +37,34 @@ class ProductRawMaterialModel extends \DB\Cortex {
         });
     }
 
-    public function createMaterial($data)
-    {
+    public function createMaterial($data): array {
+        $this->name = $data['name'] ?? '';
+        $this->unit_id = $data['unit_id'] ?? '';
+        $this->unit_size = $data['unit_size'] ?? '';
+        $this->cost_price = $data['cost_price'] ?? '';
+        if($this->valid()) {
+            try {
+                $this->save();
+                $log = new LogModel();
+                $stat = "Product raw material ID: " . $this->id . " has been created.";
+                $log->add($stat, 11);
+                $result = $this->getMaterial($this->id);
+                $status['code'] = 1;
+                $status['message'] = 'Product raw material Successfully Added.';
+            } catch(PDOException $e) {
+                $status['code'] = 0;
+                $status['message'] = $e->errorInfo[2];
+            }
+        } else {
+            $status['code'] = 0;
+            $status['message'] = Base::instance()->get('error_msg');
+        }
+        $result['status'] = $status;
+        return $result;
     }
 
     public function getAll(): array {
-        $this->fields(['unit_id.product_unit_type','unit_id.product_raw_material_unit_id','unit_id.product_unit_id'], true);
+        $this->fields(['ingredient_raw_mat','unit_id.product_unit_id','unit_id.product_raw_material_unit_id','unit_id.product_unit_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $status['code'] = 1;
@@ -57,7 +79,7 @@ class ProductRawMaterialModel extends \DB\Cortex {
     }
 
     public function getMaterial($id): array {
-        $this->fields(['unit_id.product_unit_type','unit_id.product_raw_material_unit_id'], true);
+        $this->fields(['ingredient_raw_mat','unit_id.product_unit_id','unit_id.product_raw_material_unit_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 1);

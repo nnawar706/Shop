@@ -251,7 +251,7 @@ class ProductModel extends \DB\Cortex {
             $list[$i]['total_products'] = $result[$i]['total_products'];
             $product_list = $this->getAllByCategory($list[$i]['id']);
             $list[$i]['sold_amount'] = $order->getAmount($data, $product_list);
-            $list[$i]['sold_amount'] = $order->total_sold_amount($data, $product_list);
+            $list[$i]['sold_count'] = $order->total_sold_amount($data, $product_list);
         }
         return $list;
     }
