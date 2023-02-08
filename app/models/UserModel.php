@@ -238,8 +238,8 @@ class UserModel extends \DB\Cortex {
         }
     }
 
-    public function isValidId($user_id): bool {
-        $this->load(['id=?',$user_id]);
+    public function isValidId($user_id, $iat): bool {
+        $this->load(['id=? AND r_iat=?',$user_id, $iat]);
         if($this->id) {
             return true;
         }

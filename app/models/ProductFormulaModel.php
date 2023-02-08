@@ -5,7 +5,7 @@ class ProductFormulaModel extends \DB\Cortex {
     use \Validation\Traits\CortexTrait;
 
     protected $fieldConf = [
-        'product_formula_ingredients_formula_id' => [
+        'formula_ingredients_list' => [
             'has-many' => ['\ProductFormulaIngredientsModel','formula_id'],
             'type' => \DB\SQL\Schema::DT_TINYINT
         ],
@@ -53,9 +53,11 @@ class ProductFormulaModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
+        $this->fields(['formula_ingredients_list.formula_id.id','formula_ingredients_list.formula_id.name',
+            'formula_ingredients_list.raw_mat_id.id','formula_ingredients_list.raw_mat_id.name']);
         $this->fields(['category_id.category_parent_id', 'category_id.product_category_id',
-            'category_id.product_formula_category_id','category_id.name','category_id.description','category_id.featured','category_id.parent_id'], true);
-        $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
+            'category_id.product_formula_category_id','category_id.description','category_id.featured','category_id.parent_id'], true);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 2);
         if($data) {
             $status['code'] = 1;
             $status['message'] = 'All Product Formula successfully fetched.';
@@ -69,12 +71,13 @@ class ProductFormulaModel extends \DB\Cortex {
     }
 
     public function getFormula($id): array {
+        $this->fields(['formula_ingredients_list.formula_id.id','formula_ingredients_list.formula_id.name',
+            'formula_ingredients_list.raw_mat_id.id','formula_ingredients_list.raw_mat_id.name']);
         $this->fields(['category_id.category_parent_id', 'category_id.product_category_id',
-            'category_id.product_formula_category_id','category_id.featured','category_id.parent_id',
-            'product_formula_ingredients_formula_id'], true);
+            'category_id.product_formula_category_id','category_id.description','category_id.featured','category_id.parent_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
-            $data = $this->cast(NULL, 1);
+            $data = $this->cast(NULL, 2);
             $result['data'] = $data;
             $status['code'] = 1;
             $status['message'] = 'Product Formula Successfully Fetched.';
@@ -96,7 +99,7 @@ class ProductFormulaModel extends \DB\Cortex {
             if($this->validate()) {
                 try {
                     $this->save();
-                    $info = $this->cast(NULL, 0);
+                    $info = $this->getFormula($id);
                     $result['data'] = $info;
                     $status['code'] = 1;
                     $status['message'] = 'Product Formula Successfully Updated.';
