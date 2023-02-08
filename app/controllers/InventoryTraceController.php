@@ -7,6 +7,7 @@ class InventoryTraceController extends MainController {
         $data = $trace->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -27,6 +28,7 @@ class InventoryTraceController extends MainController {
                     }
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -55,6 +57,7 @@ class InventoryTraceController extends MainController {
                     }
                     header('Content-Type: application/json');
                     echo json_encode($result);
+                    $this->f3->status(201);
                 }
             }
         }

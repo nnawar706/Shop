@@ -9,6 +9,7 @@ class ProductController extends MainController {
         $data = $product->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function read($f3, $params) {
@@ -16,6 +17,7 @@ class ProductController extends MainController {
         $data = $product->getProduct($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     protected function uploadImage() {
@@ -51,6 +53,7 @@ class ProductController extends MainController {
             }
             header('Content-Type: application/json');
             echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 
@@ -76,6 +79,7 @@ class ProductController extends MainController {
             }
             header('Content-Type: application/json');
             echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 

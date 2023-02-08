@@ -9,6 +9,7 @@ class BrandController extends MainController {
         $data = $brand->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     protected function uploadImage() {
@@ -44,6 +45,7 @@ class BrandController extends MainController {
             }
             header('Content-Type: application/json');
             echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 
@@ -52,6 +54,7 @@ class BrandController extends MainController {
         $data = $brand->getBrand($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -75,6 +78,7 @@ class BrandController extends MainController {
             }
             header('Content-Type: application/json');
             echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 

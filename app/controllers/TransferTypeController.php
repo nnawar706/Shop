@@ -7,6 +7,7 @@ class TransferTypeController extends MainController {
         $data = $type->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -22,6 +23,7 @@ class TransferTypeController extends MainController {
                     $status = $type->createTransferType($data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -32,6 +34,7 @@ class TransferTypeController extends MainController {
         $data = $type->getTransferType($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -47,6 +50,7 @@ class TransferTypeController extends MainController {
                     $status = $type->updateTransferType($params['id'], $data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }

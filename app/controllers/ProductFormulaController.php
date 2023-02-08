@@ -7,6 +7,7 @@ class ProductFormulaController extends MainController {
         $data = $formula->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -22,6 +23,7 @@ class ProductFormulaController extends MainController {
                     $status = $formula->createFormula($data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -32,6 +34,7 @@ class ProductFormulaController extends MainController {
         $data = $formula->getFormula($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function getAllByCategory($f3, $params) {
@@ -39,6 +42,7 @@ class ProductFormulaController extends MainController {
         $data = $formula->getByCategory($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -54,6 +58,7 @@ class ProductFormulaController extends MainController {
                     $status = $formula->updateFormula($params['id'], $data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }

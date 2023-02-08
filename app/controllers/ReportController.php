@@ -12,6 +12,7 @@ class ReportController extends MainController {
                     $info = $report->customerDues($data, $params['id']);
                     header('Content-Type: application/json');
                     echo json_encode($info);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -27,6 +28,7 @@ class ReportController extends MainController {
                     $info = $report->getPurchases($data, $params['id']);
                     header('Content-Type: application/json');
                     echo json_encode($info);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -42,6 +44,7 @@ class ReportController extends MainController {
                     $info = $report->getProductSales($data);
                     header('Content-Type: application/json');
                     echo json_encode($info);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -57,6 +60,7 @@ class ReportController extends MainController {
                     $info = $report->getPerformance($data, $params['id']);
                     header('Content-Type: application/json');
                     echo json_encode($info);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -72,6 +76,7 @@ class ReportController extends MainController {
                     $info = $report->getSupplierSales($data, $params['id']);
                     header('Content-Type: application/json');
                     echo json_encode($info);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -87,6 +92,7 @@ class ReportController extends MainController {
                     $info = $report->supplierDues($data, $params['id']);
                     header('Content-Type: application/json');
                     echo json_encode($info);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -102,6 +108,7 @@ class ReportController extends MainController {
                     $info = $report->categoryWiseProduct($data);
                     header('Content-Type: application/json');
                     echo json_encode($info);
+                    $this->f3->status(200);
                 }
             }
         }
@@ -112,5 +119,6 @@ class ReportController extends MainController {
         $info = $report->revenue($params['id']);
         header('Content-Type: application/json');
         echo json_encode($info);
+        $this->f3->status(200);
     }
 }

@@ -7,6 +7,7 @@ class ProductRawMaterialController extends MainController {
         $data = $raw->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -22,6 +23,7 @@ class ProductRawMaterialController extends MainController {
                     $status = $raw->createMaterial($data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -32,6 +34,7 @@ class ProductRawMaterialController extends MainController {
         $data = $raw->getMaterial($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -47,6 +50,7 @@ class ProductRawMaterialController extends MainController {
                     $status = $raw->updateMaterial($params['id'], $data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }

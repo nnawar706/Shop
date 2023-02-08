@@ -7,6 +7,7 @@ class LogTypeController extends MainController {
         $data = $type->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function read($f3, $params) {
@@ -14,6 +15,7 @@ class LogTypeController extends MainController {
         $data = $type->getLogType($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -29,6 +31,7 @@ class LogTypeController extends MainController {
                     $status = $type->updateLogType($params['id'], $data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }

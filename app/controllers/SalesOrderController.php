@@ -7,6 +7,7 @@ class SalesOrderController extends MainController {
         $data = $order->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -31,6 +32,7 @@ class SalesOrderController extends MainController {
                     }
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -41,6 +43,7 @@ class SalesOrderController extends MainController {
         $data = $order->getSales($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -56,6 +59,7 @@ class SalesOrderController extends MainController {
                     $status = $order->updateOrder($params['id'], $data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }

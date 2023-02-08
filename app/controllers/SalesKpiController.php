@@ -7,6 +7,7 @@ class SalesKpiController extends MainController {
         $data = $kpi->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -22,6 +23,7 @@ class SalesKpiController extends MainController {
                     $status = $kpi->createSalesKpi($data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -32,6 +34,7 @@ class SalesKpiController extends MainController {
         $data = $kpi->getSalesKpi($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function readByUser($f3, $params) {
@@ -39,6 +42,7 @@ class SalesKpiController extends MainController {
         $data = $kpi->getUserKpi($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -54,6 +58,7 @@ class SalesKpiController extends MainController {
                     $status = $kpi->updateSalesKpi($params['id'], $data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }

@@ -9,6 +9,7 @@ class SupplierController extends MainController {
         $data = $supplier->getAll($params['page'], $params['limit']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function all() {
@@ -16,6 +17,7 @@ class SupplierController extends MainController {
         $data = $supplier->getAllSuppliers();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     protected function uploadImage() {
@@ -51,6 +53,7 @@ class SupplierController extends MainController {
             }
             header('Content-Type: application/json');
             echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 
@@ -59,6 +62,7 @@ class SupplierController extends MainController {
         $data = $supplier->getSupplier($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -83,6 +87,7 @@ class SupplierController extends MainController {
             }
             header('Content-Type: application/json');
             echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 
@@ -96,6 +101,7 @@ class SupplierController extends MainController {
                     $status = $supplier->getByName($data, $params['page'], $params['limit']);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(200);
                 }
             }
         }

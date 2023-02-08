@@ -7,6 +7,7 @@ class InventoryController extends MainController {
         $data = $inventory->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function branchWiseRead($f3, $params) {
@@ -14,6 +15,7 @@ class InventoryController extends MainController {
         $data = $inventory->getByBranch($params['branch_id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -29,6 +31,7 @@ class InventoryController extends MainController {
                     $status = $inventory->createInventory($data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -47,6 +50,7 @@ class InventoryController extends MainController {
                     $status = $inventory->updateMinStockAlert($data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }

@@ -9,6 +9,7 @@ class PurchaseTransactionController extends MainController {
         $data = $purchase->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     protected function uploadDoc() {
@@ -44,6 +45,7 @@ class PurchaseTransactionController extends MainController {
             }
             header('Content-Type: application/json');
             echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 
@@ -52,6 +54,7 @@ class PurchaseTransactionController extends MainController {
         $data = $purchase->getPurchase($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
 }

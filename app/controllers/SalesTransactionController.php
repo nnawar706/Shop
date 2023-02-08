@@ -9,6 +9,7 @@ class SalesTransactionController extends MainController {
         $data = $sales->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     protected function uploadDoc() {
@@ -44,6 +45,7 @@ class SalesTransactionController extends MainController {
             }
             header('Content-Type: application/json');
             echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 
@@ -52,5 +54,6 @@ class SalesTransactionController extends MainController {
         $data = $sales->getSales($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 }

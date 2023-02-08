@@ -9,6 +9,7 @@ class CustomerController extends MainController {
         $data = $customer->getAll($params['page'], $params['limit']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function all() {
@@ -16,6 +17,7 @@ class CustomerController extends MainController {
         $data = $customer->getAllCustomers();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function getAllByName($f3, $params) {
@@ -28,6 +30,7 @@ class CustomerController extends MainController {
                     $status = $customer->getByName($data, $params['page'], $params['limit']);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(200);
                 }
             }
         }
@@ -66,6 +69,7 @@ class CustomerController extends MainController {
             }
             header('Content-Type: application/json');
             echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 
@@ -74,6 +78,7 @@ class CustomerController extends MainController {
         $data = $customer->getCustomer($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -97,6 +102,7 @@ class CustomerController extends MainController {
             }
             header('Content-Type: application/json');
             echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 

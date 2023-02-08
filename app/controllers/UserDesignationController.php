@@ -7,6 +7,7 @@ class UserDesignationController extends MainController {
         $data = $des->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function getSalesman() {
@@ -14,6 +15,7 @@ class UserDesignationController extends MainController {
         $data = $des->getAllSalesman();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -29,6 +31,7 @@ class UserDesignationController extends MainController {
                     $status = $des->createUserDesignation($data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -39,6 +42,7 @@ class UserDesignationController extends MainController {
         $data = $des->getUserDesignation($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -54,6 +58,7 @@ class UserDesignationController extends MainController {
                     $status = $des->updateUserDesignation($params['id'], $data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }

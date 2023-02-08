@@ -8,6 +8,7 @@ class TransactionTypeController extends MainController
         $data = $type->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -23,6 +24,7 @@ class TransactionTypeController extends MainController
                     $status = $type->createTransactionType($data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -33,6 +35,7 @@ class TransactionTypeController extends MainController
         $data = $type->getTransactionType($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -48,6 +51,7 @@ class TransactionTypeController extends MainController
                     $status = $type->updateTransactionType($params['id'], $data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }

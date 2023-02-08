@@ -7,6 +7,7 @@ class LogController extends MainController {
         $data = $log->getAll($params['page'], $params['limit']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function readAllByType($f3, $params) {
@@ -14,6 +15,7 @@ class LogController extends MainController {
         $data = $log->getByType($params['typeid'], $params['page'], $params['limit']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function getByDateRange($f3, $params) {
@@ -26,6 +28,7 @@ class LogController extends MainController {
                     $status = $log->getByDate($data, $params['page'], $params['limit']);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(200);
                 }
             }
         }

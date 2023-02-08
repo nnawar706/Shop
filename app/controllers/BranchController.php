@@ -7,6 +7,7 @@ class BranchController extends MainController {
         $data = $branch->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -22,6 +23,7 @@ class BranchController extends MainController {
                     $status = $branch->createBranch($data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -32,6 +34,7 @@ class BranchController extends MainController {
         $data = $branch->getBranch($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -47,6 +50,7 @@ class BranchController extends MainController {
                     $status = $branch->updateBranch($params['id'], $data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -57,6 +61,7 @@ class BranchController extends MainController {
         $data = $branch->getAllShop($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function delete($f3, $params) {

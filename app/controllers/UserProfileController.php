@@ -9,6 +9,7 @@ class UserProfileController extends MainController {
         $data = $user->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     protected function uploadImage() {
@@ -60,6 +61,7 @@ class UserProfileController extends MainController {
             }
         header('Content-Type: application/json');
         echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 
@@ -68,6 +70,7 @@ class UserProfileController extends MainController {
         $data = $user->getProfile($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     public function getSalesman() {
@@ -75,6 +78,7 @@ class UserProfileController extends MainController {
         $data = $user->getSalesmanProfile();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -102,6 +106,7 @@ class UserProfileController extends MainController {
             }
             header('Content-Type: application/json');
             echo json_encode($result);
+            $this->f3->status(201);
         }
     }
 

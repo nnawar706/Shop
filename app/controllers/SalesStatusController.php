@@ -8,6 +8,7 @@ class SalesStatusController extends MainController
         $data = $status->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
 }

@@ -7,6 +7,7 @@ class PurchaseOrderController extends MainController {
         $data = $purchase->getAll();
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
     /**
@@ -22,6 +23,7 @@ class PurchaseOrderController extends MainController {
                     $status = $order->createOrder($data);
                     header('Content-Type: application/json');
                     echo json_encode($status);
+                    $this->f3->status(201);
                 }
             }
         }
@@ -67,6 +69,7 @@ class PurchaseOrderController extends MainController {
         $data = $purchase->getPurchase($params['id']);
         header('Content-Type: application/json');
         echo json_encode($data);
+        $this->f3->status(200);
     }
 
 //    /**
