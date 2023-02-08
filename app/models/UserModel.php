@@ -120,6 +120,11 @@ class UserModel extends \DB\Cortex {
         }
     }
 
+    public function getRole($id) {
+        $this->load(['id=?',$id]);
+        return $this->role;
+    }
+
     /**
      * @throws Exception
      */
@@ -241,9 +246,16 @@ class UserModel extends \DB\Cortex {
         return false;
     }
 
-    public function getRole($id) {
+    public function setUser_j_iat($id, $j_iat) {
         $this->load(['id=?',$id]);
-        return $this->role;
+        $this->j_iat = $j_iat;
+        $this->save();
+    }
+
+    public function setUser_r_iat($id, $r_iat) {
+        $this->load(['id=?',$id]);
+        $this->r_iat = $r_iat;
+        $this->save();
     }
 
 }

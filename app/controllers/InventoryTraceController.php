@@ -20,12 +20,10 @@ class InventoryTraceController extends MainController {
                 if (json_last_error() == JSON_ERROR_NONE) {
                     $inventory = new InventoryModel();
                     $trace = new InventoryTraceModel();
-                    if ($data['transfer_type_id'] == 2) {
-                        $status['inventory_update'] = $inventory->decrementStock($data);
-                        if($status['inventory_update']['status'] == 1) {
-                            $status['inventory_update'] = $inventory->incrementStock($data);
-                            $status = $trace->transferStock($data);
-                        }
+                    $status['inventory_update'] = $inventory->decrementStock($data);
+                    if($status['inventory_update']['status'] == 1) {
+                        $status['inventory_update'] = $inventory->incrementStock($data);
+                        $status = $trace->transferStock($data);
                     }
                     header('Content-Type: application/json');
                     echo json_encode($status);

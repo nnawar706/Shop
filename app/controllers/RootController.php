@@ -20,8 +20,8 @@ class RootController extends DemoController {
                         $id = $user->getUserID($data['phone_username']);
                         $role = $user->getRole($id);
                         $user->updateUser($id);
-                        $info['data'] = $this->generateCookie($id, $role);
-                        $this->generateRefreshToken($id, $role);
+                        $info['data'] = $this->generateToken($id, $role);
+                        $this->generateSecuredCookie($id, $role);
                         $info['status'] = 1;
                         $info['message'] = 'Successfully signed in!';
                     } else {
@@ -36,18 +36,36 @@ class RootController extends DemoController {
         }
     }
 
-    private function generateCookie($id, $role): array {
+    private function generateToken($id, $role): array {
+        $user = new UserModel();
         $secret_key = "I am a key. Use me to unlock the door to this application.";
+        $j_iat = time();
         $payload = [
             "id" => $id,
             "role" => $role,
-            "iat" => time(),
+            "iat" => $j_iat,
             "exp" => time() + (60 * 15)
         ];
         $jwt = JWT::encode($payload, $secret_key, 'HS256');
         $data['type'] = "Bearer";
         $data['token'] = $jwt;
+        $user->setUser_j_iat($id, $j_iat);
         return $data;
+    }
+
+    private function generateSecuredCookie($id, $role) {
+        $user = new UserModel();
+        $secret_key = "I am a key. Use me to unlock the door to this application.";
+        $r_iat = time();
+        $payload = [
+            "id" => $id,
+            "role" => $role,
+            "iat" => $r_iat,
+            "exp" => time() + (60 * 60 * 24 * 90)
+        ];
+        $jwt = JWT::encode($payload, $secret_key, 'HS256');
+        setcookie("secured_jwt", $jwt, time() + 3600, "", "", true, true);
+        $user->setUser_r_iat($id, $r_iat);
     }
 
     private function deleteCookie() {
@@ -79,18 +97,6 @@ class RootController extends DemoController {
         } catch(Exception $e) {
             echo "Invalid JWT token";
         }
-    }
-
-    private function generateRefreshToken($id, $role) {
-        $secret_key = "I am a key. Use me to unlock the door to this application.";
-        $payload = [
-            "id" => $id,
-            "role" => $role,
-            "iat" => time(),
-            "exp" => time() + (60 * 60 * 24 * 90)
-        ];
-        $jwt = JWT::encode($payload, $secret_key, 'HS256');
-        setcookie("secured_jwt", $jwt, time() + 3600, "", "", true, true);
     }
 
 }

@@ -12,8 +12,7 @@ class InventoryTraceModel extends \DB\Cortex {
         ],
         'purchase_id' => [
             'belongs-to-one' => '\PurchaseOrderModel',
-            'type' => \DB\SQL\Schema::DT_INT,
-            'validate' => 'required'
+            'type' => \DB\SQL\Schema::DT_INT
         ],
         'product_id' => [
             'belongs-to-one' => '\ProductModel',
@@ -38,7 +37,7 @@ class InventoryTraceModel extends \DB\Cortex {
         ],
         'product_quantity' => [
             'type' => \DB\SQL\Schema::DT_INT,
-            'validate' => 'required|||integer|||max_len,5'
+            'validate' => 'required'
         ]
     ];
 
@@ -98,11 +97,10 @@ class InventoryTraceModel extends \DB\Cortex {
      */
     public function transferStock($data): array {
         $this->transfer_type_id = 2;
-        $this->purchase_id = $data['purchase_id'];
-        $this->product_id = $data['product_id'];
-        $this->product_quantity = $data['product_quantity'];
-        $this->from_branch_id = $data['from_branch_id'];
-        $this->to_branch_id = $data['to_branch_id'];
+        $this->product_id = $data['product_id'] ?? '';
+        $this->product_quantity = $data['product_quantity'] ?? '';
+        $this->from_branch_id = $data['from_branch_id'] ?? '';
+        $this->to_branch_id = $data['to_branch_id'] ?? '';
         $this->event_time = date('y-m-d h:i:s');
         if($this->validate()) {
             try {
