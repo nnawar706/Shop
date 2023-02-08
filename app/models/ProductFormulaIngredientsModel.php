@@ -53,7 +53,7 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
     }
     public function getAll(): array {
         $this->fields(['raw_mat_id.id','raw_mat_id.name']);
-        $this->fields(['formula_id.category_id','formula_id.product_formula_ingredients_formula_id'], true);
+        $this->fields(['formula_id.category_id','formula_id.formula_ingredients_list'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $status['code'] = 1;
@@ -69,7 +69,7 @@ class ProductFormulaIngredientsModel extends \DB\Cortex {
 
     public function getFormula($id): array {
         $this->fields(['raw_mat_id.id','raw_mat_id.name']);
-        $this->fields(['formula_id.product_formula_ingredients_formula_id'], true);
+        $this->fields(['formula_id.category_id','formula_id.formula_ingredients_list'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 1);
