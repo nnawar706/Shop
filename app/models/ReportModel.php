@@ -13,8 +13,8 @@ class ReportModel {
         if($customer_info['status']['code'] == 1){
             $due_and_paid = $order->getTotalDueAndPaid($data, $cid);
 
-            $info['status']['code'] = 1;
-            $info['status']['message'] = "request successful";
+            $info1['status']['code'] = 1;
+            $info1['status']['message'] = "request successful";
 
             $info['data']['customer_id'] = $cid;
             $info['data']['name'] = $customer_info['data']['name'];
@@ -26,11 +26,43 @@ class ReportModel {
             $info['data']['total_pending_orders'] = $info['data']['total_number_of_orders'] - $info['data']['total_completed_orders'];
             $info['data']['from'] = $data['from'];
             $info['data']['to'] = $data['to'];
+
+            $info1['data'][0] = $info['data'];
         } else {
-            $info['status']['code'] = 0;
-            $info['status']['message'] = "invalid request";
+            $info1['status']['code'] = 0;
+            $info1['status']['message'] = "invalid request";
         }
-        return $info;
+        return $info1;
+    }
+
+    public function allCustomerDues($data)
+    {
+        $customer = new CustomerModel();
+        $order = new SalesOrderModel();
+
+        $allCustomers = $customer->getAllIds();
+        for($i=0;$i<count($allCustomers);$i++) {
+            $customer_info = $customer->getCustomer($allCustomers[$i]);
+
+            $due_and_paid = $order->getTotalDueAndPaid($data, $allCustomers[$i]);
+
+            $info1['status']['code'] = 1;
+            $info1['status']['message'] = "request successful";
+
+            $info['data']['customer_id'] = $allCustomers[$i];
+            $info['data']['name'] = $customer_info['data']['name'];
+            $info['data']['total_ordered'] = $due_and_paid['total'];
+            $info['data']['total_paid'] = $due_and_paid['paid'];
+            $info['data']['total_due'] = $due_and_paid['due'];
+            $info['data']['total_number_of_orders'] = $order->getTotalOrders($data, $allCustomers[$i]);
+            $info['data']['total_completed_orders'] = $order->completedOrders($data, $allCustomers[$i]);
+            $info['data']['total_pending_orders'] = $info['data']['total_number_of_orders'] - $info['data']['total_completed_orders'];
+            $info['data']['from'] = $data['from'];
+            $info['data']['to'] = $data['to'];
+
+            $info1['data'][] = $info['data'];
+        }
+        return $info1;
     }
 
     public function supplierDues(mixed $data, $sid): array {
@@ -69,19 +101,21 @@ class ReportModel {
         $customer_info = $customer->getCustomer($cid);
 
         if($customer_info['status']['code'] == 1) {
-            $info['status']['code'] = 1;
-            $info['status']['message'] = "request successful";
+            $info1['status']['code'] = 1;
+            $info1['status']['message'] = "request successful";
 
             $info['data']['customer_id'] = $cid;
             $info['data']['name'] = $customer_info['data']['name'];
             $info['data']['orders'] = $orders->getOrders($data, $cid);
             $info['data']['from'] = $data['from'];
             $info['data']['to'] = $data['to'];
+
+            $info1['data'][] = $info['data'];
         } else {
-            $info['status']['code'] = 0;
-            $info['status']['message'] = "invalid request";
+            $info1['status']['code'] = 0;
+            $info1['status']['message'] = "invalid request";
         }
-        return $info;
+        return $info1;
     }
 
     public function getProductSales($data): array {
@@ -110,9 +144,7 @@ class ReportModel {
     public function getPerformance($data, $sid): ?array {
         $user = new UserModel();
         $order = new SalesOrderModel();
-
         $salesman = $user->getSalesmanInfo($sid);
-
         if($salesman != null) {
             $info['status']['code'] = 1;
             $info['status']['message'] = "request successful";

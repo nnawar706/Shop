@@ -194,4 +194,13 @@ class CustomerModel extends \DB\Cortex {
         $result['status'] = $status;
         return $result;
     }
+
+    public function getAllIds()
+    {
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
+        foreach ($data as $item) {
+            $ids[] = $item['id'];
+        }
+        return $ids;
+    }
 }
