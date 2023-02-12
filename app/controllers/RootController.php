@@ -69,8 +69,8 @@ class RootController extends DemoController {
     }
 
     private function deleteCookie() {
-        setcookie('jwt', '', time() - (60 * 60));
-        unset($_COOKIE['jwt']);
+        setcookie('secured_jwt', '', time() - (60 * 60));
+        unset($_COOKIE['secured_jwt']);
     }
 
     public function signOut() {
@@ -82,21 +82,29 @@ class RootController extends DemoController {
     }
 
     public function refreshToken() {
-        $jwt = $_COOKIE['jwt'];
+        $jwt = $_COOKIE['secured_jwt'];
         try {
             $secret_key = "I am a key. Use me to unlock the door to this application.";
             $decoded = JWT::decode($jwt, new Key($secret_key, 'HS256'));
             $user_id = $decoded->id;
             $role = $decoded->role;
+            $iat = $decoded->iat;
             $user = new UserModel();
-            $valid = $user->isValidId($user_id);
-            if($valid) {
-                $this->deleteCookie();
-                $this->generateCookie($user_id, $role);
+            $valid_id = $user->isValidId($user_id, $iat);
+            if($valid_id) {
+                $info['data'] = $this->generateToken($user_id, $role);
+                $info['status']['code'] = 1;
+                $info['status']['message'] = "request successful";
+            } else {
+                $info['status']['code'] = 0;
+                $info['status']['message'] = "Authorization Failed";
             }
         } catch(Exception $e) {
-            echo "Invalid JWT token";
+            $info['status'] = 0;
+            $info['message'] = "Invalid JWT token";
         }
+        header('Content-Type: application/json');
+        echo json_encode($info);
     }
 
 }

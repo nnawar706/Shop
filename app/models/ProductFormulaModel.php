@@ -59,13 +59,13 @@ class ProductFormulaModel extends \DB\Cortex {
             'category_id.product_formula_category_id','category_id.description','category_id.featured','category_id.parent_id'], true);
         $data = $this->afind([], ['order'=>'id DESC'], 0, 2);
         if($data) {
+            $result['data'] = $data;
             $status['code'] = 1;
             $status['message'] = 'All Product Formula successfully fetched.';
         } else {
             $status['code'] = 0;
             $status['message'] = 'No Product Formula found.';
         }
-        $result['data'] = $data;
         $result['status'] = $status;
         return $result;
     }
@@ -78,7 +78,7 @@ class ProductFormulaModel extends \DB\Cortex {
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 2);
-            $result['data'] = $data;
+            $result['data'] = $data['formula_ingredients_list'];
             $status['code'] = 1;
             $status['message'] = 'Product Formula Successfully Fetched.';
         } else {

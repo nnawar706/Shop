@@ -1,12 +1,29 @@
 <?php
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 class MainController {
     protected $f3;
 
     function beforeroute() {
-//        if(!$this->f3->get('SESSION.isLoggedIn')) {
-//            $data['status'] = 0;
-//            $data['msg'] = 'Not authorized to access the application.';
+//        $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+//        $secret_key = "I am a key. Use me to unlock the door to this application.";
+//        try {
+//            $decoded = JWT::decode($auth, new Key($secret_key, 'HS256'));
+//            $user_id = $decoded->id;
+//            $user = new UserModel();
+//            $valid = $user->isValidId($user_id);
+//            if(!$valid) {
+//                $data['status']['code'] = 0;
+//                $data['status']['message'] = 'Protected Content.';
+//                header('Content-Type: application/json');
+//                echo json_encode($data);
+//                die();
+//            }
+//        } catch(Exception $e) {
+//            $data['status']['code'] = 0;
+//            $data['status']['message'] = 'You are not authorized to access the contents.';
 //            header('Content-Type: application/json');
 //            echo json_encode($data);
 //            die();
