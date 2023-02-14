@@ -91,6 +91,30 @@ class ReportModel {
         return $info;
     }
 
+    public function allSupplierDues($data): array {
+        $supplier = new SupplierModel();
+        $order = new PurchaseOrderModel();
+
+        $allSuppliers = $supplier->getAllIds();
+        $info1['status']['code'] = 1;
+        $info1['status']['message'] = "request successful";
+        for($i=0;$i<count($allSuppliers);$i++) {
+            $supplier_info = $supplier->getSupplier($allSuppliers[$i]);
+            $due_and_paid = $order->getTotalDueAndPaid($data, $allSuppliers[$i]);
+            $info['data']['name'] = $supplier_info['data']['name'];
+            $info['data']['total_ordered'] = $due_and_paid['total'];
+            $info['data']['total_paid'] = $due_and_paid['paid'];
+            $info['data']['total_due'] = $due_and_paid['due'];
+            $info['data']['total_number_of_orders'] = $order->getTotalOrders($data, $allSuppliers[$i]);
+            $info['data']['total_completed_orders'] = $order->completedOrders($data, $allSuppliers[$i]);
+            $info['data']['total_pending_orders'] = $info['data']['total_number_of_orders'] - $info['data']['total_completed_orders'];
+            $info['data']['from'] = $data['from'];
+            $info['data']['to'] = $data['to'];
+            $info1['data'][] = $info['data'];
+        }
+        return $info1;
+    }
+
     public function getPurchases($data, $cid): array {
         $customer = new CustomerModel();
         $orders = new SalesOrderModel();
