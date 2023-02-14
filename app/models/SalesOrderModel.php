@@ -265,8 +265,11 @@ class SalesOrderModel extends \DB\Cortex {
 
     public function getProductList($data, $cid)
     {
+        $from = $data['from'];
+        $to = $data['to'];
         $result = $this->db->exec("select name from product left outer join sales_product on product.id=sales_product.product_id
-    left outer join sales_order on sales_product.sales_order_id=sales_order.id where sales_order.customer_id=1 AND DATE(sold_at)>='" . $from . "' AND date(sold_at)<='" . $to . "'");
+    left outer join sales_order on sales_product.sales_order_id=sales_order.id where sales_order.customer_id='" . $cid . "' AND DATE(sold_at)>='" . $from . "' AND date(sold_at)<='" . $to . "'");
+        var_dump($result);
     }
 
 }

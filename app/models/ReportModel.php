@@ -194,8 +194,9 @@ class ReportModel {
             } else {
                 $info['data']['kpi_status'] = "target kpi exceeded";
             }
-            $info1['data']['from'] = $data['from'];
-            $info1['data']['to'] = $data['to'];
+            $info['data']['from'] = $data['from'];
+            $info['data']['to'] = $data['to'];
+
             $info1['data'][] = $info['data'];
         }
         return $info1;
