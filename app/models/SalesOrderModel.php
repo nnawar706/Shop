@@ -263,8 +263,7 @@ class SalesOrderModel extends \DB\Cortex {
         return intval($result[0]['total']);
     }
 
-    public function getProductList($data, $cid)
-    {
+    public function getProductList($data, $cid) {
         $from = $data['from'];
         $to = $data['to'];
         $result = $this->db->exec("select distinct(name) from product left outer join sales_product on product.id=sales_product.product_id

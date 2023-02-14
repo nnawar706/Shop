@@ -46,9 +46,6 @@ class ReportModel {
 
             $due_and_paid = $order->getTotalDueAndPaid($data, $allCustomers[$i]);
 
-            $info1['status']['code'] = 1;
-            $info1['status']['message'] = "request successful";
-
             $info['data']['customer_id'] = $allCustomers[$i];
             $info['data']['name'] = $customer_info['data']['name'];
             $info['data']['total_ordered'] = $due_and_paid['total'];
@@ -62,6 +59,8 @@ class ReportModel {
 
             $info1['data'][] = $info['data'];
         }
+        $info1['status']['code'] = 1;
+        $info1['status']['message'] = "request successful";
         return $info1;
     }
 
@@ -119,9 +118,27 @@ class ReportModel {
         return $info1;
     }
 
+    public function getAllPurchases($data): array {
+        $customer = new CustomerModel();
+        $orders = new SalesOrderModel();
+        $allCustomers = $customer->getAllIds();
+        for($i=0;$i<count($allCustomers);$i++) {
+            $customer_info = $customer->getCustomer($allCustomers[$i]);
+            $info['data']['customer_name'] = $customer_info['data']['name'];
+            $info['data']['total_order_cost'] = $orders->getOrderCost($data, $allCustomers[$i]);
+            $info['data']['total_discount'] = $orders->getDiscount($data, $allCustomers[$i]);
+            $info['data']['product_list'] = $orders->getProductList($data, $allCustomers[$i]);
+            $info['data']['from'] = $data['from'];
+            $info['data']['to'] = $data['to'];
+            $info1['data'][] = $info['data'];
+        }
+        $info1['status']['code'] = 1;
+        $info1['status']['message'] = "request successful";
+        return $info1;
+    }
+
     public function getProductSales($data): array {
         $branch = new BranchModel();
-        $order = new SalesOrderModel();
         $products = new SalesProductModel();
 
         $branch_info = $branch->getBranch($data['branch_id']);

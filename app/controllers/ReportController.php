@@ -32,6 +32,16 @@ class ReportController extends MainController {
         $this->f3->status(200);
     }
 
+    public function getAllPurchaseReport($f3, $params) {
+        $report = new ReportModel();
+        $data['from'] = $params['from'];
+        $data['to'] = $params['to'];
+        $info = $report->getAllPurchases($data);
+        header('Content-Type: application/json');
+        echo json_encode($info);
+        $this->f3->status(200);
+    }
+
     public function getProductSalesReport($f3, $params) {
         $report = new ReportModel();
         $data['branch_id'] = $params['branch_id'];
