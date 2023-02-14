@@ -69,10 +69,8 @@ class ReportModel {
         $order = new PurchaseOrderModel();
 
         $supplier_info = $supplier->getSupplier($sid);
-
         if($supplier_info['status']['code'] == 1) {
             $due_and_paid = $order->getTotalDueAndPaid($data, $sid);
-
             $info['status']['code'] = 1;
             $info['status']['message'] = "request successful";
 
@@ -96,9 +94,7 @@ class ReportModel {
     public function getPurchases($data, $cid): array {
         $customer = new CustomerModel();
         $orders = new SalesOrderModel();
-
         $customer_info = $customer->getCustomer($cid);
-
         if($customer_info['status']['code'] == 1) {
             $info1['status']['code'] = 1;
             $info1['status']['message'] = "request successful";
@@ -140,9 +136,7 @@ class ReportModel {
     public function getProductSales($data): array {
         $branch = new BranchModel();
         $products = new SalesProductModel();
-
         $branch_info = $branch->getBranch($data['branch_id']);
-
         if($branch_info['status']['code'] == 1) {
             $info['data']['branch_id'] = $data['branch_id'];
             $info['data']['name'] = $branch_info['data']['name'];
@@ -226,19 +220,20 @@ class ReportModel {
         $supplier_info = $supplier->getSupplier($sid);
 
         if($supplier_info['status']['code'] == 1) {
-            $info['status']['code'] = 1;
-            $info['status']['message'] = "request successful";
+            $info1['status']['code'] = 1;
+            $info1['status']['message'] = "request successful";
 
-            $info['data']['supplier_id'] = $supplier_info['data']['id'];
-            $info['data']['name'] = $supplier_info['data']['name'];
-            $info['data']['orders'] = $orders->getOrders($data, $sid);
+            $info['data']['supplier_name'] = $supplier_info['data']['name'];
+            $info['data']['total_purchase_cost'] = $orders->getTotalCost($data, $sid);
+            $info['data']['product_list'] = $orders->getProductList($data, $sid);
             $info['data']['from'] = $data['from'];
             $info['data']['to'] = $data['to'];
+            $info1['data'][] = $info['data'];
         } else {
-            $info['status']['code'] = 0;
-            $info['status']['message'] = "invalid request";
+            $info1['status']['code'] = 0;
+            $info1['status']['message'] = "invalid request";
         }
-        return $info;
+        return $info1;
     }
 
     public function categoryWiseProduct($data): array {

@@ -176,4 +176,19 @@ class PurchaseOrderModel extends \DB\Cortex {
         $this->load(['total_amount=paid_amount AND date(purchased_at)>=? AND date(purchased_at)<=? AND supplier_id=?',$data['from'],$data['to'],$sid]);
         return $this->loaded();
     }
+
+    public function getTotalCost($data, $sid): int {
+        $from = $data['from'];
+        $to = $data['to'];
+        $result = $this->db->exec("SELECT SUM(total_amount) AS total FROM purchase_order WHERE supplier_id='" . $sid . "' AND DATE(purchased_at)>='" . $from . "' AND date(purchased_at)<='" . $to . "'");
+        return intval($result[0]['total']);
+    }
+
+    public function getProductList($data, $sid)
+    {
+        $from = $data['from'];
+        $to = $data['to'];
+        return $this->db->exec("select distinct(name) from product join purchase_product on product.id=purchase_product.product_id
+    join purchase_order on purchase_product.purchase_order_id=purchase_order.id where purchase_order.supplier_id='" . $sid . "' AND DATE(purchased_at)>='" . $from . "' AND date(purchased_at)<='" . $to . "'");
+    }
 }
