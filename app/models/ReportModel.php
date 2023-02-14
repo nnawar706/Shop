@@ -71,8 +71,8 @@ class ReportModel {
         $supplier_info = $supplier->getSupplier($sid);
         if($supplier_info['status']['code'] == 1) {
             $due_and_paid = $order->getTotalDueAndPaid($data, $sid);
-            $info['status']['code'] = 1;
-            $info['status']['message'] = "request successful";
+            $info1['status']['code'] = 1;
+            $info1['status']['message'] = "request successful";
 
             $info['data']['customer_id'] = $sid;
             $info['data']['name'] = $supplier_info['data']['name'];
@@ -84,11 +84,12 @@ class ReportModel {
             $info['data']['total_pending_orders'] = $info['data']['total_number_of_orders'] - $info['data']['total_completed_orders'];
             $info['data']['from'] = $data['from'];
             $info['data']['to'] = $data['to'];
+            $info1['data'][0] = $info['data'];
         } else {
-            $info['status']['code'] = 0;
-            $info['status']['message'] = "invalid request";
+            $info1['status']['code'] = 0;
+            $info1['status']['message'] = "invalid request";
         }
-        return $info;
+        return $info1;
     }
 
     public function allSupplierDues($data): array {
