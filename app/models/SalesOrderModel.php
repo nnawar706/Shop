@@ -248,4 +248,25 @@ class SalesOrderModel extends \DB\Cortex {
         return intval($result[0]['total']);
     }
 
+    public function getOrderCost($data, $cid): int {
+        $from = $data['from'];
+        $to = $data['to'];
+        $result = $this->db->exec("SELECT SUM(total_amount) AS total FROM sales_order WHERE customer_id='" . $cid . "' AND DATE(sold_at)>='" . $from . "' AND date(sold_at)<='" . $to . "'");
+        return intval($result[0]['total']);
+    }
+
+    public function getDiscount($data, $cid): int {
+        $from = $data['from'];
+        $to = $data['to'];
+        $result = $this->db->exec("SELECT SUM(discount_amount) AS total FROM sales_product JOIN sales_order ON 
+    sales_product.sales_order_id=sales_order.id WHERE sales_order.customer_id='" . $cid . "' AND DATE(sold_at)>='" . $from . "' AND date(sold_at)<='" . $to . "'");
+        return intval($result[0]['total']);
+    }
+
+    public function getProductList($data, $cid)
+    {
+        $result = $this->db->exec("select name from product left outer join sales_product on product.id=sales_product.product_id
+    left outer join sales_order on sales_product.sales_order_id=sales_order.id where sales_order.customer_id=1 AND DATE(sold_at)>='" . $from . "' AND date(sold_at)<='" . $to . "'");
+    }
+
 }

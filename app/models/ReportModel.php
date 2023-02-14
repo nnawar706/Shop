@@ -104,9 +104,10 @@ class ReportModel {
             $info1['status']['code'] = 1;
             $info1['status']['message'] = "request successful";
 
-            $info['data']['customer_id'] = $cid;
-            $info['data']['name'] = $customer_info['data']['name'];
-            $info['data']['orders'] = $orders->getOrders($data, $cid);
+            $info['data']['customer_name'] = $customer_info['data']['name'];
+            $info['data']['total_order_cost'] = $orders->getOrderCost($data, $cid);
+            $info['data']['total_discount'] = $orders->getDiscount($data, $cid);
+            $info['data']['product_list'] = $orders->getProductList($data, $cid);
             $info['data']['from'] = $data['from'];
             $info['data']['to'] = $data['to'];
 
@@ -193,6 +194,8 @@ class ReportModel {
             } else {
                 $info['data']['kpi_status'] = "target kpi exceeded";
             }
+            $info1['data']['from'] = $data['from'];
+            $info1['data']['to'] = $data['to'];
             $info1['data'][] = $info['data'];
         }
         return $info1;
