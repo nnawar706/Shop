@@ -236,6 +236,24 @@ class ReportModel {
         return $info1;
     }
 
+    public function getAllSupplierSales($data): array {
+        $supplier = new SupplierModel();
+        $orders = new PurchaseOrderModel();
+        $allSuppliers = $supplier->getAllIds();
+        for($i=0;$i<count($allSuppliers);$i++) {
+            $customer_info = $supplier->getSupplier($allSuppliers[$i]);
+            $info['data']['supplier_name'] = $customer_info['data']['name'];
+            $info['data']['total_purchase_cost'] = $orders->getTotalCost($data, $allSuppliers[$i]);
+            $info['data']['product_list'] = $orders->getProductList($data, $allSuppliers[$i]);
+            $info['data']['from'] = $data['from'];
+            $info['data']['to'] = $data['to'];
+            $info1['data'][] = $info['data'];
+        }
+        $info1['status']['code'] = 1;
+        $info1['status']['message'] = "request successful";
+        return $info1;
+    }
+
     public function categoryWiseProduct($data): array {
         $product= new ProductModel();
         $info['status']['code'] = 1;
