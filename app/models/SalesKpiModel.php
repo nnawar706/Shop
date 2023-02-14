@@ -162,4 +162,12 @@ class SalesKpiModel extends \DB\Cortex {
         $result['status'] = $status;
         return $result;
     }
+
+    public function getAllUserIds(): array {
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
+        foreach ($data as $item) {
+            $ids[] = $item['user_id'];
+        }
+        return $ids;
+    }
 }

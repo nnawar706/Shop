@@ -146,8 +146,8 @@ class ReportModel {
         $order = new SalesOrderModel();
         $salesman = $user->getSalesmanInfo($sid);
         if($salesman != null) {
-            $info['status']['code'] = 1;
-            $info['status']['message'] = "request successful";
+            $info1['status']['code'] = 1;
+            $info1['status']['message'] = "request successful";
 
             $info['data']['id'] = $salesman[0]['id'];
             $info['data']['name'] = $salesman[0]['profile_user_id']['name'];
@@ -162,11 +162,40 @@ class ReportModel {
             }
             $info['data']['from'] = $data['from'];
             $info['data']['to'] = $data['to'];
+
+            $info1['data'][0] = $info['data'];
         } else {
-            $info['status']['code'] = 0;
-            $info['status']['message'] = "invalid request";
+            $info1['status']['code'] = 0;
+            $info1['status']['message'] = "invalid request";
         }
-        return $info;
+        return $info1;
+    }
+
+    public function getAllPerformance($data): array {
+        $user = new UserModel();
+        $order = new SalesOrderModel();
+        $kpi = new SalesKpiModel();
+        $allUsers = $kpi->getAllUserIds();
+        for($i=0;$i<count($allUsers);$i++) {
+            $salesman = $user->getSalesmanInfo($allUsers[$i]);
+
+            $info1['status']['code'] = 1;
+            $info1['status']['message'] = "request successful";
+
+            $info['data']['salesman_id'] = $salesman[0]['id'];
+            $info['data']['name'] = $salesman[0]['profile_user_id']['name'];
+            $info['data']['target_sales_kpi'] = $salesman[0]['sales_kpi_user_id']['target_sales_volume'];
+            $info['data']['total_completed_kpi'] = $order->getCompletedKpi($data, $allUsers[$i]);
+            if ($info['data']['target_sales_kpi'] > $info['data']['total_completed_kpi']) {
+                $info['data']['kpi_status'] = "not completed";
+            } else if ($info['data']['target_sales_kpi'] == $info['data']['total_completed_kpi']) {
+                $info['data']['kpi_status'] = "completed";
+            } else {
+                $info['data']['kpi_status'] = "target kpi exceeded";
+            }
+            $info1['data'][] = $info['data'];
+        }
+        return $info1;
     }
 
     public function getSupplierSales($data, $sid): array {
