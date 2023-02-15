@@ -330,6 +330,26 @@ class ReportModel {
         return $info1;
     }
 
+    public function revenueByAllBranch($id): array {
+        $order = new SalesOrderModel();
+        $branch = new BranchModel();
+        $data = ($id == 1) ? $this->getYearCount() : (($id == 2) ? $this->getMonthCount() : (($id == 3) ? $this->getDayCount() : 1));
+        if($id == 1 || $id == 2 || $id == 3) {
+            $info['status']['code'] = 1;
+            $info['status']['message'] = "request successful";
+            $allBranch = $branch->getAllIds();
+            for($i=0;$i<count($allBranch);$i++) {
+                $branch_info = $branch->getBranch($allBranch[$i]);
+                $info['data'][$i] = $order->getDataByBranch($data, $allBranch[$i]);
+                $info['data'][$i]['branch_name'] = $branch_info['data']['name'];
+            }
+        } else {
+            $info['status']['code'] = 0;
+            $info['status']['message'] = "invalid request";
+        }
+        return $info;
+    }
+
     public function revenueByShop($shop, $id): array {
         $order = new SalesOrderModel();
         $data = ($id == 1) ? $this->getYearCount() : (($id == 2) ? $this->getMonthCount() : (($id == 3) ? $this->getDayCount() : 1));
@@ -361,5 +381,6 @@ class ReportModel {
         $data['to'] = date("Y-m-d");
         return $data;
     }
+
 
 }
