@@ -160,7 +160,8 @@ class ReportModel {
         $products = new SalesProductModel();
         $branch_info = $branch->getBranch($data['branch_id']);
         if($branch_info['status']['code'] == 1) {
-            $info['data']['products'] = $products->getProducts($data, $branch_info['data']['id'], $branch_info['data']['name']);
+            $info['data']['branch_name'] = $branch_info['data']['name'];
+            $info['data']['products'] = $products->getProducts($data, $branch_info['data']['id']);
             $info1['status']['code'] = 1;
             $info1['status']['message'] = "request successful";
             $info['data']['from'] = $data['from'];
@@ -306,21 +307,28 @@ class ReportModel {
         $data = ($id == 1) ? $this->getYearCount() : (($id == 2) ? $this->getMonthCount() : (($id == 3) ? $this->getDayCount() : 1));
 
         if($id == 1 || $id == 2 || $id == 3) {
-            $info['status']['code'] = 1;
-            $info['status']['message'] = "request successful";
-
-            $data['info']['total_number_of_products_sold'] = $order->getTotalSales($data['from'], $data['to']);
-            $data['info']['total_cost'] = $order->getTotalCost($data['from'], $data['to']);
-            $data['info']['net_revenue'] = $order->getTotalRevenue($data['from'], $data['to']);
-            $data['info']['net_profit'] = $data['info']['net_revenue'] - $data['info']['total_cost'];
-
-            $info['data'] = $data;
+            $info1['status']['code'] = 1;
+            $info1['status']['message'] = "request successful";
+            $info1['data'][] = $order->getData($data);
         } else {
-            $info['status']['code'] = 0;
-            $info['status']['message'] = "invalid request";
+            $info1['status']['code'] = 0;
+            $info1['status']['message'] = "invalid request";
         }
+        return $info1;
+    }
 
-        return $info;
+    public function revenueByBranch($branch, $id): array {
+        $order = new SalesOrderModel();
+        $data = ($id == 1) ? $this->getYearCount() : (($id == 2) ? $this->getMonthCount() : (($id == 3) ? $this->getDayCount() : 1));
+        if($id == 1 || $id == 2 || $id == 3) {
+            $info1['status']['code'] = 1;
+            $info1['status']['message'] = "request successful";
+            $info1['data'][] = $order->getDataByBranch($data, $branch);
+        } else {
+            $info1['status']['code'] = 0;
+            $info1['status']['message'] = "invalid request";
+        }
+        return $info1;
     }
 
     private function getYearCount(): array {

@@ -230,24 +230,6 @@ class SalesOrderModel extends \DB\Cortex {
         return $total;
     }
 
-    public function getTotalSales($from, $to): int {
-        $result = $this->db->exec("SELECT SUM(amount_unit) AS total FROM sales_product JOIN sales_order ON 
-    sales_product.sales_order_id=sales_order.id WHERE DATE(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "'");
-        return intval($result[0]['total']);
-    }
-
-    public function getTotalCost($from, $to): int {
-        $result = $this->db->exec("SELECT SUM(buying_price*amount_unit) AS total FROM sales_product JOIN sales_order ON 
-    sales_product.sales_order_id=sales_order.id WHERE DATE(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "'");
-        return intval($result[0]['total']);
-    }
-
-    public function getTotalRevenue($from, $to): int {
-        $result = $this->db->exec("SELECT SUM(selling_price*amount_unit) AS total FROM sales_product JOIN sales_order ON 
-    sales_product.sales_order_id=sales_order.id WHERE DATE(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "'");
-        return intval($result[0]['total']);
-    }
-
     public function getOrderCost($data, $cid): int {
         $from = $data['from'];
         $to = $data['to'];
@@ -270,4 +252,31 @@ class SalesOrderModel extends \DB\Cortex {
     left outer join sales_order on sales_product.sales_order_id=sales_order.id where sales_order.customer_id='" . $cid . "' AND DATE(sold_at)>='" . $from . "' AND date(sold_at)<='" . $to . "'");
     }
 
+    public function getDataByBranch($data, $id): array {
+        $from = $data['from'];
+        $to = $data['to'];
+        $result = $this->db->exec("select sum(amount_unit) as total_quantity, sum(buying_price*amount_unit) 
+    as total_cost, sum(selling_price*amount_unit) as total_revenue 
+    from sales_product join sales_order on sales_product.sales_order_id=sales_order.id where 
+        date(sold_at) between '" . $from . "' and '" . $to . "' and sales_order.branch_id=$id");
+        $data['revenue']['total_number_of_products_sold'] = intval($result[0]['total_quantity']);
+        $data['revenue']['total_cost'] = intval($result[0]['total_cost']);
+        $data['revenue']['net_revenue'] = intval($result[0]['total_revenue']);
+        $data['revenue']['net_profit'] = $data['revenue']['net_revenue'] - $data['revenue']['total_cost'];
+        return $data;
+    }
+
+    public function getData($data): array {
+        $from = $data['from'];
+        $to = $data['to'];
+        $result = $this->db->exec("select sum(amount_unit) as total_quantity, sum(buying_price*amount_unit) 
+    as total_cost, sum(selling_price*amount_unit) as total_revenue 
+    from sales_product join sales_order on sales_product.sales_order_id=sales_order.id where 
+        date(sold_at) between '" . $from . "' and '" . $to . "'");
+        $data['revenue']['total_number_of_products_sold'] = intval($result[0]['total_quantity']);
+        $data['revenue']['total_cost'] = intval($result[0]['total_cost']);
+        $data['revenue']['net_revenue'] = intval($result[0]['total_revenue']);
+        $data['revenue']['net_profit'] = $data['revenue']['net_revenue'] - $data['revenue']['total_cost'];
+        return $data;
+    }
 }

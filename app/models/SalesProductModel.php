@@ -142,7 +142,7 @@ class SalesProductModel extends \DB\Cortex {
         return $result;
     }
 
-    public function getProducts($data, $branch, $branch_name): array {
+    public function getProducts($data, $branch): array {
         $prod = new ProductModel();
         $products = [];
         $to = $data['to'];
@@ -150,7 +150,6 @@ class SalesProductModel extends \DB\Cortex {
         $result = $this->db->exec("SELECT DISTINCT sales_product.product_id FROM sales_order JOIN sales_product ON
     sales_order.id=sales_product.sales_order_id WHERE date(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "' AND sales_order.branch_id='" . $branch . "' ORDER BY sales_product.product_id DESC");
         for($i=0;$i<count($result);$i++) {
-            $products[$i]['branch_name'] = $branch_name;
             $products[$i]['product_id'] = $result[$i]['product_id'];
             $products[$i]['product_name'] = $prod->getName($result[$i]['product_id']);
             $products[$i]['buying_price'] = $prod->getBuyingPrice($result[$i]['product_id']);
