@@ -84,10 +84,9 @@ class SalesProductModel extends \DB\Cortex {
         return $status;
     }
 
-    private function totalUnit($product_id, $data) {
+    private function totalUnit($product_id, $data, $branch) {
         $to = $data['to'];
         $from = $data['from'];
-        $branch = $data['branch_id'];
         $result = $this->db->exec("SELECT SUM(amount_unit) AS total FROM sales_order JOIN sales_product ON 
     sales_order.id=sales_product.sales_order_id WHERE sales_product.product_id=$product_id AND date(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "' AND sales_order.branch_id='" . $branch . "'");
         return $result[0]['total'];
@@ -143,29 +142,28 @@ class SalesProductModel extends \DB\Cortex {
         return $result;
     }
 
-    public function getProducts($data): array {
+    public function getProducts($data, $branch, $branch_name): array {
         $prod = new ProductModel();
         $products = [];
         $to = $data['to'];
         $from = $data['from'];
-        $branch = $data['branch_id'];
-        $result = $this->db->exec("SELECT DISTINCT sales_product.product_id FROM sales_order JOIN sales_product ON 
+        $result = $this->db->exec("SELECT DISTINCT sales_product.product_id FROM sales_order JOIN sales_product ON
     sales_order.id=sales_product.sales_order_id WHERE date(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "' AND sales_order.branch_id='" . $branch . "' ORDER BY sales_product.product_id DESC");
         for($i=0;$i<count($result);$i++) {
+            $products[$i]['branch_name'] = $branch_name;
             $products[$i]['product_id'] = $result[$i]['product_id'];
-            $products[$i]['name'] = $prod->getName($result[$i]['product_id']);
+            $products[$i]['product_name'] = $prod->getName($result[$i]['product_id']);
             $products[$i]['buying_price'] = $prod->getBuyingPrice($result[$i]['product_id']);
-            $products[$i]['total_units_sold'] = $this->totalUnit($products[$i]['product_id'], $data);
-            $products[$i]['total_selling_price'] = $this->totalSellingPrice($products[$i]['product_id'], $data);
+            $products[$i]['total_units_sold'] = $this->totalUnit($products[$i]['product_id'], $data, $branch);
+            $products[$i]['total_selling_price'] = $this->totalSellingPrice($products[$i]['product_id'], $data, $branch);
             $products[$i]['total_profit'] = $products[$i]['total_selling_price'] - ($products[$i]['buying_price'] * $products[$i]['total_units_sold']);
         }
         return $products;
     }
 
-    private function totalSellingPrice($product_id, $data) {
+    private function totalSellingPrice($product_id, $data, $branch) {
         $to = $data['to'];
         $from = $data['from'];
-        $branch = $data['branch_id'];
         $result = $this->db->exec("SELECT SUM(selling_price*amount_unit) AS total FROM sales_order JOIN sales_product ON 
     sales_order.id=sales_product.sales_order_id WHERE sales_product.product_id=$product_id AND date(sales_order.sold_at)>='" . $from . "' AND date(sales_order.sold_at)<='" . $to . "' AND sales_order.branch_id='" . $branch . "'");
         return $result[0]['total'];

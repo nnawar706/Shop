@@ -73,7 +73,6 @@ class ReportModel {
             $due_and_paid = $order->getTotalDueAndPaid($data, $sid);
             $info1['status']['code'] = 1;
             $info1['status']['message'] = "request successful";
-
             $info['data']['customer_id'] = $sid;
             $info['data']['name'] = $supplier_info['data']['name'];
             $info['data']['total_ordered'] = $due_and_paid['total'];
@@ -95,7 +94,6 @@ class ReportModel {
     public function allSupplierDues($data): array {
         $supplier = new SupplierModel();
         $order = new PurchaseOrderModel();
-
         $allSuppliers = $supplier->getAllIds();
         $info1['status']['code'] = 1;
         $info1['status']['message'] = "request successful";
@@ -123,7 +121,6 @@ class ReportModel {
         if($customer_info['status']['code'] == 1) {
             $info1['status']['code'] = 1;
             $info1['status']['message'] = "request successful";
-
             $info['data']['customer_name'] = $customer_info['data']['name'];
             $info['data']['total_order_cost'] = $orders->getOrderCost($data, $cid);
             $info['data']['total_discount'] = $orders->getDiscount($data, $cid);
@@ -163,19 +160,33 @@ class ReportModel {
         $products = new SalesProductModel();
         $branch_info = $branch->getBranch($data['branch_id']);
         if($branch_info['status']['code'] == 1) {
-            $info['data']['branch_id'] = $data['branch_id'];
-            $info['data']['name'] = $branch_info['data']['name'];
-            $info['data']['products'] = $products->getProducts($data);
-            $info['status']['code'] = 1;
-            $info['status']['message'] = "request successful";
+            $info['data']['products'] = $products->getProducts($data, $branch_info['data']['id'], $branch_info['data']['name']);
+            $info1['status']['code'] = 1;
+            $info1['status']['message'] = "request successful";
             $info['data']['from'] = $data['from'];
             $info['data']['to'] = $data['to'];
+            $info1['data'][] = $info['data'];
         } else {
-            $info['status']['code'] = 0;
-            $info['status']['message'] = "invalid request";
+            $info1['status']['code'] = 0;
+            $info1['status']['message'] = "invalid request";
         }
+        return $info1;
+    }
 
-        return $info;
+    public function getAllProductSales($data): array {
+        $branch = new BranchModel();
+        $products = new SalesProductModel();
+        $allBranch = $branch->getAllIds();
+        for($i=0;$i<count($allBranch);$i++) {
+            $branch_info = $branch->getBranch($allBranch[$i]);
+            $info['data']['products'] = $products->getProducts($data, $branch_info['data']['id'], $branch_info['data']['name']);
+            $info['data']['from'] = $data['from'];
+            $info['data']['to'] = $data['to'];
+            $info1['data'][] = $info['data'];
+        }
+        $info1['status']['code'] = 1;
+        $info1['status']['message'] = "request successful";
+        return $info1;
     }
 
     public function getPerformance($data, $sid): ?array {
