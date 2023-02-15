@@ -364,6 +364,26 @@ class ReportModel {
         return $info1;
     }
 
+    public function revenueByAllShop($id) {
+        $order = new SalesOrderModel();
+        $shop = new ShopModel();
+        $data = ($id == 1) ? $this->getYearCount() : (($id == 2) ? $this->getMonthCount() : (($id == 3) ? $this->getDayCount() : 1));
+        if($id == 1 || $id == 2 || $id == 3) {
+            $info['status']['code'] = 1;
+            $info['status']['message'] = "request successful";
+            $allShop = $shop->getAllIds();
+            for($i=0;$i<count($allShop);$i++) {
+                $shop_info = $shop->getShop($allShop[$i]);
+                $info['data'][$i] = $order->getDataByShop($data, $allShop[$i]);
+                $info['data'][$i]['Shop_name'] = $shop_info['data']['name'];
+            }
+        } else {
+            $info['status']['code'] = 0;
+            $info['status']['message'] = "invalid request";
+        }
+        return $info;
+    }
+
     private function getYearCount(): array {
         $data['from'] = date("Y-m-d", (time() - (60 * 60 * 24 * 365)));
         $data['to'] = date("Y-m-d");
@@ -381,6 +401,5 @@ class ReportModel {
         $data['to'] = date("Y-m-d");
         return $data;
     }
-
 
 }
