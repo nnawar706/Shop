@@ -180,7 +180,8 @@ class ReportModel {
         $allBranch = $branch->getAllIds();
         for($i=0;$i<count($allBranch);$i++) {
             $branch_info = $branch->getBranch($allBranch[$i]);
-            $info['data']['products'] = $products->getProducts($data, $branch_info['data']['id'], $branch_info['data']['name']);
+            $info['data']['branch_name'] = $branch_info['data']['name'];
+            $info['data']['products'] = $products->getProducts($data, $branch_info['data']['id']);
             $info['data']['from'] = $data['from'];
             $info['data']['to'] = $data['to'];
             $info1['data'][] = $info['data'];
@@ -324,6 +325,20 @@ class ReportModel {
             $info1['status']['code'] = 1;
             $info1['status']['message'] = "request successful";
             $info1['data'][] = $order->getDataByBranch($data, $branch);
+        } else {
+            $info1['status']['code'] = 0;
+            $info1['status']['message'] = "invalid request";
+        }
+        return $info1;
+    }
+
+    public function revenueByShop($shop, $id): array {
+        $order = new SalesOrderModel();
+        $data = ($id == 1) ? $this->getYearCount() : (($id == 2) ? $this->getMonthCount() : (($id == 3) ? $this->getDayCount() : 1));
+        if($id == 1 || $id == 2 || $id == 3) {
+            $info1['status']['code'] = 1;
+            $info1['status']['message'] = "request successful";
+            $info1['data'][] = $order->getDataByShop($data, $shop);
         } else {
             $info1['status']['code'] = 0;
             $info1['status']['message'] = "invalid request";

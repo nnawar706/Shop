@@ -148,4 +148,12 @@ class ReportController extends MainController {
         echo json_encode($info);
         $this->f3->status(200);
     }
+
+    public function getRevenueByShop($f3, $params) {
+        $report = new ReportModel();
+        $info = $report->revenueByShop($params['shop_id'], $params['id']);
+        header('Content-Type: application/json');
+        echo json_encode($info);
+        $this->f3->status(200);
+    }
 }
