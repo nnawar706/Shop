@@ -284,14 +284,22 @@ class SalesOrderModel extends \DB\Cortex {
     public function getData($data): array {
         $from = $data['from'];
         $to = $data['to'];
-        $result = $this->db->exec("select sum(amount_unit) as total_quantity, sum(buying_price*amount_unit) 
-    as total_cost, sum(selling_price*amount_unit) as total_revenue 
-    from sales_product join sales_order on sales_product.sales_order_id=sales_order.id where 
-        date(sold_at) between '" . $from . "' and '" . $to . "'");
-        $data['revenue']['total_number_of_products_sold'] = intval($result[0]['total_quantity']);
-        $data['revenue']['total_cost'] = intval($result[0]['total_cost']);
-        $data['revenue']['net_revenue'] = intval($result[0]['total_revenue']);
-        $data['revenue']['net_profit'] = $data['revenue']['net_revenue'] - $data['revenue']['total_cost'];
-        return $data;
+        $result = $this->db->exec("select year(sales_order.sold_at) as year, monthname(sales_order.sold_at) as month, 
+        sum(amount_unit) as total_quantity, sum(buying_price*amount_unit) as total_cost, 
+        sum(selling_price*amount_unit) as total_revenue from sales_product inner join sales_order on sales_product.sales_order_id=sales_order.id where 
+        date(sales_order.sold_at) between '" . $from . "' and '" . $to . "' group by month(date(sales_order.sold_at)) 
+        order by date(sales_order.sold_at) desc");
+        $i = 0;
+        foreach ($result as $item) {
+            $info['year'] = $item['year'];
+            $info['month'] = $item['month'];
+            $info['total_number_of_products_sold'] = intval($item['total_quantity']);
+            $info['total_cost'] = intval($item['total_cost']);
+            $info['net_revenue'] = intval($item['total_revenue']);
+            $info['net_profit'] = $info['net_revenue'] - $info['total_cost'];
+            $data1[$i] = $info;
+            $i = $i + 1;
+        }
+        return $data1;
     }
 }

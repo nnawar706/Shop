@@ -308,7 +308,7 @@ class ReportModel {
         if($id == 1 || $id == 2 || $id == 3) {
             $info1['status']['code'] = 1;
             $info1['status']['message'] = "request successful";
-            $info1['data'][] = $order->getData($data);
+            $info1['data'] = $order->getData($data);
         } else {
             $info1['status']['code'] = 0;
             $info1['status']['message'] = "invalid request";
@@ -391,13 +391,13 @@ class ReportModel {
     }
 
     private function getMonthCount(): array {
-        $data['from'] = date("Y-m-d", (time() - (60 * 60 * 24 * 30)));
+        $data['from'] = date("Y-m-d", (time() - (60 * 60 * 24 * 180)));
         $data['to'] = date("Y-m-d");
         return $data;
     }
 
     private function getDayCount(): array {
-        $data['from'] = date("Y-m-d", (time() - (60 * 60 * 24)));
+        $data['from'] = date("Y-m-d", (time() - (60 * 60 * 24 * 7)));
         $data['to'] = date("Y-m-d");
         return $data;
     }
