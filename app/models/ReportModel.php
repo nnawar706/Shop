@@ -296,9 +296,7 @@ class ReportModel {
         $product= new ProductModel();
         $info['status']['code'] = 1;
         $info['status']['message'] = "request successful";
-        $info['data'][0]['category_list'] = $product->getList($data);
-        $info['data'][0]['from'] = $data['from'];
-        $info['data'][0]['to'] = $data['to'];
+        $info['data'] = $product->getList($data);
         return $info;
     }
 
