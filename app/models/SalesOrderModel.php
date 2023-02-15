@@ -256,9 +256,10 @@ class SalesOrderModel extends \DB\Cortex {
         $from = $data['from'];
         $to = $data['to'];
         $result = $this->db->exec("select sum(amount_unit) as total_quantity, sum(buying_price*amount_unit) 
-    as total_cost, sum(selling_price*amount_unit) as total_revenue 
-    from sales_product join sales_order on sales_product.sales_order_id=sales_order.id where 
-        date(sold_at) between '" . $from . "' and '" . $to . "' and sales_order.branch_id=$id");
+        as total_cost, sum(selling_price*amount_unit) as total_revenue 
+        from sales_product join sales_order on sales_product.sales_order_id=sales_order.id join 
+        branch on branch.id=sales_order.branch_id where 
+        date(sales_order.sold_at) between '" . $from . "' and '" . $to . "' and branch.shop_id=$id");
         $data['revenue']['total_number_of_products_sold'] = intval($result[0]['total_quantity']);
         $data['revenue']['total_cost'] = intval($result[0]['total_cost']);
         $data['revenue']['net_revenue'] = intval($result[0]['total_revenue']);
