@@ -284,6 +284,7 @@ class SalesOrderModel extends \DB\Cortex {
     public function getData($data): array {
         $from = $data['from'];
         $to = $data['to'];
+        $data1 = [];
         $result = $this->db->exec("select year(sales_order.sold_at) as year, monthname(sales_order.sold_at) as month, 
         sum(amount_unit) as total_quantity, sum(buying_price*amount_unit) as total_cost, 
         sum(selling_price*amount_unit) as total_revenue from sales_product inner join sales_order on sales_product.sales_order_id=sales_order.id where 
