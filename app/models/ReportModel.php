@@ -304,12 +304,18 @@ class ReportModel {
         $order = new SalesOrderModel();
 
         $data = ($id == 1) ? $this->getYearCount() : (($id == 2) ? $this->getMonthCount() : (($id == 3) ? $this->getDayCount() : 1));
-
-        if($id == 1 || $id == 2 || $id == 3) {
-            $info1['status']['code'] = 1;
-            $info1['status']['message'] = "request successful";
-            $info1['data'] = $order->getData($data);
-        } else {
+        $info1['status']['code'] = 1;
+        $info1['status']['message'] = "request successful";
+        if($id == 2) {
+            $info1['data'] = $order->getMonthData($data);
+        }
+        else if($id == 1) {
+            $info1['data'] = $order->getYearData($data);
+        }
+        else if($id == 3) {
+            $info1['data'] = $order->getWeeklyData($data);
+        }
+        else {
             $info1['status']['code'] = 0;
             $info1['status']['message'] = "invalid request";
         }

@@ -281,7 +281,7 @@ class SalesOrderModel extends \DB\Cortex {
         return $data;
     }
 
-    public function getData($data): array {
+    public function getMonthData($data): array {
         $from = $data['from'];
         $to = $data['to'];
         $data1 = [];
@@ -290,16 +290,51 @@ class SalesOrderModel extends \DB\Cortex {
         sum(selling_price*amount_unit) as total_revenue from sales_product inner join sales_order on sales_product.sales_order_id=sales_order.id where 
         date(sales_order.sold_at) between '" . $from . "' and '" . $to . "' group by month(date(sales_order.sold_at)) 
         order by date(sales_order.sold_at) desc");
-        $i = 0;
         foreach ($result as $item) {
             $info['year'] = $item['year'];
-            $info['month'] = $item['month'];
+            $info['time'] = $item['month'];
             $info['total_number_of_products_sold'] = intval($item['total_quantity']);
             $info['total_cost'] = intval($item['total_cost']);
             $info['net_revenue'] = intval($item['total_revenue']);
             $info['net_profit'] = $info['net_revenue'] - $info['total_cost'];
-            $data1[$i] = $info;
-            $i = $i + 1;
+            $data1[] = $info;
+        }
+        return $data1;
+    }
+
+    public function getYearData($data)
+    {
+        $from = $data['from'];
+        $to = $data['to'];
+        $item = $this->db->exec("select sum(amount_unit) as total_quantity, sum(buying_price*amount_unit) as total_cost, 
+        sum(selling_price*amount_unit) as total_revenue from sales_product inner join sales_order on 
+        sales_product.sales_order_id=sales_order.id where 
+        date(sales_order.sold_at) between '" . $from . "' and '" . $to . "'");
+        $info['total_number_of_products_sold'] = intval($item[0]['total_quantity']);
+        $info['total_cost'] = intval($item[0]['total_cost']);
+        $info['net_revenue'] = intval($item[0]['total_revenue']);
+        $info['net_profit'] = $info['net_revenue'] - $info['total_cost'];
+        $info1[] = $info;
+        return $info1;
+    }
+
+    public function getWeeklyData($data): array {
+        $from = $data['from'];
+        $to = $data['to'];
+        $data1 = [];
+        $result = $this->db->exec("select year(sales_order.sold_at) as year, dayname(sales_order.sold_at) as time, 
+        sum(amount_unit) as total_quantity, 
+        SUM(buying_price*amount_unit) as total_cost, SUM(selling_price*amount_unit) as total_revenue FROM sales_product 
+        INNER JOIN sales_order ON sales_order.id = sales_product.sales_order_id 
+        WHERE date(sold_at) BETWEEN '" . $from . "' AND '" . $to . "' GROUP BY day(sales_order.sold_at)");
+        foreach ($result as $item) {
+            $info['year'] = $item['year'];
+            $info['time'] = $item['time'];
+            $info['total_number_of_products_sold'] = intval($item['total_quantity']);
+            $info['total_cost'] = intval($item['total_cost']);
+            $info['net_revenue'] = intval($item['total_revenue']);
+            $info['net_profit'] = $info['net_revenue'] - $info['total_cost'];
+            $data1[] = $info;
         }
         return $data1;
     }
