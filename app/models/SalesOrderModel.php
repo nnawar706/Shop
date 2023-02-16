@@ -255,11 +255,12 @@ class SalesOrderModel extends \DB\Cortex {
     public function getDataByShop($data, $id): array {
         $from = $data['from'];
         $to = $data['to'];
-        $result = $this->db->exec("select sum(amount_unit) as total_quantity, sum(buying_price*amount_unit) 
+        $result = $this->db->exec("select shop.name as name, sum(amount_unit) as total_quantity, sum(buying_price*amount_unit) 
         as total_cost, sum(selling_price*amount_unit) as total_revenue 
         from sales_product join sales_order on sales_product.sales_order_id=sales_order.id join 
-        branch on branch.id=sales_order.branch_id where 
+        branch on branch.id=sales_order.branch_id join shop on branch.shop_id=shop.id where 
         date(sales_order.sold_at) between '" . $from . "' and '" . $to . "' and branch.shop_id=$id");
+        $data['shop_name'] = $result[0]['name'];
         $data['revenue']['total_number_of_products_sold'] = intval($result[0]['total_quantity']);
         $data['revenue']['total_cost'] = intval($result[0]['total_cost']);
         $data['revenue']['net_revenue'] = intval($result[0]['total_revenue']);

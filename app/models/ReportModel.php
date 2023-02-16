@@ -345,7 +345,6 @@ class ReportModel {
             $info['status']['message'] = "request successful";
             $allBranch = $branch->getAllIds();
             for($i=0;$i<count($allBranch);$i++) {
-                $branch_info = $branch->getBranch($allBranch[$i]);
                 $info['data'][$i] = $order->getDataByBranch($data, $allBranch[$i]);
             }
         } else {
