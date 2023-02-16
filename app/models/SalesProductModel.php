@@ -93,7 +93,8 @@ class SalesProductModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
-        $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
+        $this->fields(['sales_order_id.id', 'product_id.id', 'product_id.name']);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $result['data'] = $data;
             $status['code'] = 1;
