@@ -73,8 +73,10 @@ class SalesTransactionModel extends \DB\Cortex {
     }
 
     public function getAll(): array {
+        $this->fields(['sales_order_id.id', 'transaction_type_id.id', 'transaction_type_id.name',
+            'sales_status_id.id', 'sales_status_id.status']);
         $this->fields(['sales_transaction_sales_status_id'], true);
-        $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 1);
         if($data) {
             $status['code'] = 1;
             $status['message'] = 'All Purchase transaction successfully fetched.';
@@ -115,7 +117,9 @@ class SalesTransactionModel extends \DB\Cortex {
     }
 
     public function getSales($id): array {
-        $this->fields(['sales_order_id.id','transaction_type_id.id','transaction_type_id.name']);
+        $this->fields(['sales_order_id.id', 'transaction_type_id.id', 'transaction_type_id.name',
+            'sales_status_id.id', 'sales_status_id.status']);
+        $this->fields(['sales_transaction_sales_status_id'], true);
         $this->load(['id=?', $id]);
         if($this->id) {
             $data = $this->cast(NULL, 1);
