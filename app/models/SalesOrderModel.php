@@ -302,14 +302,15 @@ class SalesOrderModel extends \DB\Cortex {
         return $data1;
     }
 
-    public function getYearData($data)
-    {
+    public function getYearData($data): array {
         $from = $data['from'];
         $to = $data['to'];
         $item = $this->db->exec("select sum(amount_unit) as total_quantity, sum(buying_price*amount_unit) as total_cost, 
         sum(selling_price*amount_unit) as total_revenue from sales_product inner join sales_order on 
         sales_product.sales_order_id=sales_order.id where 
         date(sales_order.sold_at) between '" . $from . "' and '" . $to . "'");
+        $info['year'] = date('Y', strtotime($to));
+        $info['time'] = date('Y-m-d', strtotime($from)) . " to " . date('Y-m-d', strtotime($to));
         $info['total_number_of_products_sold'] = intval($item[0]['total_quantity']);
         $info['total_cost'] = intval($item[0]['total_cost']);
         $info['net_revenue'] = intval($item[0]['total_revenue']);
