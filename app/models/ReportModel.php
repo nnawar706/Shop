@@ -347,7 +347,6 @@ class ReportModel {
             for($i=0;$i<count($allBranch);$i++) {
                 $branch_info = $branch->getBranch($allBranch[$i]);
                 $info['data'][$i] = $order->getDataByBranch($data, $allBranch[$i]);
-                $info['data'][$i]['branch_name'] = $branch_info['data']['name'];
             }
         } else {
             $info['status']['code'] = 0;
