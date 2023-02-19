@@ -37,7 +37,7 @@ class ProductModel extends \DB\Cortex {
         ],
         'description' => [
             'type' => \DB\SQL\Schema::DT_VARCHAR512,
-            'validate' => 'required|||max_len,500|||alpha_space'
+            'validate' => 'required|||max_len,500'
         ],
         'unit_id' => [
             'belongs-to-one' => '\ProductUnitModel',
