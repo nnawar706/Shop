@@ -60,10 +60,10 @@ class ProductController extends MainController {
     /**
      * @throws Exception
      */
-    public function update() {
+    public function update($f3, $params) {
         if($this->f3->exists('POST.create')) {
             $product = new ProductModel();
-            $result = $product->updateProduct($this->f3->get('POST'));
+            $result = $product->updateProduct($params['id'], $this->f3->get('POST'));
             if($result['status']['code'] === 1){
                 try {
                     $this->uploadImage();

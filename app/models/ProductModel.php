@@ -95,7 +95,7 @@ class ProductModel extends \DB\Cortex {
         $this->wholesale_price = $data['wholesale_price'] ?? '';
         $this->retail_price = $data['retail_price'] ?? '';
         $this->discount_amount = $data['discount_amount'] ?? '';
-        $this->product_image_url = $data['product_image_url'] ?? 'https://nafisa.selopian.us/ui/images/products/product_img.png';
+        $this->product_image_url = $data['product_image_url'] ?? '';
         unset($data['submit']);
         if($this->validate()) {
             try {
@@ -188,38 +188,44 @@ class ProductModel extends \DB\Cortex {
     /**
      * @throws Exception
      */
-    public function updateProduct($data): array {
-        $this->name = $data['name'] ?? '';
-        $this->description = $data['description'] ?? '';
-        $this->unit_id = $data['unit_id'] ?? '';
-        $this->unit_size = $data['unit_size'] ?? '';
-        $this->brand_id = $data['brand_id'] ?? '';
-        $this->category_id = $data['category_id'] ?? '';
-        $this->cost_price = $data['cost_price'] ?? '';
-        $this->mrp = $data['mrp'] ?? '';
-        $this->wholesale_price = $data['wholesale_price'] ?? '';
-        $this->retail_price = $data['retail_price'] ?? '';
-        $this->discount_amount = $data['discount_amount'] ?? '';
-        unset($data['submit']);
-
-        if($this->validate()) {
-            try {
-                $this->save();
-                $info = $this->cast(NULL, 0);
-                $result['data'] = $info;
-                $log = new LogModel();
-                $stat = "Product ID: " . $this->id . " has been updated.";
-                $log->add($stat, 11);
-                $status['code'] = 1;
-                $status['message'] = 'Product Successfully Added.';
-            } catch(PDOException $e) {
+    public function updateProduct($id, $data): array {
+        $this->load(['id=?', $id]);
+        if($this->id) {
+            $this->name = $data['name'] ?? '';
+            $this->description = $data['description'] ?? '';
+            $this->unit_id = $data['unit_id'] ?? '';
+            $this->unit_size = $data['unit_size'] ?? '';
+            $this->brand_id = $data['brand_id'] ?? '';
+            $this->category_id = $data['category_id'] ?? '';
+            $this->cost_price = $data['cost_price'] ?? '';
+            $this->mrp = $data['mrp'] ?? '';
+            $this->wholesale_price = $data['wholesale_price'] ?? '';
+            $this->retail_price = $data['retail_price'] ?? '';
+            $this->discount_amount = $data['discount_amount'] ?? '';
+            unset($data['submit']);
+            if($this->validate()) {
+                try {
+                    $this->save();
+                    $info = $this->cast(NULL, 0);
+                    $result['data'] = $info;
+                    $log = new LogModel();
+                    $stat = "Product ID: " . $this->id . " has been updated.";
+                    $log->add($stat, 11);
+                    $status['code'] = 1;
+                    $status['message'] = 'Product Successfully Updated.';
+                } catch(PDOException $e) {
+                    $status['code'] = 0;
+                    $status['message'] = $e->errorInfo[2];
+                }
+            } else {
                 $status['code'] = 0;
-                $status['message'] = $e->errorInfo[2];
+                $status['message'] = Base::instance()->get('error_msg');
             }
         } else {
             $status['code'] = 0;
-            $status['message'] = Base::instance()->get('error_msg');
+            $status['message'] = 'Invalid product id.';
         }
+
         $result['status'] = $status;
         return $result;
     }
