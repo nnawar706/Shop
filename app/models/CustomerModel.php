@@ -78,7 +78,6 @@ class CustomerModel extends \DB\Cortex {
      * @throws Exception
      */
     public function updateCustomer($id, $data): array {
-        $this->fields(['sales_order_customer_id']);
         $this->load(['id=?', $id]);
         if($this->id) {
             $this->name = $data['name'] ?? '';
