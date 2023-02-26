@@ -71,4 +71,11 @@ class UserController extends MainController {
         echo json_encode($status);
     }
 
+    public function getAllPhoneUsername() {
+        $user = new UserModel();
+        $status = $user->getAllPhone();
+        header('Content-Type: application/json');
+        echo json_encode($status);
+        $this->f3->status(200);
+    }
 }

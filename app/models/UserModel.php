@@ -258,4 +258,19 @@ class UserModel extends \DB\Cortex {
         $this->save();
     }
 
+    public function getAllPhone(): array {
+        $this->fields(['id', 'phone_username']);
+        $data = $this->afind([], ['order'=>'id DESC'], 0, 0);
+        if($data) {
+            $status['code'] = 1;
+            $status['message'] = 'All User phone no Successfully Fetched.';
+            $result['data'] = $data;
+        } else {
+            $status['code'] = 0;
+            $status['message'] = 'No User phone no Found.';
+        }
+        $result['status'] = $status;
+        return $result;
+    }
+
 }
