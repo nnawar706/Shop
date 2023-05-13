@@ -15,6 +15,5 @@ jobs:
         username: ftp_nafisa_local
         password: ${{ secrets.FATFREE }}
         exclude: |
-          composer.lock
           readme.md
           SECURITY.md
